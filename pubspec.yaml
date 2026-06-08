@@ -1,0 +1,47 @@
+name: velocambio
+description: "App para cambio de monedas"
+publish_to: 'none'
+version: 1.0.0+005
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  dio: ^5.9.0
+  provider: ^6.1.5+1
+  google_fonts: ^6.3.2
+  skeletonizer: ^2.1.1
+  intl: ^0.20.2
+  hive:
+  hive_flutter:
+
+  flutter:
+    sdk: flutter
+  supabase_flutter: ^2.12.4
+  hive_generator:
+  build_runner:
+  package_info_plus: ^10.1.0
+  path_provider: ^2.1.5
+  shared_preferences: ^2.5.5
+  connectivity_plus: ^7.1.1
+  toastification: ^3.2.0
+  flutter_launcher_icons: ^0.14.4
+  pretty_dio_logger: ^1.4.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+
+flutter_launcher_icons:
+  android: "launcher_icon" # O true si quieres el nombre por defecto
+  ios: true
+  image_path: "assets/images/app_icon.png"
+  adaptive_icon_background: "#1A202C"
+  adaptive_icon_foreground: "assets/images/app_icon.png"
