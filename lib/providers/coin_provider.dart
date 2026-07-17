@@ -31,6 +31,12 @@ enum Currency {
     name: 'Tasa Personalizada',
     symbol: '',
     flagPath: 'assets/images/custom_rate_icon.png',
+  ),
+  usdt(
+    code: 'USDT',
+    name: 'USDT',
+    symbol: '\$',
+    flagPath: 'assets/images/Flag_United_States.svg.png',
   )
   ;
 
@@ -52,7 +58,8 @@ enum ExchangeType {
   oficialUsd,
   averageUsd,
   oficialEur,
-  custom
+  custom,
+  p2pUsdt
 }
 
 class CoinProvider extends CmmGeneralProvider {
@@ -87,7 +94,6 @@ class CoinProvider extends CmmGeneralProvider {
     );
 
   
-
   //* modena de origin
   Currency originCurrency = Currency.usd;
   //* modena de destino
@@ -120,7 +126,7 @@ class CoinProvider extends CmmGeneralProvider {
   }
 
   double currentAmount = 0;
-  double calculatedAmount ({required double rateUsdBcv, required double rateUsdMarket, required double rateEUR}) {
+  double calculatedAmount ({required double rateUsdBcv, required double rateUsdMarket, required double rateEUR, required double rateP2P}) {
 
     double input = double.tryParse(amountController.text.replaceAll(',', '.')) ?? 0;
     log('Calculating amount: $input', name: 'Calculated Amount');
@@ -132,7 +138,7 @@ class CoinProvider extends CmmGeneralProvider {
 
     // 1. Convertir origen a USD
     double amountInUSD;
-    if (originCurrency == Currency.usd) {
+    if (originCurrency == Currency.usd || originCurrency == Currency.usdt) {
       amountInUSD = input;
       notifyListeners();
     } else if (originCurrency == Currency.ves) {
@@ -142,10 +148,11 @@ class CoinProvider extends CmmGeneralProvider {
       amountInUSD = input / amount; // Aquí se usa 'amount' que es la tasa de cambio seleccionada (oficial, promedio o personalizada)
       notifyListeners();
     }
+
     log('Amount in USD: $amountInUSD', name: 'Calculated Amount');
 
     // 2. Convertir USD a destino
-    if (destinationCurrency == Currency.usd) {
+    if (destinationCurrency == Currency.usd || destinationCurrency == Currency.usdt) {
       currentAmount = amountInUSD;
       log('USD Current amount: $currentAmount', name: 'Calculated Amount');
       notifyListeners();

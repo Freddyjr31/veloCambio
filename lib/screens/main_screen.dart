@@ -43,15 +43,17 @@ class _MainScreenState extends State<MainScreen> {
   //* para guardar la version
   late Future<PackageInfo> _packageInfoFuture;
 
-  Future<void> getExchangeRate(CoinProvider coinProvider, UsdExchangeRateProvider exchangeProvider, EuroProvider euroProvider) async {
+  Future<void> getExchangeRate(CoinProvider coinProvider, UsdExchangeRateProvider exchangeProvider, EuroProvider euroProvider, BinanceProvider binanceProvider) async {
 
     //* Provider de tasas de cambio USD
     await exchangeProvider.getUsdExchangeRate();
     await euroProvider.getEurosExchangeRate();
+    await binanceProvider.getBinanceP2pRate();
 
     log('Oficial: ${exchangeProvider.oficialRate}', name: 'MainScreen');
     log('Average: ${exchangeProvider.averageRate}', name: 'MainScreen');
     log('Euro: ${euroProvider.oficialEuroRate}', name: 'MainScreen');
+    log('P2P USDT: ${binanceProvider.p2pPrice}', name: 'MainScreen');
 
     double amout = exchangeProvider.oficialRate;
     coinProvider.setAmount(amout);
@@ -63,6 +65,7 @@ class _MainScreenState extends State<MainScreen> {
       rateUsdBcv: exchangeProvider.oficialRate,
       rateUsdMarket: exchangeProvider.averageRate,
       rateEUR: euroProvider.oficialEuroRate,
+      rateP2P: binanceProvider.p2pPrice,
     );
   }
 
@@ -82,6 +85,9 @@ class _MainScreenState extends State<MainScreen> {
       
       //* Provider de historial de Tasas de cambio (BD - SUPABASE)
       final coinProvider = context.read<CoinProvider>();
+
+      //* Provider de Binance P2P
+      final binanceProvider = context.read<BinanceProvider>();
       
       //* Dialog de aviso del BCV
       BcvDisclaimerModal.show(context);
@@ -107,7 +113,7 @@ class _MainScreenState extends State<MainScreen> {
       // double amout = exchangeProvider.oficialRate;
       // coinProvider.setAmount(amout);
 
-       await getExchangeRate(coinProvider, exchangeProvider, euroProvider);
+       await getExchangeRate(coinProvider, exchangeProvider, euroProvider, binanceProvider);
 
        //* Provider de historial de Tasas de cambio (HIVE)
 
@@ -314,6 +320,7 @@ class _MainScreenState extends State<MainScreen> {
   bool selectOficialRate = true;
   bool selectAverageRate = false;
   bool selectEuroOficialRate = false;
+  bool selectP2pRate = false;
 
   final formKey = GlobalKey<FormState>();
 
@@ -330,11 +337,13 @@ class _MainScreenState extends State<MainScreen> {
     final coinProvider = context.watch<CoinProvider>();
     final euroProvider = context.watch<EuroProvider>();
     final customProvider = context.watch<CustomProvider>();
+    final binanceProvider = context.watch<BinanceProvider>();
 
     if(coinProvider.exchangeType == ExchangeType.oficialUsd) {
       selectOficialRate = true;
       selectAverageRate = false;
       selectEuroOficialRate = false;
+      selectP2pRate = false;
     }
 
     //* amount a mostrar en la calculadora, dependiendo de la tasa de cambio seleccionada
@@ -413,7 +422,7 @@ class _MainScreenState extends State<MainScreen> {
                               Icons.refresh,
                               color: Colors.white,
                             ),
-                            onPressed: () => getExchangeRate(coinProvider, exchangeProvider, euroProvider),
+                            onPressed: () => getExchangeRate(coinProvider, exchangeProvider, euroProvider, binanceProvider),
                           ),
                         )
                       ],
@@ -457,11 +466,12 @@ class _MainScreenState extends State<MainScreen> {
                       coinProvider.setAmount(amout);
                       // coinProvider.calculatedAmount(coinProvider.destinationCurrency);
                       coinProvider.calculatedAmount(
-                        rateUsdBcv: exchangeProvider.oficialRate,
-                        rateUsdMarket: exchangeProvider.averageRate,
-                        rateEUR: euroProvider.oficialEuroRate,
-                      );
-                    },
+                          rateUsdBcv: exchangeProvider.oficialRate,
+                          rateUsdMarket: exchangeProvider.averageRate,
+                          rateEUR: euroProvider.oficialEuroRate,
+                          rateP2P: binanceProvider.p2pPrice,
+                        );
+                      },
                     child: ExchangeRateContainer(
                       imagePath: Currency.usd.flagPath,
                       type: ExchangeType.oficialUsd,
@@ -473,7 +483,7 @@ class _MainScreenState extends State<MainScreen> {
                       icon: const Icon(Icons.account_balance),
                       percentageDifference: exchangeProvider.oficialRatePercentage,
                     ),
-                  ),
+                ),
           
                   GestureDetector(
                     onTap: () {
@@ -496,12 +506,15 @@ class _MainScreenState extends State<MainScreen> {
                       log('Selected Average Rate: $amout', name: 'MainScreen - onTap Average Rate');
                       coinProvider.setAmount(amout);
                       // coinProvider.calculatedAmount(coinProvider.destinationCurrency);
+
                       coinProvider.calculatedAmount(
-                        rateUsdBcv: exchangeProvider.oficialRate,
-                        rateUsdMarket: exchangeProvider.averageRate,
-                        rateEUR: euroProvider.oficialEuroRate,
-                      );
-                    },
+                          rateUsdBcv: exchangeProvider.oficialRate,
+                          rateUsdMarket: exchangeProvider.averageRate,
+                          rateEUR: euroProvider.oficialEuroRate,
+                          rateP2P: binanceProvider.p2pPrice,
+                        );
+                      },
+
                     child: ExchangeRateContainer(
                       imagePath: Currency.usd.flagPath,
                       type: ExchangeType.averageUsd,
@@ -530,6 +543,7 @@ class _MainScreenState extends State<MainScreen> {
                         selectAverageRate = false;
                         selectOficialRate = false;
                         selectEuroOficialRate = true;
+                        selectP2pRate = false;
                       });
 
                       double amout = euroProvider.oficialEuroRate;
@@ -539,6 +553,7 @@ class _MainScreenState extends State<MainScreen> {
                         rateUsdBcv: exchangeProvider.oficialRate,
                         rateUsdMarket: exchangeProvider.averageRate,
                         rateEUR: euroProvider.oficialEuroRate,
+                        rateP2P: binanceProvider.p2pPrice,
                       );
                     },
                     child: ExchangeRateContainer(
@@ -551,6 +566,47 @@ class _MainScreenState extends State<MainScreen> {
                       upValue: true,
                       isSelected: selectEuroOficialRate,
                       icon: const Icon(Icons.account_balance),
+                      percentageDifference: 0,
+                    ),
+                  ),
+
+                  GestureDetector(
+                    onTap: () {
+
+                      coinProvider.changeExchangeType(ExchangeType.p2pUsdt);
+
+                      if(coinProvider.inputCurrencyCoin != Currency.ves.code) {
+                        coinProvider.setInputCurrencyCoin(Currency.usdt.code);
+                      } else {
+                        coinProvider.setOutputCurrencyCoin(Currency.usdt.code);
+                      }
+
+                      setState(() {
+                        selectAverageRate = false;
+                        selectOficialRate = false;
+                        selectEuroOficialRate = false;
+                        selectP2pRate = true;
+                      });
+
+                      double amout = binanceProvider.p2pPrice;
+                      log('Selected P2P USDT Rate: $amout', name: 'MainScreen - onTap P2P Rate');
+                      coinProvider.setAmount(amout);
+                      coinProvider.calculatedAmount(
+                        rateUsdBcv: exchangeProvider.oficialRate,
+                        rateUsdMarket: exchangeProvider.averageRate,
+                        rateEUR: euroProvider.oficialEuroRate,
+                        rateP2P: binanceProvider.p2pPrice,
+                      );
+                    },
+                    child: ExchangeRateContainer(
+                      imagePath: Currency.usd.flagPath,
+                      type: ExchangeType.p2pUsdt,
+                      size: size.width * 0.9,
+                      value: binanceProvider.p2pPrice,
+                      nameType: 'USDT P2P',
+                      upValue: true,
+                      isSelected: selectP2pRate,
+                      icon: const Icon(Icons.currency_bitcoin),
                       percentageDifference: 0,
                     ),
                   ),
@@ -581,6 +637,7 @@ class _MainScreenState extends State<MainScreen> {
                       rateUsdBcv: exchangeProvider.oficialRate,
                       rateUsdMarket: exchangeProvider.averageRate,
                       rateEUR: euroProvider.oficialEuroRate,
+                      rateP2P: binanceProvider.p2pPrice,
                     );
                   },
                   child: ExchangeRateContainer(

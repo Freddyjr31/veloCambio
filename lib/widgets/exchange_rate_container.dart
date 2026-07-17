@@ -43,6 +43,7 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
     final customProvider = context.watch<CustomProvider>();
     final exchangeProvider = context.watch<UsdExchangeRateProvider>();
     final euroProvider = context.watch<EuroProvider>();
+    final binanceProvider = context.watch<BinanceProvider>();
 
     return Container(
         width: widget.size,
@@ -137,6 +138,7 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
                           rateUsdBcv: exchangeProvider.oficialRate,
                           rateUsdMarket: exchangeProvider.averageRate,
                           rateEUR: euroProvider.oficialEuroRate,
+                          rateP2P: binanceProvider.p2pPrice,
                         );
                         coinProvider.changeExchangeType(ExchangeType.oficialUsd);
                       },

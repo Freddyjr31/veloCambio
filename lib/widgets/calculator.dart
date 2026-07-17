@@ -36,6 +36,7 @@ class _CalculatorState extends State<Calculator> {
     final coinProvider = context.watch<CoinProvider>();
     final exchangeProvider = context.watch<UsdExchangeRateProvider>();
     final euroProvider = context.watch<EuroProvider>();
+    final binanceProvider = context.watch<BinanceProvider>();
 
     Currency originCurrency = coinProvider.originCurrency; //* USD primera vez
     Currency destinationCurrency = coinProvider.destinationCurrency; //* VES primera vez
@@ -128,17 +129,23 @@ class _CalculatorState extends State<Calculator> {
 
                               coinProvider.setInputCurrencyCoin(Currency.ves.code);
 
+                              log(coinProvider.inputCurrencyCoin, name: 'inputCurrencyCoin');
+
                               if(ExchangeType.oficialUsd == coinProvider.exchangeType || ExchangeType.averageUsd == coinProvider.exchangeType) {
                                 coinProvider.setOutputCurrencyCoin(Currency.usd.code);
                               } else if (ExchangeType.oficialEur == coinProvider.exchangeType) {
                                 coinProvider.setOutputCurrencyCoin(Currency.eur.code);
                               } else if (ExchangeType.custom == coinProvider.exchangeType) {
                                 coinProvider.setOutputCurrencyCoin(Currency.custom.code);
+                              } else if (ExchangeType.p2pUsdt == coinProvider.exchangeType) {
+                                coinProvider.setOutputCurrencyCoin(Currency.usdt.code);
                               }
 
                             } else {
 
                               coinProvider.setOutputCurrencyCoin(Currency.ves.code);
+
+                              log(coinProvider.outputCurrencyCoin, name: 'outputCurrencyCoin');
                               
                               if(ExchangeType.oficialUsd == coinProvider.exchangeType || ExchangeType.averageUsd == coinProvider.exchangeType) {
                                 coinProvider.setInputCurrencyCoin(Currency.usd.code);
@@ -146,6 +153,8 @@ class _CalculatorState extends State<Calculator> {
                                 coinProvider.setInputCurrencyCoin(Currency.eur.code);
                               } else if (ExchangeType.custom == coinProvider.exchangeType) {
                                 coinProvider.setInputCurrencyCoin(Currency.custom.code);
+                              } else if (ExchangeType.p2pUsdt == coinProvider.exchangeType) {
+                                coinProvider.setInputCurrencyCoin(Currency.usdt.code);
                               }
                             }
                       
@@ -154,6 +163,7 @@ class _CalculatorState extends State<Calculator> {
                               rateUsdBcv: exchangeProvider.oficialRate,
                               rateUsdMarket: exchangeProvider.averageRate,
                               rateEUR: euroProvider.oficialEuroRate,
+                              rateP2P: binanceProvider.p2pPrice,
                             );
                           },
                           icon: const Icon(
@@ -178,113 +188,6 @@ class _CalculatorState extends State<Calculator> {
               ],
             ),
 
-            // DropdownButtonFormField<Currency>(
-            //     borderRadius: BorderRadius.circular(16),
-            //     initialValue: originCurrency,
-            //     elevation: 9,
-            //     decoration: InputDecoration(
-            //       border: OutlineInputBorder(
-            //         borderRadius: BorderRadius.circular(10),
-            //       ),
-            //       labelText: 'Moneda origen',
-            //       labelStyle: TextStyle(color: Colors.white),
-            //     ),
-            //     onChanged: (Currency? newValue) {
-
-            //       if (newValue != null) {
-            //         setState(() {
-            //           originCurrency = newValue;
-            //           coinProvider.changeOriginCurrency(newValue);
-            //         });
-
-            //         // coinProvider.calculatedAmount(destinationCurrency);
-            //         coinProvider.calculatedAmount(
-            //           rateUsdBcv: exchangeProvider.oficialRate,
-            //           rateUsdMarket: exchangeProvider.averageRate,
-            //           rateEUR: euroProvider.oficialEuroRate,
-            //         );
-            //       }
-
-            //     },
-            //     items: Currency.values.map((Currency currency) {
-            //       return  DropdownMenuItem<Currency>(
-            //         value: currency,
-            //         child: Row(
-            //           mainAxisSize: MainAxisSize.min,
-            //           children: [
-            //             ClipRRect(
-            //               borderRadius: BorderRadius.circular(3),
-            //               child: Image.asset(
-            //                 currency.flagPath,
-            //                 width: 23,
-            //                 height: 15,
-            //                 fit: BoxFit.cover,
-            //                 errorBuilder: (context, error, stackTrace) => 
-            //                     const Icon(Icons.flag, size: 15),
-            //               ),
-            //             ),
-            //             const SizedBox(width: 5),
-            //             Text(currency.code),
-            //           ],
-            //         ),
-            //       );
-            //     }).toList(),
-                
-            //   ),
-
-            // const SizedBox(height: 10),
-
-            // DropdownButtonFormField<Currency>(
-            //     borderRadius: BorderRadius.circular(16),
-            //     initialValue: destinationCurrency,
-            //     elevation: 9,
-            //     decoration: InputDecoration(
-            //       border: OutlineInputBorder(
-            //         borderRadius: BorderRadius.circular(10),
-            //       ),
-            //       labelText: 'Moneda destino',
-            //       labelStyle: TextStyle(color: Colors.white),
-            //     ),
-            //     onChanged: (Currency? newValue) {
-
-            //       if (newValue == null) return;
-                  
-            //       setState(() {
-            //         destinationCurrency = newValue;
-            //         coinProvider.changeDestinationCurrency(newValue);
-            //       });
-
-            //       coinProvider.calculatedAmount(
-            //         rateUsdBcv: exchangeProvider.oficialRate,
-            //         rateUsdMarket: exchangeProvider.averageRate,
-            //         rateEUR: euroProvider.oficialEuroRate,
-            //       );
-
-            //     },
-            //     items: Currency.values.map((Currency currency) {
-            //       return DropdownMenuItem<Currency>(
-            //         value: currency,
-            //         child: Row(
-            //           mainAxisSize: MainAxisSize.min,
-            //           children: [
-            //             ClipRRect(
-            //               borderRadius: BorderRadius.circular(3),
-            //               child: Image.asset(
-            //                 currency.flagPath,
-            //                 width: 23,
-            //                 height: 15,
-            //                 fit: BoxFit.cover,
-            //                 errorBuilder: (context, error, stackTrace) => 
-            //                     const Icon(Icons.flag, size: 15),
-            //               ),
-            //             ),
-            //             const SizedBox(width: 5),
-            //             Text(currency.code),
-            //                 ],
-            //               ),
-            //             );
-            //           }).toList(),
-            //         ),
 
             //* Monto Ingresado
             if(destinationCurrency != originCurrency)...[
@@ -316,12 +219,12 @@ class _CalculatorState extends State<Calculator> {
                               style: TextStyle(fontWeight: FontWeight.bold),
                               children: [
                                 TextSpan(
-                                  // text: destinationCurrency == Currency.usd
-                                  //   ? "${coinProvider.formatoDolar.format(coinProvider.currentAmount)} USD"
-                                  //   : destinationCurrency == Currency.ves
-                                  //     ? coinProvider.formatoBolivar.format(coinProvider.currentAmount) 
-                                  //     : "${coinProvider.formatoEuro.format(coinProvider.currentAmount)} EUR",
-                                  text: isVes ? coinProvider.formatoBolivar.format(coinProvider.currentAmount) : ExchangeType.oficialUsd == coinProvider.exchangeType ? "${coinProvider.formatoDolar.format(coinProvider.currentAmount)} USD" : ExchangeType.oficialEur == coinProvider.exchangeType ? "${coinProvider.formatoEuro.format(coinProvider.currentAmount)} EUR" : destinationCurrency == Currency.usd
+                                  text: isVes ? 
+                                    coinProvider.formatoBolivar.format(coinProvider.currentAmount) :
+                                    ExchangeType.oficialUsd == coinProvider.exchangeType ? "${coinProvider.formatoDolar.format(coinProvider.currentAmount)} USD" :
+                                    ExchangeType.oficialEur == coinProvider.exchangeType ? "${coinProvider.formatoEuro.format(coinProvider.currentAmount)} EUR" :
+                                    ExchangeType.p2pUsdt == coinProvider.exchangeType ? "${coinProvider.formatoDolar.format(coinProvider.currentAmount)} USDT" :
+                                    destinationCurrency == Currency.usd
                                     ? "${coinProvider.formatoDolar.format(coinProvider.currentAmount)} USD"
                                     : destinationCurrency == Currency.ves
                                       ? coinProvider.formatoBolivar.format(coinProvider.currentAmount) 
@@ -418,6 +321,7 @@ class _CalculatorState extends State<Calculator> {
                               rateUsdBcv: exchangeProvider.oficialRate,
                               rateUsdMarket: exchangeProvider.averageRate,
                               rateEUR: euroProvider.oficialEuroRate,
+                              rateP2P: binanceProvider.p2pPrice,
                             );
                           });
                         },
@@ -444,6 +348,7 @@ class _CalculatorState extends State<Calculator> {
                                 rateUsdBcv: exchangeProvider.oficialRate,
                                 rateUsdMarket: exchangeProvider.averageRate,
                                 rateEUR: euroProvider.oficialEuroRate,
+                                rateP2P: binanceProvider.p2pPrice,
                               );
                               setState(() {
                                 amount = 0.00;
