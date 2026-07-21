@@ -459,6 +459,7 @@ class _MainScreenState extends State<MainScreen> {
                         selectOficialRate = true;
                         selectAverageRate = false;
                         selectEuroOficialRate = false;
+                        selectP2pRate = false;
                       });
 
                       double amout = exchangeProvider.oficialRate;
@@ -500,6 +501,7 @@ class _MainScreenState extends State<MainScreen> {
                         selectAverageRate = true;
                         selectOficialRate = false;
                         selectEuroOficialRate = false;
+                        selectP2pRate = false;
                       });
 
                       double amout = exchangeProvider.averageRate;
@@ -628,6 +630,7 @@ class _MainScreenState extends State<MainScreen> {
                       selectAverageRate = false;
                       selectOficialRate = false;
                       selectEuroOficialRate = false;
+                      selectP2pRate = false;
                     });
 
                     double amout = customProvider.selectedCustomModel!.value;

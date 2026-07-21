@@ -4,7 +4,7 @@
 
 ## Project Overview
 
-**VeloCambio** is a Flutter currency exchange calculator app focused on Venezuelan Bolivar (VES) conversions. It fetches real-time exchange rates for USD (BCV official + market) and EUR from the public API [dolarapi.com](https://ve.dolarapi.com/), and lets users convert between currencies or set a custom exchange rate.
+**VeloCambio** is a Flutter currency exchange calculator app focused on Venezuelan Bolivar (VES) conversions. It fetches real-time exchange rates for USD (BCV official + market) and EUR from the public API [dolarapi.com](https://ve.dolarapi.com/), USDT/VES rates from [Binance P2P](https://p2p.binance.com/) (best SELL price), and lets users convert between currencies or set a custom exchange rate.
 
 ## Tech Stack
 
@@ -22,18 +22,23 @@ lib/
 ├── main.dart                    # App entry point, Provider registration
 ├── app.dart                     # MaterialApp configuration
 ├── core/
-│   ├── http/                    # Dio client and interceptors
+│   ├── http/
+│   │   ├── dio_client.dart      # Dio client for dolarapi.com
+│   │   ├── binance_dio.dart     # Dio client for Binance P2P
+│   │   └── interceptor/         # Custom interceptors
 │   ├── themes/                  # Theme data and styles
 │   └── services/                # App preferences (SharedPreferences)
 ├── datasource/
 │   ├── usd_api.dart             # USD exchange rate API calls
 │   ├── euro_api.dart            # EUR exchange rate API calls
+│   ├── binance_api.dart         # Binance P2P USDT/VES API calls
 │   ├── database_datasource.dart # (Legacy - commented out, Supabase)
 │   └── services/
 │       └── database_hive_services.dart  # Hive read/write operations
 ├── models/
 │   ├── usd_model.dart           # USD rate models (BCV + Market)
 │   ├── euro_model.dart          # EUR rate model
+│   ├── binance_usdt_model.dart  # USDT P2P rate model (Binance)
 │   ├── custom_model.dart        # Custom exchange rate model
 │   ├── currency_history_model.dart  # History record model
 │   └── adapters/                # Hive TypeAdapters (generated + manual)
@@ -43,6 +48,7 @@ lib/
 │   ├── coin_provider.dart       # Currency conversion logic
 │   ├── exchange_rate_provider.dart # USD exchange rate state
 │   ├── euro_provider.dart       # EUR exchange rate state
+│   ├── binance_provider.dart    # USDT P2P exchange rate state
 │   ├── custom_provider.dart     # Custom rate state
 │   └── conectivity_status_provider.dart  # Network connectivity
 ├── screens/
@@ -110,7 +116,7 @@ dart run flutter_launcher_icons
 - **Barrel exports:** Each directory uses `index.dart` for re-exports
 - **Provider pattern:** Extend `ChangeNotifier` or `CmmGeneralProvider` for state
 - **Hive models:** Place model in `models/`, adapter in `models/adapters/`, run `build_runner` after changes
-- **API calls:** Use `DioClient` from `core/http/dio_client.dart` -- do not create raw Dio instances
+- **API calls:** Use the corresponding Dio instance (`dio` from `core/http/dio_client.dart` for dolarapi, `binanceDio` from `core/http/binance_dio.dart` for Binance P2P) -- do not create raw Dio instances
 - **Error handling:** Use the `CustomInterceptors` toast pattern for user-facing errors
 - **Theme:** Dark theme is default; theme data lives in `core/themes/`
 
@@ -121,6 +127,7 @@ dart run flutter_launcher_icons
 3. **Models** are plain Dart classes with Hive `@HiveType` annotations.
 4. **Single screen:** The app currently uses only `MainScreen`. If adding screens, use `Navigator.push` or add a routing package.
 5. **No secrets in code.** Environment-specific values go in `.env` files (gitignored).
+6. **Clean Arquithecture.**
 
 ## Common Tasks
 

@@ -1,13 +1,14 @@
 # VeloCambio
 
-App de calculadora de cambio de monedas para Venezuela, desarrollada en Flutter. Consulta tasas de cambio en tiempo real para USD (tasa oficial BCV + tasa de mercado) y EUR, y convierte entre monedas o usa una tasa personalizada.
+App de calculadora de cambio de monedas para Venezuela, desarrollada en Flutter. Consulta tasas de cambio en tiempo real para USD (tasa oficial BCV + tasa de mercado), EUR y USDT (P2P Binance), y convierte entre monedas o usa una tasa personalizada.
 
 ## Caracteristicas
 
 - **Tasas de cambio en tiempo real** desde [dolarapi.com](https://ve.dolarapi.com/)
 - **Dolar oficial (BCV)** y **dolar paralelo/mercado** con diferencia porcentual
 - **Euro** con tasa oficial
-- **Calculadora de conversion** entre USD, VES (Bolivar), EUR y una tasa personalizada
+- **USDT P2P** -- precio en bolivares desde la API publica de [Binance P2P](https://p2p.binance.com/)
+- **Calculadora de conversion** entre USD, USDT, VES (Bolivar), EUR y una tasa personalizada
 - **Tasa personalizada** -- el usuario puede definir y guardar su propia tasa de cambio
 - **Intercambio de monedas** -- alterna la direccion de conversion con un boton
 - **Copia al portapapeles** -- copia el resultado de la conversion
@@ -32,7 +33,7 @@ App de calculadora de cambio de monedas para Venezuela, desarrollada en Flutter.
 | Local Storage | Hive (NoSQL) + SharedPreferences |
 | UI | Material Design, Skeletonizer |
 | Code Generation | build_runner + hive_generator |
-| API | [dolarapi.com](https://ve.dolarapi.com/) |
+| API | [dolarapi.com](https://ve.dolarapi.com/) + [Binance P2P](https://p2p.binance.com/) |
 
 ## Requisitos previos
 
@@ -74,17 +75,22 @@ lib/
 ├── main.dart                    # Punto de entrada, registro de Providers
 ├── app.dart                     # Configuracion de MaterialApp
 ├── core/
-│   ├── http/                    # Cliente Dio e interceptores
+│   ├── http/
+│   │   ├── dio_client.dart      # Cliente Dio para dolarapi.com
+│   │   ├── binance_dio.dart     # Cliente Dio para Binance P2P
+│   │   └── interceptor/         # Interceptores personalizados
 │   ├── themes/                  # Tema y estilos
 │   └── services/                # Servicio de preferencias (SharedPreferences)
 ├── datasource/
 │   ├── usd_api.dart             # Llamadas API para tasas USD
 │   ├── euro_api.dart            # Llamadas API para tasas EUR
+│   ├── binance_api.dart         # Llamadas API para USDT P2P
 │   └── services/
 │       └── database_hive_services.dart  # Operaciones de lectura/escritura Hive
 ├── models/
 │   ├── usd_model.dart           # Modelos de tasas USD (BCV + Mercado)
 │   ├── euro_model.dart          # Modelo de tasa EUR
+│   ├── binance_usdt_model.dart  # Modelo de tasa USDT P2P (Binance)
 │   ├── custom_model.dart        # Modelo de tasa personalizada
 │   ├── currency_history_model.dart  # Modelo de historial
 │   └── adapters/                # TypeAdapters de Hive
@@ -94,6 +100,7 @@ lib/
 │   ├── coin_provider.dart       # Logica de conversion de monedas
 │   ├── exchange_rate_provider.dart # Estado de tasas USD
 │   ├── euro_provider.dart       # Estado de tasa EUR
+│   ├── binance_provider.dart    # Estado de tasa USDT P2P
 │   ├── custom_provider.dart     # Estado de tasa personalizada
 │   └── conectivity_status_provider.dart  # Conectividad de red
 ├── screens/
@@ -110,7 +117,7 @@ lib/
 La app sigue un patron **Provider + Datasource**:
 
 ```
-Widget -> Provider -> Datasource -> API (dolarapi.com)
+Widget -> Provider -> Datasource -> API (dolarapi.com / Binance P2P)
                 ↘ Hive (persistencia local)
 ```
 
@@ -121,12 +128,20 @@ Widget -> Provider -> Datasource -> API (dolarapi.com)
 
 ## API
 
-La app consume la API publica de [dolarapi.com](https://ve.dolarapi.com/):
+La app consume APIs publicas sin necesidad de API key:
+
+### dolarapi.com
 
 | Endpoint | Descripcion |
 |---|---|
 | `GET v1/dolares` | Tasas de cambio USD (BCV oficial + mercado) |
 | `GET v1/euros` | Tasas de cambio EUR |
+
+### Binance P2P
+
+| Endpoint | Descripcion |
+|---|---|
+| `POST /bapi/c2c/v2/friendly/c2c/adv/search` | Tasa USDT/VES desde anuncios P2P (mejor precio SELL) |
 
 No se requiere API key para acceder a estos endpoints.
 
