@@ -1,6 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:velocambio/core/http/interceptor/interceptor.dart';
 
 final binanceDio = Dio(
@@ -16,14 +14,15 @@ final binanceDio = Dio(
 )..interceptors.addAll([
   CustomInterceptors(),
 
-  if(kDebugMode)
-    PrettyDioLogger(
-      requestHeader: true,
-      requestBody: true,
-      responseBody: true,
-      responseHeader: false,
-      error: true,
-      compact: true,
-      maxWidth: 90,
-    ),
-  ]);
+  // if(kDebugMode)
+  //   PrettyDioLogger(
+  //     requestHeader: true,
+  //     requestBody: true,
+  //     responseBody: true,
+  //     responseHeader: false,
+  //     error: true,
+  //     compact: true,
+  //     maxWidth: 90,
+  //   ),
+  ]
+  );

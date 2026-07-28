@@ -2,97 +2,20 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:velocambio/core/providers/cmm_general_provider.dart';
 import 'package:velocambio/datasource/services/database_hive_services.dart';
 import 'package:velocambio/models/adapters/currency_history_adapters.dart' as adapters;
-import 'package:velocambio/providers/cmm_general_provider.dart';
+import 'package:velocambio/models/currency_model.dart';
+import 'package:velocambio/models/exchange_types_model.dart';
 
-enum Currency {
-  usd(
-    code: 'USD',
-    name: 'Dólar Estadounidense',
-    symbol: '\$',
-    flagPath: 'assets/images/Flag_United_States.svg.png',
-  ),
-  ves(
-    code: 'VES',
-    name: 'Bolívar Digital',
-    symbol: 'Bs.',
-    flagPath: 'assets/images/flag_venezuela.svg.png',
-  ),
-  eur(
-    code: 'EUR',
-    name: 'Euro',
-    symbol: '€',
-    flagPath: 'assets/images/Flag_of_Europe.svg.png',
-  ),
-  custom(
-    code: 'Custom',
-    name: 'Tasa Personalizada',
-    symbol: '',
-    flagPath: 'assets/images/custom_rate_icon.png',
-  ),
-  usdt(
-    code: 'USDT',
-    name: 'USDT',
-    symbol: '\$',
-    flagPath: 'assets/images/Flag_United_States.svg.png',
-  )
-  ;
-
-  final String code;
-  final String name;
-  final String symbol;
-  final String flagPath;
-
-  const Currency({
-    required this.code,
-    required this.name,
-    required this.symbol,
-    required this.flagPath,
-  });
-}
-
-//* tipos d ecurrenci para seleccionar que tasa de cambio se va a usar
-enum ExchangeType {
-  oficialUsd,
-  averageUsd,
-  oficialEur,
-  custom,
-  p2pUsdt
-}
 
 class CoinProvider extends CmmGeneralProvider {
-
-  //* SUPABASE
-  // late final DatabaseDatasource _db = DatabaseDatasource();
 
   //* para montos del input de la calculadora
   TextEditingController amountController = TextEditingController();
 
-  //* para tasa custom
-  TextEditingController customAmountController = TextEditingController();
-
-  /// Formatos de moneda en USD
-  final formatoDolar = NumberFormat.currency(
-    locale: 'en_US', 
-    symbol: '\$', 
-    decimalDigits: 3
-    );
-  /// Formatos de moneda en VES
-  final formatoBolivar = NumberFormat.currency(
-    locale: 'es_VE',
-    symbol: 'VES',
-    decimalDigits: 3
-  );
-
-  /// Formatos de moneda en EUR
-  final formatoEuro = NumberFormat.currency(
-    locale: 'en_US', 
-    symbol: '€', 
-    decimalDigits: 3
-    );
-
+  //* evaluo si la moneda de destino es VES
+  bool isDestinationVES() => destinationCurrency == Currency.ves;
   
   //* modena de origin
   Currency originCurrency = Currency.usd;
@@ -111,7 +34,7 @@ class CoinProvider extends CmmGeneralProvider {
     notifyListeners();
   }
 
-  //* exange type
+  //* exchange type
   ExchangeType exchangeType = ExchangeType.oficialUsd;
   void changeExchangeType(ExchangeType type) {
     exchangeType = type;
@@ -140,14 +63,16 @@ class CoinProvider extends CmmGeneralProvider {
     double amountInUSD;
     if (originCurrency == Currency.usd || originCurrency == Currency.usdt) {
       amountInUSD = input;
-      notifyListeners();
+      // notifyListeners();
     } else if (originCurrency == Currency.ves) {
       amountInUSD = input / amount; // Aquí se usa 'amount' que es la tasa de cambio seleccionada (oficial, promedio o personalizada)
-      notifyListeners();
+      // notifyListeners();
     } else { // Es EUR
       amountInUSD = input / amount; // Aquí se usa 'amount' que es la tasa de cambio seleccionada (oficial, promedio o personalizada)
-      notifyListeners();
+       //notifyListeners();
     }
+
+    notifyListeners();
 
     log('Amount in USD: $amountInUSD', name: 'Calculated Amount');
 
@@ -182,38 +107,6 @@ class CoinProvider extends CmmGeneralProvider {
     notifyListeners();
   }
 
-  
-
-
-  //* funcion para guardar en supabase mi tasa del dia (SUPABASE)
-  // Future<bool> insertPayment(CurrencyHistoryModel data) async {
-    
-  //   final insertData = await _db.insertPaymentDataSource(data);
-    
-  //   if (insertData == false) {
-  //     log('Error al insertar', name: 'insertPayment CoinProvider');
-  //     return false;
-  //   }
-
-  //   log('Insertado correctamente');
-  //   return true;
-  // }
-
-  // Future<List<CurrencyHistoryModel>> getPayment() async {
-
-  //   final response = await _db.getPaymentDataSource();
-  //   log('CoinProvider: ${response.toString()}', name: 'getPayment CoinProvider');
-    
-  //   response.asMap().forEach((key, value) => log(value.toString(), name: 'getPayment CoinProvider'));
-
-  //   if (response.isEmpty) {
-  //     log('No hay historial de pagos', name: 'getPayment CoinProvider');
-  //     return List.empty();
-  //   }
-  
-  //   return response;
-  // }
-
   //* ------------------ Instancia del servicio de HIVE
   final DatabaseHiveServices _dbService = DatabaseHiveServices();
 
@@ -230,19 +123,19 @@ class CoinProvider extends CmmGeneralProvider {
     return true;
   }
 
-  Future<List<adapters.CurrencyHistoryModel>> getCurrencyHiveHistory() async {
+  // Future<List<adapters.CurrencyHistoryModel>> getCurrencyHiveHistory() async {
     
-    final response = await _dbService.getLastCurrencyHistory(); //.getFirstCurrencyHistory();
-    log('HIVE GET CURRENCY: ${response.toString()}', name: 'HIVE - CoinProvider');
+  //   final response = await _dbService.getLastCurrencyHistory(); //.getFirstCurrencyHistory();
+  //   log('HIVE GET CURRENCY: ${response.toString()}', name: 'HIVE - CoinProvider');
     
-    response.asMap().forEach((key, value) => log(value.toString(), name: 'HIVE - CoinProvider'));
+  //   response.asMap().forEach((key, value) => log(value.toString(), name: 'HIVE - CoinProvider'));
 
-    if (response.isEmpty) {
-      log('No hay historial de pagos', name: 'HIVE - CoinProvider');
-      return List.empty();
-    }
+  //   if (response.isEmpty) {
+  //     log('No hay historial de pagos', name: 'HIVE - CoinProvider');
+  //     return List.empty();
+  //   }
   
-    return response;
-  }
+  //   return response;
+  // }
 
 }

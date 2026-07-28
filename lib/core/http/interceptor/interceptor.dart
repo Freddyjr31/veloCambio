@@ -23,9 +23,14 @@ class CustomInterceptors extends Interceptor {
 
     log('ERROR [${err.message}]', name: 'HTTP');
 
+    String errorMsg = 'Error de conexion';
+    if (err.message != null && !err.message!.contains('SocketException')) {
+      errorMsg = 'Error: ${err.message}';
+    }
+
     toastification.show(
       title: Text('Error'),
-      description: Text('${err.message}: ${err.response}' ),
+      description: Text(errorMsg),
       type: ToastificationType.error
     );
     

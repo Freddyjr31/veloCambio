@@ -159,5 +159,5 @@ dart run flutter_launcher_icons
 - **No tests exist.** The `test/` directory is empty.
 - **Commented-out code** is present throughout (legacy Supabase integration, old features). Do not uncomment without verification.
 - **`database_datasource.dart`** is entirely commented out -- Supabase was abandoned.
-- **Application ID** is `com.example.velocambio` -- needs changing for production.
+- **Application ID** is `com.velocambio.app`
 - **iOS display name** shows "Payment Calculator" instead of "VeloCambio" in `Info.plist`.

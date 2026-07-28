@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
 import 'package:velocambio/core/themes/cmm_theme_data.dart';
 
-import 'providers/app_providers.dart';
+import 'core/providers/app_providers.dart';
 import 'screens/index.dart';
 
 class MainApp extends StatefulWidget {

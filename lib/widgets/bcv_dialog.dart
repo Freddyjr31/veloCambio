@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 class BcvDisclaimerModal {
   static void show(BuildContext context) {
+
     Size size = MediaQuery.of(context).size;
+    
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -63,12 +65,9 @@ class BcvDisclaimerModal {
                   ),
                 ),
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text(
+                child: Text(
                   'ENTENDIDO',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                  style: Theme.of(context).textTheme.labelLarge,
                 ),
               ),
             ),

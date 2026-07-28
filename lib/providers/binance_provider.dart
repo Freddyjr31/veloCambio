@@ -1,8 +1,8 @@
 import 'dart:developer';
 
+import 'package:velocambio/core/providers/cmm_general_provider.dart';
 import 'package:velocambio/datasource/binance_api.dart';
 import 'package:velocambio/models/binance_usdt_model.dart';
-import 'package:velocambio/providers/cmm_general_provider.dart';
 
 class BinanceProvider extends CmmGeneralProvider {
 
@@ -22,14 +22,15 @@ class BinanceProvider extends CmmGeneralProvider {
       p2pPrice = resp.bestPrice;
       p2pUpdateDate = resp.updatedAt;
 
-      log('P2P Best Price: $p2pPrice');
+      //log('P2P Best Price: $p2pPrice');
+      super.setLoadingStatus(false);
       notifyListeners();
       return resp;
     } catch (e) {
       log('Error en BinanceProvider: $e');
+      //super.setLoadingStatus(false);
       throw Exception('Failed to fetch P2P rate: $e');
     } finally {
-      super.setLoadingStatus(false);
       notifyListeners();
     }
   }

@@ -2,11 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
-import 'package:velocambio/providers/cmm_general_provider.dart';
-import 'package:velocambio/providers/coin_provider.dart';
-import 'package:velocambio/providers/conectivity_status_provider.dart';
-import 'package:velocambio/providers/custom_provider.dart';
+import 'package:velocambio/core/providers/cmm_general_provider.dart';
+import 'package:velocambio/core/providers/conectivity_status_provider.dart';
 import 'package:velocambio/providers/binance_provider.dart';
+import 'package:velocambio/providers/coin_provider.dart';
+import 'package:velocambio/providers/custom_provider.dart';
 import 'package:velocambio/providers/euro_provider.dart';
 import 'package:velocambio/providers/exchange_rate_provider.dart';
 

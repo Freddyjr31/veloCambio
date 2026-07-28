@@ -4,8 +4,8 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:velocambio/core/http/dio_client.dart' show dio;
+import 'package:velocambio/core/providers/cmm_general_provider.dart';
 import 'package:velocambio/models/usd_model.dart';
-import 'package:velocambio/providers/cmm_general_provider.dart';
 
 class UsdsExchangeRateApi extends CmmGeneralProvider {
   
@@ -15,6 +15,7 @@ class UsdsExchangeRateApi extends CmmGeneralProvider {
 
     try {
       super.setLoadingStatus(true);
+
       final req = await dio.get('v1/dolares');
 
       super.setStatusCode(req.statusCode!);
@@ -25,6 +26,7 @@ class UsdsExchangeRateApi extends CmmGeneralProvider {
         
         // log('${req.data}');
         resp = UsdExchangeModel.fromList(req.data);
+        super.setLoadingStatus(false);
         // log("Response convertida: ${resp.exchange.length} tipos de cambio encontrados");
       }
 
@@ -37,11 +39,8 @@ class UsdsExchangeRateApi extends CmmGeneralProvider {
       super.setErrors(true);
       log('Error en el provider: $e', stackTrace: StackTrace.current);
     }
-    
-    // Future.delayed(const Duration(seconds: 2), (){
-    //  super.setLoadingStatus(false);
-      notifyListeners();
-    //});
+
+    notifyListeners();
       
     return resp;
   }
@@ -53,7 +52,7 @@ class UsdsExchangeRateApi extends CmmGeneralProvider {
    late UsdExchangeModel resp;
 
     try {
-      //super.setLoadingStatus(true);
+      super.setLoadingStatus(true);
       final req = await dio.get('v1/historicos/dolares');
 
       super.setStatusCode(req.statusCode!);
@@ -62,6 +61,7 @@ class UsdsExchangeRateApi extends CmmGeneralProvider {
         super.setErrors(false);
         super.setErrorMessage('');
         resp = UsdExchangeModel.fromList(req.data);
+        super.setLoadingStatus(false);
         log("Response convertida: ${resp.exchange.length} tipos de cambio encontrados", name: 'CONVERT TO LIST');
       }
 

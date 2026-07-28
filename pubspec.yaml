@@ -1,7 +1,7 @@
 name: velocambio
 description: "App para cambio de monedas"
 publish_to: 'none'
-version: 1.1.0+008
+version: 1.1.0+009
 
 environment:
   sdk: ^3.8.1
@@ -17,21 +17,20 @@ dependencies:
 
   flutter:
     sdk: flutter
-  supabase_flutter: ^2.12.4
-  hive_generator:
-  build_runner:
   package_info_plus: ^10.1.0
   path_provider: ^2.1.5
   shared_preferences: ^2.5.5
   connectivity_plus: ^7.1.1
   toastification: ^3.2.0
-  flutter_launcher_icons: ^0.14.4
   pretty_dio_logger: ^1.4.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  hive_generator:
+  build_runner:
+  flutter_launcher_icons: ^0.14.4
 
 flutter:
   uses-material-design: true

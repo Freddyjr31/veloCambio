@@ -3,16 +3,16 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:velocambio/core/http/binance_dio.dart' show binanceDio;
+import 'package:velocambio/core/providers/cmm_general_provider.dart';
 import 'package:velocambio/models/binance_usdt_model.dart';
-import 'package:velocambio/providers/cmm_general_provider.dart';
 
 class BinanceP2PApi extends CmmGeneralProvider {
 
   Future<BinanceP2PModel> getP2pRate() async {
+
     late BinanceP2PModel resp;
 
     try {
-      super.setLoadingStatus(true);
       final req = await binanceDio.post(
         'bapi/c2c/v2/friendly/c2c/adv/search',
         data: {

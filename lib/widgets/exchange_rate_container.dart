@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:velocambio/core/themes/cmm_theme_data.dart';
+import 'package:velocambio/models/exchange_types_model.dart';
 import 'package:velocambio/providers/custom_provider.dart';
 import 'package:velocambio/providers/euro_provider.dart';
 import 'package:velocambio/providers/index.dart';
@@ -35,6 +37,7 @@ class ExchangeRateContainer extends StatefulWidget {
 }
 
 class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
+  
   @override
   Widget build(BuildContext context) {
 
@@ -50,9 +53,23 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
         height: 60,
         padding: EdgeInsets.all(15),
         decoration: BoxDecoration(
-          color: widget.isSelected ? Colors.grey[50]?.withAlpha(10) : Theme.of(context).scaffoldBackgroundColor,
+          color: widget.isSelected ?
+            primaryColor.withValues(alpha: 0.05) :
+              Theme.of(context).scaffoldBackgroundColor,
           borderRadius: BorderRadius.circular(15),
-          border: widget.isSelected ? Border.all(color: Colors.white30, width: 1) :  Border.all(color: Colors.white10, width: 1),
+          border:
+            widget.isSelected ?
+              Border.all(color: primaryColor.withAlpha(50), width: 1) :
+                Border.all(color: primaryColor.withAlpha(20), width: 1),
+          boxShadow: [
+            BoxShadow(
+              color: widget.isSelected ? primaryColor.withAlpha(10) : Colors.transparent,
+              spreadRadius: 18,
+              blurRadius: 7,
+              blurStyle: BlurStyle.outer,
+              offset: const Offset(1, 1),
+            ),
+          ]
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -61,13 +78,6 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
 
             Row(
               children: [
-
-                // Icon(
-                //   widget.icon!.icon,
-                //   color: widget.isSelected ? Colors.white : Colors.grey[600],
-                //   size: 25,
-                //   fill: 1.0,
-                // ),
 
                 ClipRRect(
                   borderRadius: BorderRadius.circular(3),
@@ -107,18 +117,11 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Icon(
-                  //   widget.upValue && widget.percentageDifference! > 0 ? Icons.arrow_upward : widget.upValue == false && widget.percentageDifference! > 0 ? Icons.arrow_downward : Icons.remove,
-                  //   color: widget.upValue && widget.percentageDifference! > 0 ? Colors.green : widget.upValue == false  && widget.percentageDifference! > 0 ? Colors.red : Colors.grey[600],
-                  //   size: 15,
-                  //   fill: 1.0,
-                  // ),
                   Text(
                     '${widget.value?.toStringAsFixed(3)} VES',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: widget.isSelected ? Colors.green : Colors.grey[600],
-                      ),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: widget.isSelected ? primaryColor : Colors.grey[600],
+                    ),
                   ),
               
                   if(widget.type == ExchangeType.custom)
@@ -129,8 +132,10 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
                         widget.isSelected ? Icons.delete : Icons.delete_outline,
                       ),
                       onPressed: () {
+
                         customProvider.removeCustomModel(customProvider.selectedCustomModel!);
                         customProvider.customAmountController.clear();
+                        
                         //* Si la tasa personalizada eliminada es la seleccionada, se selecciona la tasa oficial del BCV
                         coinProvider.setAmount(exchangeProvider.oficialRate);
 
@@ -140,6 +145,7 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
                           rateEUR: euroProvider.oficialEuroRate,
                           rateP2P: binanceProvider.p2pPrice,
                         );
+
                         coinProvider.changeExchangeType(ExchangeType.oficialUsd);
                       },
                     )

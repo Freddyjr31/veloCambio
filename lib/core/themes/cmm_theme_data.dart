@@ -1,55 +1,11 @@
-// import 'package:flutter/material.dart';
-// import 'package:googlefonts/googlefonts.dart';
-
-// const Color primaryColor = Color(0xFF001233); 
-// const Color themeColor = Color(0xFF263238);
-
-// class AppTheme {
-
-//   // Opción: Puedes pasar un bool para saber si es modo oscuro
-//   final bool isDarkmode;
-  
-//   AppTheme({this.isDarkmode = true});
-
-//   ThemeData get themeData {
-//     return ThemeData(
-//         useMaterial3: true,
-//         primaryColor: primaryColor,
-//         colorScheme: ColorScheme.fromSeed(
-//           seedColor: primaryColor,
-//           brightness: isDarkmode ? Brightness.dark : Brightness.light,
-//         ),
-//         textTheme: GoogleFonts.nunitoTextTheme().copyWith(
-//           bodyLarge: TextStyle(color: isDarkmode ? Colors.white : primaryColor),
-//           bodyMedium: TextStyle(color: isDarkmode ? Colors.white : primaryColor),
-//           bodySmall: TextStyle(color: isDarkmode ? Colors.white : primaryColor),
-//         ),
-//         colorSchemeSeed: primaryColor,
-//         brightness: isDarkmode ? Brightness.dark : Brightness.light,
-//         elevatedButtonTheme: ElevatedButtonThemeData(
-//           style: ElevatedButton.styleFrom(
-//             backgroundColor: themeColor,
-//             foregroundColor: Colors.white,
-//             shape: RoundedRectangleBorder(
-//               borderRadius: BorderRadius.circular(10),
-//             ),
-//           ),
-//         ),
-//       );
-//   }
-
-// }
-
-
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-// Colores base personalizados
-const Color primaryColor = Color(0xFF2196F3); // Azul
-const Color accentColor = Color(0xFF03DAC6);  // Teal
-const Color themeColor = Color.fromARGB(255, 4, 21, 30);   // Gris
+const Color primaryColor = Color(0xFF10B981);
+const Color backgroundColor = Color(0xFF181B20);
+const Color surfaceColor = Color(0xFF1E2126);
 
 class AppTheme {
-  // --- TEMA CLARO ---
   static final ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
@@ -58,17 +14,29 @@ class AppTheme {
       brightness: Brightness.light,
       primary: primaryColor,
       surface: Colors.white,
-      background: const Color(0xFFF5F5F5),
+      surfaceContainerLow: const Color(0xFFF5F5F5),
+      surfaceTint: Colors.transparent,
+      surfaceContainerLowest: surfaceColor,
+      surfaceContainer: surfaceColor,
+      surfaceContainerHigh: surfaceColor,
+      surfaceContainerHighest: surfaceColor,
     ),
     appBarTheme: const AppBarTheme(
       backgroundColor: primaryColor,
       foregroundColor: Colors.white,
       elevation: 0,
     ),
-    // Estilo para los textos
-    textTheme: const TextTheme(
-      titleLarge: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
-      bodyMedium: TextStyle(color: Colors.black),
+    textTheme: GoogleFonts.spaceGroteskTextTheme(
+      const TextTheme(
+        headlineLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87),
+        headlineMedium: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black87),
+        titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
+        titleMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black87),
+        bodyLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.normal, color: Colors.black),
+        bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Colors.black),
+        bodySmall: TextStyle(fontSize: 12, fontWeight: FontWeight.normal, color: Colors.black54),
+        labelLarge: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87),
+      ),
     ),
     cardTheme: CardThemeData(
       color: Colors.white,
@@ -99,51 +67,111 @@ class AppTheme {
     ),
   );
 
-  // --- TEMA OSCURO ---
   static final ThemeData darkTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
-    scaffoldBackgroundColor: Color(0xFF1E1E1E),
+    // colorSchemeSeed: primaryColor,
+    scaffoldBackgroundColor: backgroundColor,
     colorScheme: ColorScheme.fromSeed(
       seedColor: primaryColor,
       brightness: Brightness.dark,
       primary: primaryColor,
-      surface: const Color(0xFF1E1E1E),
+      onPrimary: Colors.white,
+      primaryContainer: primaryColor,
+      onPrimaryContainer: Colors.white,
+      secondary: primaryColor,
+      onSecondary: Colors.white,
+      secondaryContainer: primaryColor,
+      onSecondaryContainer: Colors.white,
+      tertiary: primaryColor,
+      onTertiary: Colors.white,
+      surface: surfaceColor,
+      onSurface: Colors.white70,
+      surfaceTint: Colors.transparent,
+      surfaceContainerLowest: surfaceColor,
+      surfaceContainerLow: surfaceColor,
+      surfaceContainer: surfaceColor,
+      surfaceContainerHigh: surfaceColor,
+      surfaceContainerHighest: surfaceColor,
+      onSurfaceVariant: Colors.white54,
+      error: Color(0xFFEF4444),
+      onError: Colors.white,
+      outline: Colors.white24,
+      outlineVariant: Colors.white12,
+      onInverseSurface: Colors.white, 
     ),
     appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFF1E1E1E),
+      backgroundColor: backgroundColor,
       foregroundColor: Colors.white,
       elevation: 0,
     ),
-    textTheme: const TextTheme(
-      titleLarge: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-      bodyMedium: TextStyle(color: Colors.white70),
+    bottomSheetTheme: const BottomSheetThemeData(
+      surfaceTintColor: Colors.transparent,
+      backgroundColor: Colors.transparent,
+      modalBackgroundColor: Colors.transparent,
+      modalBarrierColor: Colors.black54, // Overlay completamente neutro (gris/negro)
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: surfaceColor,
+        foregroundColor: Colors.white,
+        overlayColor: primaryColor,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: Colors.white,
+        overlayColor: primaryColor,
+      ),
+    ),
+    iconButtonTheme: IconButtonThemeData(
+      style: IconButton.styleFrom(
+        foregroundColor: Colors.white,
+        overlayColor: primaryColor,
+      ),
+    ),
+    
+    textTheme: GoogleFonts.spaceGroteskTextTheme(
+      const TextTheme(
+        headlineLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+        headlineMedium: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
+        titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+        titleMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+        bodyLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.normal, color: Colors.white70),
+        bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Colors.white70),
+        bodySmall: TextStyle(fontSize: 12, fontWeight: FontWeight.normal, color: Colors.white54),
+        labelLarge: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
+      ),
     ),
     cardTheme: CardThemeData(
-      color: const Color(0xFF1E1E1E), // Gris oscuro para que resalte del fondo
+      color: surfaceColor,
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
     inputDecorationTheme: InputDecorationTheme(
-      fillColor: Colors.blueGrey[50],
-      focusColor: Colors.blueGrey[50],
-      hoverColor: Colors.blueGrey[50],
+      fillColor: backgroundColor,
+      
+      // focusColor: surfaceColor,
+      // hoverColor: surfaceColor,
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         gapPadding: 2,
-        borderSide: BorderSide(color: Colors.blueGrey[100]!, width: 1),),
+        borderSide: const BorderSide(color: Colors.white, width: 1),),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         gapPadding: 2,
-        borderSide: BorderSide(color: Colors.blueGrey[100]!, width: 1),
+        borderSide: const BorderSide(color: Colors.white, width: 1),
         ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         gapPadding: 2,
-        borderSide: BorderSide(color: Colors.blueGrey[100]!, width: 1),
+        borderSide: const BorderSide(color: Colors.white, width: 1),
         ),
-      contentPadding: EdgeInsets.symmetric(horizontal: 10),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 10),
     ),
-    
   );
 }

@@ -1,8 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:velocambio/core/providers/cmm_general_provider.dart';
 import 'package:velocambio/models/adapters/custom_model_adapter.dart';
-import 'package:velocambio/providers/cmm_general_provider.dart';
 
 
 class CustomProvider extends CmmGeneralProvider {

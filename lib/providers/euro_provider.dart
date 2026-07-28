@@ -1,9 +1,9 @@
 
 import 'dart:developer';
 
+import 'package:velocambio/core/providers/cmm_general_provider.dart';
 import 'package:velocambio/datasource/euro_api.dart';
 import 'package:velocambio/models/euro_model.dart';
-import 'package:velocambio/providers/cmm_general_provider.dart';
 
 class EuroProvider extends CmmGeneralProvider {
 
@@ -42,15 +42,16 @@ class EuroProvider extends CmmGeneralProvider {
       log('Oficial: $oficialEuroRateUpdateDate');
 
       notifyListeners();
+      super.setLoadingStatus(false);
       return resp;
 
     } catch (e) {
       // Aquí podrías manejar el error de forma global
       log('Error en el provider: $e');
+      super.setLoadingStatus(false);
       throw Exception('Failed to fetch exchange rate: $e');
 
     } finally {
-      super.setLoadingStatus(false);
       notifyListeners();
     }
   }

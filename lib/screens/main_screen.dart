@@ -1,14 +1,16 @@
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
-import 'package:velocambio/core/services/app_preferences_services.dart';
+import 'package:velocambio/core/themes/cmm_theme_data.dart';
 import 'package:velocambio/models/adapters/currency_history_adapters.dart'
     as adapters;
 import 'package:velocambio/models/adapters/custom_model_adapter.dart';
+import 'package:velocambio/models/currency_model.dart';
+import 'package:velocambio/models/exchange_types_model.dart';
 import 'package:velocambio/providers/custom_provider.dart';
 import 'package:velocambio/providers/euro_provider.dart';
 import 'package:velocambio/providers/index.dart';
@@ -25,23 +27,20 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
 
   //* Variables para calcular el porcentaje de diferencia entre la tasa de cambio actual y la tasa de cambio anterior guardada en la base de datos
-  double percentageDifferenceMarket = 0.0;
-  double percentageDifferenceOficial = 0.0;
+  // double percentageDifferenceMarket = 0.0;
+  // double percentageDifferenceOficial = 0.0;
 
   //* Función para verificar si es la primera vez que el usuario abre la aplicación, para mostrar un mensaje de bienvenida y configurar la base de datos.
-  Future<bool> checkFirstTime() async {
-    bool firstTime = await AppPreferences.isFirstTime();
-    if (firstTime) {
-      log("¡Bienvenido por primera vez! Configurando base de datos...");
-    } else {
-      log("Bienvenido de nuevo.");
-    }
+  // Future<bool> checkFirstTime() async {
+  //   bool firstTime = await AppPreferences.isFirstTime();
+  //   if (firstTime) {
+  //     log("¡Bienvenido por primera vez! Configurando base de datos...");
+  //   } else {
+  //     log("Bienvenido de nuevo.");
+  //   }
 
-    return firstTime;
-  }
-
-  //* para guardar la version
-  late Future<PackageInfo> _packageInfoFuture;
+  //   return firstTime;
+  // }
 
   Future<void> getExchangeRate(CoinProvider coinProvider, UsdExchangeRateProvider exchangeProvider, EuroProvider euroProvider, BinanceProvider binanceProvider) async {
 
@@ -55,12 +54,11 @@ class _MainScreenState extends State<MainScreen> {
     log('Euro: ${euroProvider.oficialEuroRate}', name: 'MainScreen');
     log('P2P USDT: ${binanceProvider.p2pPrice}', name: 'MainScreen');
 
-    double amout = exchangeProvider.oficialRate;
-    coinProvider.setAmount(amout);
+    coinProvider.setAmount(exchangeProvider.oficialRate);
 
     //* moneda seleccionada por defecto
     coinProvider.changeExchangeType(ExchangeType.oficialUsd);
-    // coinProvider.calculatedAmount(coinProvider.destinationCurrency);
+    
     coinProvider.calculatedAmount(
       rateUsdBcv: exchangeProvider.oficialRate,
       rateUsdMarket: exchangeProvider.averageRate,
@@ -72,8 +70,6 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-
-    _packageInfoFuture = PackageInfo.fromPlatform();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
 
@@ -96,210 +92,12 @@ class _MainScreenState extends State<MainScreen> {
       // bool firstTime = await checkFirstTime();
 
       log('Bienvenido!', name: 'MainScreen');
-      // List<adapters.CurrencyHistoryModel> history = await exchangeProvider.getUsdExchangeRateHistory();
- 
-      //* moneda seleccionada por defecto
-      // coinProvider.changeExchangeType(ExchangeType.oficialUsd);
-      // coinProvider.calculatedAmount(coinProvider.destinationCurrency);
 
-      // //* Provider de tasas de cambio USD
-      // await exchangeProvider.getUsdExchangeRate();
-      // await euroProvider.getEurosExchangeRate();
-
-      // log('Oficial: ${exchangeProvider.oficialRate}', name: 'MainScreen');
-      // log('Average: ${exchangeProvider.averageRate}', name: 'MainScreen');
-      // log('Euro: ${euroProvider.oficialEuroRate}', name: 'MainScreen');
-
-      // double amout = exchangeProvider.oficialRate;
-      // coinProvider.setAmount(amout);
-
-       await getExchangeRate(coinProvider, exchangeProvider, euroProvider, binanceProvider);
-
-       //* Provider de historial de Tasas de cambio (HIVE)
-
-      // if (firstTime) {
-      
-      //   log(history.toString(), name: 'MainScreen - HISTORY');
-      //   * insertar cada dato en la base de datos
-      //   for (var item in history) {
-      //     await coinProvider.insertCurrencyHistory(item);
-      //   }
-
-      // } else {
-
-      //   * Provider de tasas de cambio USD
-      //   await exchangeProvider.getUsdExchangeRate();
-      //   await euroProvider.getEurosExchangeRate();
-
-      //   log('Oficial: ${exchangeProvider.oficialRate}', name: 'MainScreen');
-      //   log('Average: ${exchangeProvider.averageRate}', name: 'MainScreen');
-      //   log('Euro: ${euroProvider.oficialEuroRate}', name: 'MainScreen');
-
-      //   double amout = exchangeProvider.oficialRate;
-      //   exchangeProvider.setAmount(amout);
-
-      //   bool setCurrencyHistoryData = false;
-
-      //   //* Provider de historial de Tasas de cambio (HIVE)
-      //   final historyHive = coinProvider.getCurrencyHiveHistory();
-
-      //   historyHive.then((value) async {
-
-      //     if (value.isEmpty) {
-
-      //       log('No hay historial de tasas de cambio',name: 'CoinProvider - MainScreen',);
-            
-      //       setCurrencyHistoryData = await setHiveCurrencyHistory(
-      //         adapters.CurrencyHistoryModel(
-      //           createdAt: DateTime.now(),
-      //           previusValue: exchangeProvider.oficialRate,
-      //           value: exchangeProvider.oficialRate,
-      //           incrementValue: false,
-      //           percentageDifference: 0,
-      //           marketUsdPreviusValue: exchangeProvider.averageRate,
-      //           marketUsdValue: exchangeProvider.averageRate,
-      //           marketUsdIncrementValue: false,
-      //           marketUsdPercentageDifference: 0,
-      //           euroPreviusValue: exchangeProvider.amount,
-      //           euroValue: exchangeProvider.amount,
-      //           euroIncrementValue: false,
-      //           euroPercentageDifference: 0,
-      //           averageRateUpdateDate: exchangeProvider.averageRateUpdateDate,
-      //           oficialRateUpdateDate: exchangeProvider.oficialRateUpdateDate,
-      //         ),
-      //         //* provider
-      //         coinProvider,
-      //       );
-
-      //       if (setCurrencyHistoryData == false) {
-      //         log('Error al insertar', name: 'CoinProvider - MainScreen');
-      //         return;
-      //       }
-
-      //       log('Insertado correctamente', name: 'CoinProvider - MainScreen');
-
-      //       return;
-
-      //     } else {
-
-      //       var data = value.first;
-      //       //* debugPrint del ultimo dato de la BD
-      //       data.toJson().forEach((key, value) => debugPrint('$key: $value'));
-
-      //       //* Obtengo las fechas de actualizacion de cada tasa de la BD 
-      //       var historyDateAvergageRate = DateTime.tryParse(data.averageRateUpdateDate.toString());
-      //       var historyDateOficialRate = DateTime.tryParse(data.oficialRateUpdateDate.toString());
-
-      //       if (historyDateAvergageRate != null && historyDateOficialRate != null) {
-
-      //         //* Si la fecha de la BD es menor a la de la API, es que cambio el valor de la tasa de cambio de la API
-      //         if (historyDateAvergageRate.isBefore(exchangeProvider.oficialRateUpdateDate) ||
-      //             historyDateOficialRate.isBefore(exchangeProvider.averageRateUpdateDate)) {
-
-      //           //* Ordenamos el historial de la fecha más nueva a la más antigua (Descendente)
-      //           // Esto nos garantiza que el primer registro que coincida será el más cercano a hoy.
-      //           final sortedHistory = List<adapters.CurrencyHistoryModel>.from(history);
-      //           sortedHistory.sort((a, b) => b.averageRateUpdateDate!.compareTo(a.oficialRateUpdateDate!));
-                
-      //           List<adapters.CurrencyHistoryModel> lastDatebeforeToday = [];
-                
-      //           //* Recorremos el historial de la BD, para buscar el valor más cercano a la fecha de hoy, pero que sea menor a la fecha de hoy.
-      //           for (var element in sortedHistory) {
-
-      //             if (element.averageRateUpdateDate!.isBefore(exchangeProvider.averageRateUpdateDate) && element.oficialRateUpdateDate!.isBefore(exchangeProvider.oficialRateUpdateDate)) {
-                    
-      //               debugPrint('fecha BD: ${element.averageRateUpdateDate} - fecha API: ${exchangeProvider.averageRateUpdateDate}');
-      //               debugPrint('fecha BD: ${element.oficialRateUpdateDate} - fecha API: ${exchangeProvider.oficialRateUpdateDate}');
-      //               debugPrint('valor BD: ${element.marketUsdValue} - valor API: ${exchangeProvider.averageRate}');
-      //               debugPrint('valor BD: ${element.value} - valor API: ${exchangeProvider.oficialRate}');
-
-      //               //* Guardamos el valor encontrado en una lista, para luego comparar con la tasa de cambio actual de la API y calcular el porcentaje de diferencia.
-      //               lastDatebeforeToday.add(element);
-      //               break;
-      //             }
-      //           }
-
-      //           log('La fecha de la BD es menor a la de la API',name: 'CoinProvider - MainScreen');
-      //           log('La tasa de cambio ha cambiado',name: 'CoinProvider - MainScreen');
-
-      //           bool upValueMarket = false;
-      //           bool upValueOficial = false;
-
-      //           //* calculo si subio o bajo la tasa de cambio USD
-      //           if (exchangeProvider.averageRate > /*value.first.marketUsdValue!*/ lastDatebeforeToday[0].marketUsdValue!) {
-      //             log('La tasa de cambio promedio ha subido', name: 'CoinProvider - MainScreen');
-      //             upValueMarket = true;
-      //             exchangeProvider.setAverageRateUpValue(true);
-      //           } else {
-      //             log('La tasa de cambio promedio ha bajado',name: 'CoinProvider - MainScreen');
-      //             upValueMarket = false;
-      //             exchangeProvider.setAverageRateUpValue(false);
-      //           }
-
-      //           if (exchangeProvider.oficialRate > /*value.first.value!*/ lastDatebeforeToday[0].value!) {
-      //             log('La tasa de cambio oficial ha subido', name: 'CoinProvider - MainScreen');
-      //             upValueOficial = true;
-      //             exchangeProvider.setOficialRateUpValue(true);
-      //           } else {
-      //             log('La tasa de cambio oficial ha bajado', name: 'CoinProvider - MainScreen');
-      //             upValueOficial = false;
-      //             exchangeProvider.setOficialRateUpValue(false);
-      //           }
-
-      //           setState(() {
-      //             percentageDifferenceMarket = ((exchangeProvider.averageRate - lastDatebeforeToday[0].marketUsdValue!) / lastDatebeforeToday[0].marketUsdValue!) * 100;
-      //             percentageDifferenceOficial = ((exchangeProvider.oficialRate - lastDatebeforeToday[0].value!) / lastDatebeforeToday[0].value!) * 100;
-      //           });
-
-      //           exchangeProvider.setAverageRatePercentage(percentageDifferenceMarket,);
-      //           exchangeProvider.setOficialRatePercentage(percentageDifferenceOficial,);
-
-      //           log('Porcentaje de diferencia market: $percentageDifferenceMarket', name: 'PORCENTAJE - CoinProvider - MainScreen');
-      //           log('Porcentaje de diferencia oficial: $percentageDifferenceOficial', name: 'PORCENTAJE - CoinProvider - MainScreen');
-
-      //           setCurrencyHistoryData = await setHiveCurrencyHistory(
-      //             adapters.CurrencyHistoryModel(
-      //               createdAt: DateTime.now(),
-      //               previusValue: data.value,
-      //               value: exchangeProvider.oficialRate,
-      //               incrementValue: upValueOficial,
-      //               percentageDifference: percentageDifferenceOficial,
-      //               marketUsdPreviusValue: exchangeProvider.amount,
-      //               marketUsdValue: exchangeProvider.averageRate,
-      //               marketUsdIncrementValue: upValueMarket,
-      //               marketUsdPercentageDifference: percentageDifferenceMarket,
-      //               euroPreviusValue: exchangeProvider.amount,
-      //               euroValue: exchangeProvider.amount,
-      //               euroIncrementValue: false,
-      //               euroPercentageDifference: 0,
-      //               averageRateUpdateDate: exchangeProvider.averageRateUpdateDate,
-      //               oficialRateUpdateDate: exchangeProvider.oficialRateUpdateDate,
-      //             ),
-      //             //* provider
-      //             coinProvider,
-      //           );
-
-      //           if (setCurrencyHistoryData == false) {
-      //             log('Error al insertar', name: 'CoinProvider - MainScreen');
-      //             return;
-      //           }
-
-      //           log('Insertado correctamente', name: 'CoinProvider - MainScreen');
-      //           return;
-      //         }
-      //       }
-      //     }
-      //   });
-      // }
+      await getExchangeRate(coinProvider, exchangeProvider, euroProvider, binanceProvider);
 
     });
   }
 
-  //* SUPABASE
-  // Future<bool> setCurrencyHistory(CurrencyHistoryModel data) async {
-  //   final coinProvider = context.read<CoinProvider>();
-  //   return coinProvider.insertPayment(data);
-  // }
 
   //* HIVE
   Future<bool> setHiveCurrencyHistory(
@@ -317,10 +115,7 @@ class _MainScreenState extends State<MainScreen> {
     return response;
   }
 
-  bool selectOficialRate = true;
-  bool selectAverageRate = false;
-  bool selectEuroOficialRate = false;
-  bool selectP2pRate = false;
+  ExchangeType selectedType = ExchangeType.oficialUsd;
 
   final formKey = GlobalKey<FormState>();
 
@@ -339,56 +134,37 @@ class _MainScreenState extends State<MainScreen> {
     final customProvider = context.watch<CustomProvider>();
     final binanceProvider = context.watch<BinanceProvider>();
 
-    if(coinProvider.exchangeType == ExchangeType.oficialUsd) {
-      selectOficialRate = true;
-      selectAverageRate = false;
-      selectEuroOficialRate = false;
-      selectP2pRate = false;
+    void selectedTypeRate(ExchangeType type, double rate, String currencyCode) {
+
+      coinProvider.changeExchangeType(type);
+    
+      if (coinProvider.inputCurrencyCoin != Currency.ves.code) {
+        coinProvider.setInputCurrencyCoin(currencyCode);
+      } else {
+        coinProvider.setOutputCurrencyCoin(currencyCode);
+      }
+
+      setState(() => selectedType = type);
+
+      coinProvider.setAmount(rate);
+
+      coinProvider.calculatedAmount(
+        rateUsdBcv: exchangeProvider.oficialRate,
+        rateUsdMarket: exchangeProvider.averageRate,
+        rateEUR: euroProvider.oficialEuroRate,
+        rateP2P: binanceProvider.p2pPrice,
+      );
     }
 
-    //* amount a mostrar en la calculadora, dependiendo de la tasa de cambio seleccionada
-    double amount = coinProvider.amount;
-    log('Amount en MainScreen: $amount', name: 'MainScreen - build');
+    if(coinProvider.exchangeType == ExchangeType.oficialUsd) {
+      //WidgetsBinding.instance.addPostFrameCallback((_) {
+        // if (!mounted) return;
+        setState(() => selectedType = ExchangeType.oficialUsd);
+      //});
+    }
 
     return Scaffold(
-      appBar: AppBar(
-        title: FutureBuilder<PackageInfo>(
-          future: _packageInfoFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Text('VeloCambio');
-            } else if (snapshot.hasError) {
-              return Text('VeloCambio');
-            } else {
-              final version = snapshot.data?.version ?? '1.0.0';
-              final buildNumber = snapshot.data?.buildNumber ?? '000';
-              return  Row(
-                spacing: 10,
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.asset(
-                    'assets/images/app_icon-removebg_small.PNG',
-                    width: size.width * 0.5,
-                  ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: Colors.white10,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      'v$version+$buildNumber',
-                      style: TextStyle(fontSize: 14, color: Colors.white70),
-                    ),
-                  ),
-                ],
-              );
-            }
-          },
-        ),
-        centerTitle: true,
-      ),
+      appBar: MainAppBar(),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -396,23 +172,24 @@ class _MainScreenState extends State<MainScreen> {
             children: [
               
               SizedBox(height: 5),
-          
+              //* Titulo, Boton de actualizar y fecha
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   spacing: 10,
-                  mainAxisSize: MainAxisSize.max,
+                  mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                 
                     Row(
-                      mainAxisSize: MainAxisSize.max,
+                      mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
                           'Tasas disponibles',
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                          style: Theme.of(context).textTheme.titleLarge,
                         ),
                     
                         Tooltip(
@@ -429,11 +206,12 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                 
                     Text(
-                      //* fecha de hoy
                       DateFormat('dd/MM/yyyy').format(DateTime.now()),
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
+
+
                   ],
                 ),
               ),
@@ -446,33 +224,7 @@ class _MainScreenState extends State<MainScreen> {
                 children: [
 
                   GestureDetector(
-                    onTap: () {
-                      coinProvider.changeExchangeType(ExchangeType.oficialUsd);
-
-                      if(coinProvider.inputCurrencyCoin != Currency.ves.code) {
-                        coinProvider.setInputCurrencyCoin(Currency.usd.code);
-                      } else {
-                        coinProvider.setOutputCurrencyCoin(Currency.usd.code);
-                      }
-
-                      setState(() {
-                        selectOficialRate = true;
-                        selectAverageRate = false;
-                        selectEuroOficialRate = false;
-                        selectP2pRate = false;
-                      });
-
-                      double amout = exchangeProvider.oficialRate;
-                      log('Selected Oficial Rate: $amout', name: 'MainScreen - onTap Oficial Rate');
-                      coinProvider.setAmount(amout);
-                      // coinProvider.calculatedAmount(coinProvider.destinationCurrency);
-                      coinProvider.calculatedAmount(
-                          rateUsdBcv: exchangeProvider.oficialRate,
-                          rateUsdMarket: exchangeProvider.averageRate,
-                          rateEUR: euroProvider.oficialEuroRate,
-                          rateP2P: binanceProvider.p2pPrice,
-                        );
-                      },
+                    onTap: () => selectedTypeRate(ExchangeType.oficialUsd, exchangeProvider.oficialRate, Currency.usd.code),
                     child: ExchangeRateContainer(
                       imagePath: Currency.usd.flagPath,
                       type: ExchangeType.oficialUsd,
@@ -480,43 +232,14 @@ class _MainScreenState extends State<MainScreen> {
                       value: exchangeProvider.oficialRate,
                       nameType: 'BCV Oficial',
                       upValue: exchangeProvider.oficialRateUpValue,
-                      isSelected: selectOficialRate,
+                      isSelected: selectedType == ExchangeType.oficialUsd,
                       icon: const Icon(Icons.account_balance),
                       percentageDifference: exchangeProvider.oficialRatePercentage,
                     ),
                 ),
           
                   GestureDetector(
-                    onTap: () {
-
-                      coinProvider.changeExchangeType(ExchangeType.averageUsd);
-
-                      if(coinProvider.inputCurrencyCoin != Currency.ves.code) {
-                        coinProvider.setInputCurrencyCoin(Currency.usd.code);
-                      } else {
-                        coinProvider.setOutputCurrencyCoin(Currency.usd.code);
-                      }
-
-                      setState(() {
-                        selectAverageRate = true;
-                        selectOficialRate = false;
-                        selectEuroOficialRate = false;
-                        selectP2pRate = false;
-                      });
-
-                      double amout = exchangeProvider.averageRate;
-                      log('Selected Average Rate: $amout', name: 'MainScreen - onTap Average Rate');
-                      coinProvider.setAmount(amout);
-                      // coinProvider.calculatedAmount(coinProvider.destinationCurrency);
-
-                      coinProvider.calculatedAmount(
-                          rateUsdBcv: exchangeProvider.oficialRate,
-                          rateUsdMarket: exchangeProvider.averageRate,
-                          rateEUR: euroProvider.oficialEuroRate,
-                          rateP2P: binanceProvider.p2pPrice,
-                        );
-                      },
-
+                    onTap: () => selectedTypeRate(ExchangeType.averageUsd, exchangeProvider.averageRate, Currency.usd.code),
                     child: ExchangeRateContainer(
                       imagePath: Currency.usd.flagPath,
                       type: ExchangeType.averageUsd,
@@ -524,82 +247,30 @@ class _MainScreenState extends State<MainScreen> {
                       value: exchangeProvider.averageRate,
                       nameType: 'Promedio',
                       upValue: exchangeProvider.averageRateUpValue,
-                      isSelected: selectAverageRate,
+                      isSelected: selectedType == ExchangeType.averageUsd,
                       icon: const Icon(Icons.currency_exchange),
                       percentageDifference: exchangeProvider.averageRatePercentage,
                     ),
                   ),
 
                   GestureDetector(
-                    onTap: () {
-
-                      coinProvider.changeExchangeType(ExchangeType.oficialEur);
-
-                      if(coinProvider.inputCurrencyCoin != Currency.ves.code) {
-                        coinProvider.setInputCurrencyCoin(Currency.eur.code);
-                      } else {
-                        coinProvider.setOutputCurrencyCoin(Currency.eur.code);
-                      }
-
-                      setState(() {
-                        selectAverageRate = false;
-                        selectOficialRate = false;
-                        selectEuroOficialRate = true;
-                        selectP2pRate = false;
-                      });
-
-                      double amout = euroProvider.oficialEuroRate;
-                      log('Selected Euro Rate: $amout', name: 'MainScreen - onTap Euro Rate');
-                      coinProvider.setAmount(amout);
-                      coinProvider.calculatedAmount(
-                        rateUsdBcv: exchangeProvider.oficialRate,
-                        rateUsdMarket: exchangeProvider.averageRate,
-                        rateEUR: euroProvider.oficialEuroRate,
-                        rateP2P: binanceProvider.p2pPrice,
-                      );
-                    },
+                    onTap: () => selectedTypeRate(ExchangeType.oficialEur, euroProvider.oficialEuroRate, Currency.eur.code),
                     child: ExchangeRateContainer(
                       imagePath: Currency.eur.flagPath,
-                      // size: size.width * 0.42,
                       type: ExchangeType.oficialEur,
                       size: size.width * 0.9,
                       value: euroProvider.oficialEuroRate,
                       nameType: 'Euro',
                       upValue: true,
-                      isSelected: selectEuroOficialRate,
+                      // isSelected: selectEuroOficialRate,
+                      isSelected: selectedType == ExchangeType.oficialEur,
                       icon: const Icon(Icons.account_balance),
                       percentageDifference: 0,
                     ),
                   ),
 
                   GestureDetector(
-                    onTap: () {
-
-                      coinProvider.changeExchangeType(ExchangeType.p2pUsdt);
-
-                      if(coinProvider.inputCurrencyCoin != Currency.ves.code) {
-                        coinProvider.setInputCurrencyCoin(Currency.usdt.code);
-                      } else {
-                        coinProvider.setOutputCurrencyCoin(Currency.usdt.code);
-                      }
-
-                      setState(() {
-                        selectAverageRate = false;
-                        selectOficialRate = false;
-                        selectEuroOficialRate = false;
-                        selectP2pRate = true;
-                      });
-
-                      double amout = binanceProvider.p2pPrice;
-                      log('Selected P2P USDT Rate: $amout', name: 'MainScreen - onTap P2P Rate');
-                      coinProvider.setAmount(amout);
-                      coinProvider.calculatedAmount(
-                        rateUsdBcv: exchangeProvider.oficialRate,
-                        rateUsdMarket: exchangeProvider.averageRate,
-                        rateEUR: euroProvider.oficialEuroRate,
-                        rateP2P: binanceProvider.p2pPrice,
-                      );
-                    },
+                    onTap: () => selectedTypeRate(ExchangeType.p2pUsdt, binanceProvider.p2pPrice, Currency.usdt.code),
                     child: ExchangeRateContainer(
                       imagePath: Currency.usd.flagPath,
                       type: ExchangeType.p2pUsdt,
@@ -607,7 +278,8 @@ class _MainScreenState extends State<MainScreen> {
                       value: binanceProvider.p2pPrice,
                       nameType: 'USDT P2P',
                       upValue: true,
-                      isSelected: selectP2pRate,
+                      // isSelected: selectP2pRate,
+                      isSelected: selectedType == ExchangeType.p2pUsdt,
                       icon: const Icon(Icons.currency_bitcoin),
                       percentageDifference: 0,
                     ),
@@ -617,32 +289,7 @@ class _MainScreenState extends State<MainScreen> {
 
               if(customProvider.selectedCustomModel != null)...[
                 GestureDetector(
-                  onTap: () {
-                    coinProvider.changeExchangeType(ExchangeType.custom);
-
-                    if(coinProvider.inputCurrencyCoin != Currency.ves.code) {
-                      coinProvider.setInputCurrencyCoin(Currency.custom.code);
-                    } else {
-                      coinProvider.setOutputCurrencyCoin(Currency.custom.code);
-                    }
-
-                    setState(() {
-                      selectAverageRate = false;
-                      selectOficialRate = false;
-                      selectEuroOficialRate = false;
-                      selectP2pRate = false;
-                    });
-
-                    double amout = customProvider.selectedCustomModel!.value;
-                    log('Selected Custom Rate: $amout', name: 'MainScreen - onTap Custom Rate');
-                    coinProvider.setAmount(amout);
-                    coinProvider.calculatedAmount(
-                      rateUsdBcv: exchangeProvider.oficialRate,
-                      rateUsdMarket: exchangeProvider.averageRate,
-                      rateEUR: euroProvider.oficialEuroRate,
-                      rateP2P: binanceProvider.p2pPrice,
-                    );
-                  },
+                  onTap: () => selectedTypeRate(ExchangeType.custom, customProvider.selectedCustomModel!.value, Currency.custom.code),
                   child: ExchangeRateContainer(
                     imagePath: Currency.usd.flagPath,
                     type: ExchangeType.custom,
@@ -660,6 +307,8 @@ class _MainScreenState extends State<MainScreen> {
                   onPressed: () {
                     //* show button sheet para agregar una tasa personalizada
                     showModalBottomSheet(
+                      barrierColor: Colors.black.withValues(alpha: 0.6),
+                      backgroundColor: Colors.transparent,
                       context: context,
                       isScrollControlled: true,
                       useSafeArea: true,
@@ -667,95 +316,99 @@ class _MainScreenState extends State<MainScreen> {
                         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                       ),
                       builder: (BuildContext context) {
-                        return Padding(
-                          padding:EdgeInsets.only(
-                            bottom: MediaQuery.of(context).viewInsets.bottom,
-                          ),
-                          child: SingleChildScrollView(
-                            child: Container(
-                              padding: EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).scaffoldBackgroundColor,
-                                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                        return ClipRRect(
+                          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+                            child: Padding(
+                              padding:EdgeInsets.only(
+                                bottom: MediaQuery.of(context).viewInsets.bottom,
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-
-                                    Form(
-                                      key: formKey,
-                                      child: TextFormField(
-                                        controller: customProvider.customAmountController,
-                                        keyboardType: TextInputType.numberWithOptions(decimal: true),
-                                        decoration: InputDecoration(
-                                          prefixIcon: Icon(Icons.attach_money),
-                                          labelText: 'Agregar tasa personalizada',
-                                          border: OutlineInputBorder(),
-                                        ),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Por favor ingrese una tasa de cambio';
-                                          }
-                                          if (double.tryParse(value) == null) {
-                                            return 'Por favor ingrese un número válido';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                    ),
-                            
-                                    SizedBox(height: 10,),
-                            
-                                    SizedBox(
-                                      width: double.infinity,
-                                      child: TextButton(
-                                        onPressed: () {
-                                          if (formKey.currentState!.validate()) {
-                                            // Handle form submission
-                                            double customRate = double.parse(customProvider.customAmountController.text);
-                                            log('Custom Rate ingresada: $customRate', name: 'MainScreen - Custom Rate');
-                                            customProvider.setCustomModel(
-                                              CustomModel(
-                                                name: 'Tasa personalizada',
-                                                value: customRate,
-                                                fechaActualizacion: DateTime.now(), 
-                                                createdAt: DateTime.now(),
-                                              )
-                                            );
-
-                                            toastification.show(
-                                              context: context,
-                                              type: ToastificationType.success,
-                                              autoCloseDuration: Duration(seconds: 3),
-                                              style: ToastificationStyle.fillColored,
-                                              title: Text('Tasa personalizada agregada'),
-                                            );
-
-                                            Navigator.pop(context);
-                                          }
-                                        },
-                                        style: TextButton.styleFrom(
-                                          minimumSize: Size(size.width * 0.9, 40),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(12),
-                                          ),
-                                          backgroundColor: Colors.grey[50]?.withAlpha(10),
-                                        ),
-                                        child: const Text(
-                                          'Guardar',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
+                              child: SingleChildScrollView(
+                                child: Container(
+                                  padding: EdgeInsets.all(20),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).scaffoldBackgroundColor,
+                                    borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                            
+                                        Form(
+                                          key: formKey,
+                                          child: TextFormField(
+                                            controller: customProvider.customAmountController,
+                                            keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                            decoration: InputDecoration(
+                                              prefixIcon: Icon(Icons.attach_money),
+                                              labelText: 'Agregar tasa personalizada',
+                                              border: OutlineInputBorder(),
+                                            ),
+                                            validator: (value) {
+                                              if (value == null || value.isEmpty) {
+                                                return 'Por favor ingrese una tasa de cambio';
+                                              }
+                                              if (double.tryParse(value) == null) {
+                                                return 'Por favor ingrese un número válido';
+                                              }
+                                              return null;
+                                            },
                                           ),
                                         ),
-                                      )
+                                
+                                        SizedBox(height: 10,),
+                                
+                                        SizedBox(
+                                          width: double.infinity,
+                                          child: TextButton(
+                                            onPressed: () {
+                                              if (formKey.currentState!.validate()) {
+                                                // Handle form submission
+                                                double customRate = double.parse(customProvider.customAmountController.text);
+                                                log('Custom Rate ingresada: $customRate', name: 'MainScreen - Custom Rate');
+                                                customProvider.setCustomModel(
+                                                  CustomModel(
+                                                    name: 'Tasa personalizada',
+                                                    value: customRate,
+                                                    fechaActualizacion: DateTime.now(), 
+                                                    createdAt: DateTime.now(),
+                                                  )
+                                                );
+                                            
+                                                toastification.show(
+                                                  context: context,
+                                                  type: ToastificationType.success,
+                                                  autoCloseDuration: Duration(seconds: 3),
+                                                  style: ToastificationStyle.fillColored,
+                                                  title: Text('Tasa personalizada agregada'),
+                                                );
+                                            
+                                                Navigator.pop(context);
+                                              }
+                                            },
+                                            style: TextButton.styleFrom(
+                                              minimumSize: Size(size.width * 0.9, 40),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(12),
+                                              ),
+                                              backgroundColor: Colors.grey[50]?.withAlpha(10),
+                                              overlayColor: Theme.of(context).colorScheme.primary,
+                                            ),
+                                            child: Text(
+                                              'Guardar',
+                                              style: Theme.of(context).textTheme.labelLarge,
+                                            ),
+                                          )
+                                        ),
+                                
+                                        SizedBox(height: 10,),
+                                      ],
                                     ),
-                            
-                                    SizedBox(height: 10,),
-                                  ],
                                 ),
+                              ),
                             ),
                           ),
                         );
@@ -763,26 +416,26 @@ class _MainScreenState extends State<MainScreen> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    maximumSize: Size(size.width * 0.9, 60),
-                    minimumSize: Size(size.width * 0.9, 60),
+                    maximumSize: Size(size.width * 0.9, 57),
+                    minimumSize: Size(size.width * 0.9, 57),
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                     padding: EdgeInsets.all(15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
                     elevation: 0,
-                    side: BorderSide(color: Colors.white10, width: 1),
+                    side: BorderSide(color: primaryColor.withAlpha(20), width: 1),
                   ),
-                  child: Text('+ Agregar tasa personalizada', style: TextStyle(color: Colors.white, fontSize: 16),),
+                  child: Text('+ Agregar tasa personalizada', style: Theme.of(context).textTheme.titleMedium),
                 ),
               ],
 
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: const Divider(
+                child: Divider(
                   height: 0,
                   thickness: 0.5,
-                  color: Colors.white10,
+                  color: primaryColor.withAlpha(20),
                 ),
               ),
                 

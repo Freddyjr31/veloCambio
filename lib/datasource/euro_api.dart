@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:velocambio/core/http/dio_client.dart' show dio;
+import 'package:velocambio/core/providers/cmm_general_provider.dart';
 import 'package:velocambio/models/euro_model.dart';
-import 'package:velocambio/providers/cmm_general_provider.dart';
 
 class EuroExchangeRateApi extends CmmGeneralProvider {
   

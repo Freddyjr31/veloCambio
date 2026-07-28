@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:velocambio/providers/cmm_general_provider.dart';
+import 'package:velocambio/core/providers/cmm_general_provider.dart';
 // Importa tu LoggerService aquí
 
 enum ConnectivityStatus { isConnected, isDisconnected, notDetermined }

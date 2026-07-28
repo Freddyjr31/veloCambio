@@ -21,7 +21,6 @@ Future<void> main() async {
     await Hive.initFlutter(path);
 
     Hive.registerAdapter(CurrencyHistoryModelAdapter());
-
     Hive.registerAdapter(UsdBcvModelAdapter());
     Hive.registerAdapter(UsdMarketModelAdapter());
     Hive.registerAdapter(EuroModelAdapter());
@@ -32,49 +31,49 @@ Future<void> main() async {
     await Hive.openBox<EuroModel>('euro_box');
     await Hive.openBox<CustomModel>('custom_box');
 
-    // await Supabase.initialize(
-    //   url: 'https://amrtpbpkhqidjosujefk.supabase.co',
-    //   anonKey: 'sb_publishable_HZdw1B_-l2vmnDNBZXrSLw_m_vy0GUo',
-    // );
-
   } on Exception catch (e) {
     log(e.toString(), name: 'MAIN - INITIALIZE');
   }
 
   ErrorWidget.builder = (FlutterErrorDetails details, {StackTrace? stackTrace}) {
-    return Material(
-      child: Container(
-        color: Colors.red[50],
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.red[100],
-                borderRadius: BorderRadius.circular(100),
-              ),
-              child: const Icon(
-                Icons.error,
-                color: Colors.red,
-                size: 100,
-              ),
-            ),
-            SizedBox(height: 20),
-            Center(
-              child: Text(
-                'Error: ${details.exception}',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.red,
-                  fontWeight: FontWeight.bold,
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Material(
+        child: SafeArea(
+          child: Container(
+            color: Colors.red[50],
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.red[100],
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  child: const Icon(
+                    Icons.error,
+                    color: Colors.red,
+                    size: 100,
+                  ),
                 ),
-              ),
+                SizedBox(height: 20),
+                Center(
+                  child: Text(
+                    'Ha ocurrido un error inesperado',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+              ],
             ),
-            SizedBox(height: 20),
-          ],
-        ),
-      )
+          ),
+        )
+      ),
     );
   };
 
@@ -82,6 +81,3 @@ Future<void> main() async {
     const MainApp()
     );
 }
-
-
-// final supabase = Supabase.instance.client;

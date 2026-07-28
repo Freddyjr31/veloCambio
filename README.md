@@ -92,7 +92,9 @@ lib/
 │   ├── euro_model.dart          # Modelo de tasa EUR
 │   ├── binance_usdt_model.dart  # Modelo de tasa USDT P2P (Binance)
 │   ├── custom_model.dart        # Modelo de tasa personalizada
+│   ├── currency_model.dart      # Enum de monedas (USD, EUR, VES, etc.)
 │   ├── currency_history_model.dart  # Modelo de historial
+│   ├── exchange_types_model.dart    # Enum de tipos de tasa (oficial, mercado, P2P, etc.)
 │   └── adapters/                # TypeAdapters de Hive
 ├── providers/
 │   ├── app_providers.dart       # Configuracion MultiProvider
@@ -106,9 +108,10 @@ lib/
 ├── screens/
 │   └── main_screen.dart         # Pantalla principal (toda la UI)
 └── widgets/
-    ├── appBar.dart              # Widget de AppBar personalizado
+    ├── app_bar.dart             # Widget de AppBar personalizado
     ├── calculator.dart          # Calculadora/conversor de monedas
     ├── exchange_rate_container.dart  # Tarjetas de visualizacion de tasas
+    ├── invert_coin_button.dart  # Boton para intercambiar monedas origen/destino
     └── bcv_dialog.dart          # Dialogo de disclaimer BCV
 ```
 
