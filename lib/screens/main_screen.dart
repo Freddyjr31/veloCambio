@@ -15,6 +15,7 @@ import 'package:velocambio/providers/custom_provider.dart';
 import 'package:velocambio/providers/euro_provider.dart';
 import 'package:velocambio/providers/index.dart';
 import 'package:velocambio/widgets/bcv_dialog.dart';
+import 'package:velocambio/widgets/bottom_baner_ad.dart';
 import 'package:velocambio/widgets/index.dart';
 
 class MainScreen extends StatefulWidget {
@@ -26,38 +27,53 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
 
-  //* Variables para calcular el porcentaje de diferencia entre la tasa de cambio actual y la tasa de cambio anterior guardada en la base de datos
-  // double percentageDifferenceMarket = 0.0;
-  // double percentageDifferenceOficial = 0.0;
+  Future<void> _safeGet(Future<void> Function() fn, String name) async {
+    try {
+      await fn();
+    } catch (e) {
+      log('Error: $e', name: name);
+    }
 
-  //* Función para verificar si es la primera vez que el usuario abre la aplicación, para mostrar un mensaje de bienvenida y configurar la base de datos.
-  // Future<bool> checkFirstTime() async {
-  //   bool firstTime = await AppPreferences.isFirstTime();
-  //   if (firstTime) {
-  //     log("¡Bienvenido por primera vez! Configurando base de datos...");
-  //   } else {
-  //     log("Bienvenido de nuevo.");
-  //   }
-
-  //   return firstTime;
-  // }
+  }
 
   Future<void> getExchangeRate(CoinProvider coinProvider, UsdExchangeRateProvider exchangeProvider, EuroProvider euroProvider, BinanceProvider binanceProvider) async {
 
     //* Provider de tasas de cambio USD
-    await exchangeProvider.getUsdExchangeRate();
-    await euroProvider.getEurosExchangeRate();
-    await binanceProvider.getBinanceP2pRate();
+    await _safeGet(() => exchangeProvider.getUsdExchangeRate(), 'USD oficial');
+    await _safeGet(() => euroProvider.getEurosExchangeRate(), 'EUR');
+    await _safeGet(() => binanceProvider.getBinanceP2pRate(), 'USDT P2P');
+    await _safeGet(() => exchangeProvider.getUsdMarketExchangeRate(), 'USD mercado');
 
     log('Oficial: ${exchangeProvider.oficialRate}', name: 'MainScreen');
     log('Average: ${exchangeProvider.averageRate}', name: 'MainScreen');
     log('Euro: ${euroProvider.oficialEuroRate}', name: 'MainScreen');
     log('P2P USDT: ${binanceProvider.p2pPrice}', name: 'MainScreen');
 
-    coinProvider.setAmount(exchangeProvider.oficialRate);
+    //! Mejorar logica
+    //! - Si falla el dolar bcv tomar otra diferente a 0
+    //! - cambiar el ExchangeType
+
+    //* Tasa por defecto: BCV oficial; si falla, tomar la primera disponible
+    double defaultRate = exchangeProvider.oficialRate;
+    ExchangeType defaultType = ExchangeType.oficialUsd;
+
+    if (defaultRate == 0) {
+      if (exchangeProvider.averageRate != 0) {
+        defaultRate = exchangeProvider.averageRate;
+        defaultType = ExchangeType.averageUsd;
+      } else if (euroProvider.oficialEuroRate != 0) {
+        defaultRate = euroProvider.oficialEuroRate;
+        defaultType = ExchangeType.oficialEur;
+      } else if (binanceProvider.p2pPrice != 0) {
+        defaultRate = binanceProvider.p2pPrice;
+        defaultType = ExchangeType.p2pUsdt;
+      }
+    }
+
+    coinProvider.setAmount(defaultRate);
 
     //* moneda seleccionada por defecto
-    coinProvider.changeExchangeType(ExchangeType.oficialUsd);
+    coinProvider.changeExchangeType(defaultType);
     
     coinProvider.calculatedAmount(
       rateUsdBcv: exchangeProvider.oficialRate,
@@ -157,10 +173,7 @@ class _MainScreenState extends State<MainScreen> {
     }
 
     if(coinProvider.exchangeType == ExchangeType.oficialUsd) {
-      //WidgetsBinding.instance.addPostFrameCallback((_) {
-        // if (!mounted) return;
         setState(() => selectedType = ExchangeType.oficialUsd);
-      //});
     }
 
     return Scaffold(
@@ -170,8 +183,9 @@ class _MainScreenState extends State<MainScreen> {
           child: Column(
             spacing: 16,
             children: [
-              
-              SizedBox(height: 5),
+
+              const BottomBannerAd(),
+
               //* Titulo, Boton de actualizar y fecha
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -231,7 +245,6 @@ class _MainScreenState extends State<MainScreen> {
                       size: size.width * 0.9,
                       value: exchangeProvider.oficialRate,
                       nameType: 'BCV Oficial',
-                      upValue: exchangeProvider.oficialRateUpValue,
                       isSelected: selectedType == ExchangeType.oficialUsd,
                       icon: const Icon(Icons.account_balance),
                       percentageDifference: exchangeProvider.oficialRatePercentage,
@@ -246,7 +259,6 @@ class _MainScreenState extends State<MainScreen> {
                       size: size.width * 0.9,
                       value: exchangeProvider.averageRate,
                       nameType: 'Promedio',
-                      upValue: exchangeProvider.averageRateUpValue,
                       isSelected: selectedType == ExchangeType.averageUsd,
                       icon: const Icon(Icons.currency_exchange),
                       percentageDifference: exchangeProvider.averageRatePercentage,
@@ -261,7 +273,6 @@ class _MainScreenState extends State<MainScreen> {
                       size: size.width * 0.9,
                       value: euroProvider.oficialEuroRate,
                       nameType: 'Euro',
-                      upValue: true,
                       // isSelected: selectEuroOficialRate,
                       isSelected: selectedType == ExchangeType.oficialEur,
                       icon: const Icon(Icons.account_balance),
@@ -277,7 +288,6 @@ class _MainScreenState extends State<MainScreen> {
                       size: size.width * 0.9,
                       value: binanceProvider.p2pPrice,
                       nameType: 'USDT P2P',
-                      upValue: true,
                       // isSelected: selectP2pRate,
                       isSelected: selectedType == ExchangeType.p2pUsdt,
                       icon: const Icon(Icons.currency_bitcoin),
@@ -296,7 +306,6 @@ class _MainScreenState extends State<MainScreen> {
                     size: size.width * 0.9,
                     value: customProvider.selectedCustomModel!.value,
                     nameType: 'Personalizada',
-                    upValue: true,
                     isSelected: coinProvider.exchangeType == ExchangeType.custom,
                     icon: const Icon(Icons.edit),
                     percentageDifference: 0,
@@ -442,7 +451,9 @@ class _MainScreenState extends State<MainScreen> {
               //* Calculadora
               Calculator(),
           
-              SizedBox(height: 10),
+              SizedBox(height: 2),
+
+              const BottomBannerAd()
             ],
           ),
         ),

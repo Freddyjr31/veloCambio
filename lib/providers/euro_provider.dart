@@ -3,7 +3,7 @@ import 'dart:developer';
 
 import 'package:velocambio/core/providers/cmm_general_provider.dart';
 import 'package:velocambio/datasource/euro_api.dart';
-import 'package:velocambio/models/euro_model.dart';
+import 'package:velocambio/models/rate_api_model.dart';
 
 class EuroProvider extends CmmGeneralProvider {
 
@@ -20,40 +20,34 @@ class EuroProvider extends CmmGeneralProvider {
     notifyListeners();
   }
 
-  late EuroExchangeRateApi eurosExchangeRateApi = EuroExchangeRateApi();
+  // late EuroExchangeRateApi eurosExchangeRateApi = EuroExchangeRateApi();
+  late EuroRateApi eurosExchangeRateApi = EuroRateApi();
 
-  Future<EuroExchangeModel> getEurosExchangeRate() async {
+  Future<RateApiResponseModel> getEurosExchangeRate() async {
     
     log('Function getEurosExchangeRate');
     super.setLoadingStatus(true);
     notifyListeners();
 
+    RateApiResponseModel resp = RateApiResponseModel.empty();
+
     try{
       
-      EuroExchangeModel resp = await eurosExchangeRateApi.getExchangeRate();
-      log('Respuesta de la API: ${resp.exchange.toList()}');
-      log(resp.toString());
+      resp = await eurosExchangeRateApi.getExchangeRate();
+      log('Respuesta de la API: $resp');
 
-      oficialEuroRate = resp.exchange[0].promedio;
-      // amount = oficialEuroRate;
-      oficialEuroRateUpdateDate = resp.exchange[0].fechaActualizacion!;
-
-      log('Oficial: $oficialEuroRate');
-      log('Oficial: $oficialEuroRateUpdateDate');
-
-      notifyListeners();
-      super.setLoadingStatus(false);
-      return resp;
+      oficialEuroRate = resp.price;
+      oficialEuroRateUpdateDate = resp.fetched_at;
 
     } catch (e) {
       // Aquí podrías manejar el error de forma global
       log('Error en el provider: $e');
-      super.setLoadingStatus(false);
-      throw Exception('Failed to fetch exchange rate: $e');
-
     } finally {
+      super.setLoadingStatus(false);
       notifyListeners();
     }
+
+    return resp;
   }
 
 }

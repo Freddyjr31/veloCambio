@@ -4,19 +4,11 @@ import 'dart:developer';
 import 'package:flutter/widgets.dart';
 import 'package:velocambio/core/providers/cmm_general_provider.dart';
 import 'package:velocambio/datasource/usd_api.dart';
-import 'package:velocambio/models/usd_model.dart';
+import 'package:velocambio/models/rate_api_model.dart';
 
 class UsdExchangeRateProvider extends CmmGeneralProvider{
 
   TextEditingController amountController = TextEditingController();
-
-  //* para cambiar el monto, ESTE ES EL VALOR PRINCIPAL QUE SE USA PARA CALCULAR EL MONTO EN LA OTRA MONEDA
-  // double amount = 0;
-  // void setAmount(double val) {
-  //   amount = val;
-  //   notifyListeners();
-  // }
-
 
   //* Para saber si subio o bajo el valor de la tasa oficial
   bool oficialRateUpValue = false;
@@ -70,64 +62,65 @@ class UsdExchangeRateProvider extends CmmGeneralProvider{
     notifyListeners();
   }
 
-  late UsdsExchangeRateApi usdsExchangeRateApi = UsdsExchangeRateApi();
+  // late UsdsExchangeRateApi usdsExchangeRateApi = UsdsExchangeRateApi();
+  late UsdRateApi usdsExchangeRateApi = UsdRateApi();
 
-  Future<UsdExchangeModel> getUsdExchangeRate() async {
+  Future<RateApiResponseModel> getUsdExchangeRate() async {
     
     log('Function getUsdExchangeRate');
     super.setLoadingStatus(true);
     notifyListeners();
 
+    RateApiResponseModel resp = RateApiResponseModel.empty();
+
     try{
       
-      UsdExchangeModel resp = await usdsExchangeRateApi.getExchangeRate();
-      debugPrint('Respuesta de la API: ${resp.exchange.toList()}');
-      debugPrint(resp.toString());
+      resp = await usdsExchangeRateApi.getUsdOfficial();
+      debugPrint('Respuesta de la API: $resp');
 
-      oficialRate = resp.exchange[0].promedio;
-      averageRate = resp.exchange[1].promedio;
-      
-      oficialRateUpdateDate = resp.exchange[0].fechaActualizacion!;
-      averageRateUpdateDate = resp.exchange[1].fechaActualizacion!;
-
-      log('Oficial: $oficialRate, Average: $averageRate');
-      log('Oficial: $oficialRateUpdateDate, Average: $averageRateUpdateDate');
-
-      notifyListeners();
-      super.setLoadingStatus(false);
-      return resp;
+      oficialRate = resp.price;
+      oficialRateUpdateDate = resp.fetched_at;
 
     } catch (e) {
       // Aquí podrías manejar el error de forma global
       log('Error en el provider: $e');
-      super.setLoadingStatus(false);
-      throw Exception('Failed to fetch exchange rate: $e');
-
     } finally {
+      super.setLoadingStatus(false);
       notifyListeners();
     }
+
+    return resp;
   }
 
-  //* Funcion solo para llamar al api de historico
-  // Future<UsdExchangeModel> getUsdExchangeRateHistoric() async {
+  Future<RateApiResponseModel> getUsdMarketExchangeRate() async {
+    
+    log('Function getUsdExchangeRate');
+    super.setLoadingStatus(true);
+    notifyListeners();
 
-  //   log('Function HISTORICO', name: 'HISTORY');
-  //   super.setLoadingStatus(true);
-  //   notifyListeners();
+    RateApiResponseModel resp = RateApiResponseModel.empty();
 
-  //   try{
-  //       UsdExchangeModel resp = await usdsExchangeRateApi.getExchangeRateHistoric();
-  //       return resp;
-  //   } catch (e) {
-  //     // Aquí podrías manejar el error de forma global
-  //     log('Error en el provider: $e', name: 'getUsdExchangeRateHistory - HISTORY', error: e, stackTrace: StackTrace.current);
-  //     throw Exception('Failed to fetch exchange rate: $e');
+    try{
+      
+      resp = await usdsExchangeRateApi.getUsdMarket();
+      debugPrint('Respuesta de la API: $resp');
+      debugPrint(resp.toString());
 
-  //   } finally {
-  //     super.setLoadingStatus(false);
-  //     notifyListeners();
-  //   }
-  // }
+      averageRate = resp.price;
+      averageRateUpdateDate = resp.fetched_at;
+
+    } catch (e) {
+      // Aquí podrías manejar el error de forma global
+      log('Error en el provider: $e');
+    } finally {
+      super.setLoadingStatus(false);
+      notifyListeners();
+    }
+
+    return resp;
+  }
+
+
 
   @override
   void disposeValues() {

@@ -1,28 +1,31 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:velocambio/core/http/interceptor/interceptor.dart';
 
 final binanceDio = Dio(
   BaseOptions(
-    baseUrl: 'https://p2p.binance.com/',
+    // baseUrl: 'https://p2p.binance.com/',
+    baseUrl: 'http://10.0.2.2:9000/',
     connectTimeout: Duration(seconds: 30),
     receiveTimeout: Duration(seconds: 15),
     headers: {
       'Content-Type': 'application/json',
-      'Accept': '*/*',
+      'Accept': 'application/json',
     },
   ),
 )..interceptors.addAll([
   CustomInterceptors(),
 
-  // if(kDebugMode)
-  //   PrettyDioLogger(
-  //     requestHeader: true,
-  //     requestBody: true,
-  //     responseBody: true,
-  //     responseHeader: false,
-  //     error: true,
-  //     compact: true,
-  //     maxWidth: 90,
-  //   ),
+  if(kDebugMode)
+    PrettyDioLogger(
+      requestHeader: true,
+      requestBody: true,
+      responseBody: true,
+      responseHeader: false,
+      error: true,
+      compact: true,
+      maxWidth: 90,
+    ),
   ]
   );

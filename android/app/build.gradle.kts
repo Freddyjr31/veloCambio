@@ -18,9 +18,13 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
-    }
+    // kotlinOptions {
+    //     jvmTarget = JavaVersion.VERSION_11.toString()
+    // }
+
+    // compilerOptions {
+    //     jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+    // }
 
     defaultConfig {
         applicationId = "com.velocambio.app"
@@ -58,6 +62,13 @@ android {
         }
     }
 }
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+    }
+}
+
 
 flutter {
     source = "../.."

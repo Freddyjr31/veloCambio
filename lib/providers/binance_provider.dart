@@ -2,36 +2,37 @@ import 'dart:developer';
 
 import 'package:velocambio/core/providers/cmm_general_provider.dart';
 import 'package:velocambio/datasource/binance_api.dart';
-import 'package:velocambio/models/binance_usdt_model.dart';
+import 'package:velocambio/models/rate_api_model.dart';
 
 class BinanceProvider extends CmmGeneralProvider {
 
   double p2pPrice = 0.0;
   DateTime p2pUpdateDate = DateTime.now();
 
-  late BinanceP2PApi binanceP2pApi = BinanceP2PApi();
+  // late BinanceP2PApi binanceP2pApi = BinanceP2PApi();
+  late BinanceUSDTApi binanceP2PApi = BinanceUSDTApi();
 
-  Future<BinanceP2PModel> getBinanceP2pRate() async {
+  Future<RateApiResponseModel> getBinanceP2pRate() async {
+
     log('Function getBinanceP2pRate');
     super.setLoadingStatus(true);
     notifyListeners();
 
+    RateApiResponseModel resp = RateApiResponseModel.empty();
+
     try {
-      BinanceP2PModel resp = await binanceP2pApi.getP2pRate();
+      resp = await binanceP2PApi.getUSDT();
 
-      p2pPrice = resp.bestPrice;
-      p2pUpdateDate = resp.updatedAt;
+      p2pPrice = resp.price;
+      p2pUpdateDate = resp.fetched_at;
 
-      //log('P2P Best Price: $p2pPrice');
-      super.setLoadingStatus(false);
-      notifyListeners();
-      return resp;
     } catch (e) {
       log('Error en BinanceProvider: $e');
-      //super.setLoadingStatus(false);
-      throw Exception('Failed to fetch P2P rate: $e');
     } finally {
+      super.setLoadingStatus(false);
       notifyListeners();
     }
+
+    return resp;
   }
 }

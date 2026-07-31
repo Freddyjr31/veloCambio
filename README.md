@@ -1,15 +1,16 @@
 # VeloCambio
 
-App de calculadora de cambio de monedas para Venezuela, desarrollada en Flutter. Consulta tasas de cambio en tiempo real para USD (tasa oficial BCV + tasa de mercado), EUR y USDT (P2P Binance), y convierte entre monedas o usa una tasa personalizada.
+App de calculadora de cambio de monedas para Venezuela, desarrollada en Flutter. Consulta tasas de cambio en tiempo real para USD (tasa oficial BCV + tasa de mercado), EUR y USDT (P2P Binance) a traves de un backend propio de cacheo, y convierte entre monedas o usa una tasa personalizada.
 
 ## Caracteristicas
 
-- **Tasas de cambio en tiempo real** desde [dolarapi.com](https://ve.dolarapi.com/)
+- **Tasas de cambio en tiempo real** obtenidas a traves de un backend FastAPI propio que cachea las tasas
 - **Dolar oficial (BCV)** y **dolar paralelo/mercado** con diferencia porcentual
 - **Euro** con tasa oficial
 - **USDT P2P** -- precio en bolivares desde la API publica de [Binance P2P](https://p2p.binance.com/)
 - **Calculadora de conversion** entre USD, USDT, VES (Bolivar), EUR y una tasa personalizada
 - **Tasa personalizada** -- el usuario puede definir y guardar su propia tasa de cambio
+- **Anuncios con Google AdMob** (banners)
 - **Intercambio de monedas** -- alterna la direccion de conversion con un boton
 - **Copia al portapapeles** -- copia el resultado de la conversion
 - **Estado de carga** con skeleton UI mientras se obtienen las tasas
@@ -33,7 +34,9 @@ App de calculadora de cambio de monedas para Venezuela, desarrollada en Flutter.
 | Local Storage | Hive (NoSQL) + SharedPreferences |
 | UI | Material Design, Skeletonizer |
 | Code Generation | build_runner + hive_generator |
-| API | [dolarapi.com](https://ve.dolarapi.com/) + [Binance P2P](https://p2p.binance.com/) |
+| Ads | Google AdMob (google_mobile_ads) |
+| Backend | FastAPI (cacheo de tasas) |
+| API | Backend propio + [dolarapi.com](https://ve.dolarapi.com/) + [Binance P2P](https://p2p.binance.com/) |
 
 ## Requisitos previos
 
@@ -76,14 +79,14 @@ lib/
 ├── app.dart                     # Configuracion de MaterialApp
 ├── core/
 │   ├── http/
-│   │   ├── dio_client.dart      # Cliente Dio para dolarapi.com
-│   │   ├── binance_dio.dart     # Cliente Dio para Binance P2P
-│   │   └── interceptor/         # Interceptores personalizados
+│   │   ├── dio_client.dart      # Cliente Dio para el backend (tasas)
+│   │   ├── binance_dio.dart     # Cliente Dio para el backend (USDT P2P)
+│   │   └── interceptor/         # Interceptores personalizados (errores agrupados)
 │   ├── themes/                  # Tema y estilos
 │   └── services/                # Servicio de preferencias (SharedPreferences)
 ├── datasource/
-│   ├── usd_api.dart             # Llamadas API para tasas USD
-│   ├── euro_api.dart            # Llamadas API para tasas EUR
+│   ├── usd_api.dart             # Llamadas API para tasas USD (oficial + promedio)
+│   ├── euro_api.dart            # Llamadas API para tasa EUR
 │   ├── binance_api.dart         # Llamadas API para USDT P2P
 │   └── services/
 │       └── database_hive_services.dart  # Operaciones de lectura/escritura Hive
@@ -91,6 +94,7 @@ lib/
 │   ├── usd_model.dart           # Modelos de tasas USD (BCV + Mercado)
 │   ├── euro_model.dart          # Modelo de tasa EUR
 │   ├── binance_usdt_model.dart  # Modelo de tasa USDT P2P (Binance)
+│   ├── rate_api_model.dart      # Modelo de respuesta del backend (tasa + fecha)
 │   ├── custom_model.dart        # Modelo de tasa personalizada
 │   ├── currency_model.dart      # Enum de monedas (USD, EUR, VES, etc.)
 │   ├── currency_history_model.dart  # Modelo de historial
@@ -112,6 +116,7 @@ lib/
     ├── calculator.dart          # Calculadora/conversor de monedas
     ├── exchange_rate_container.dart  # Tarjetas de visualizacion de tasas
     ├── invert_coin_button.dart  # Boton para intercambiar monedas origen/destino
+    ├── bottom_baner_ad.dart     # Banner de anuncios (AdMob)
     └── bcv_dialog.dart          # Dialogo de disclaimer BCV
 ```
 
@@ -120,7 +125,7 @@ lib/
 La app sigue un patron **Provider + Datasource**:
 
 ```
-Widget -> Provider -> Datasource -> API (dolarapi.com / Binance P2P)
+Widget -> Provider -> Datasource -> Backend FastAPI (cache de tasas)
                 ↘ Hive (persistencia local)
 ```
 
@@ -131,22 +136,31 @@ Widget -> Provider -> Datasource -> API (dolarapi.com / Binance P2P)
 
 ## API
 
-La app consume APIs publicas sin necesidad de API key:
+La app consume un backend propio (FastAPI) que cachea las tasas de [dolarapi.com](https://ve.dolarapi.com/) y [Binance P2P](https://p2p.binance.com/). No requiere API key.
 
-### dolarapi.com
-
-| Endpoint | Descripcion |
-|---|---|
-| `GET v1/dolares` | Tasas de cambio USD (BCV oficial + mercado) |
-| `GET v1/euros` | Tasas de cambio EUR |
-
-### Binance P2P
+### Backend (endpoints)
 
 | Endpoint | Descripcion |
 |---|---|
-| `POST /bapi/c2c/v2/friendly/c2c/adv/search` | Tasa USDT/VES desde anuncios P2P (mejor precio SELL) |
+| `GET rates/usd_oficial` | Tasa USD oficial (BCV) |
+| `GET rates/usd_promedio` | Tasa USD promedio/mercado |
+| `GET rates/eur` | Tasa EUR |
+| `GET rates/usdt` | Tasa USDT P2P (Binance) |
 
-No se requiere API key para acceder a estos endpoints.
+Todos los endpoints devuelven el mismo formato JSON plano:
+
+```json
+{
+  "price": 852.987482,
+  "source_type_code": "dolar_api",
+  "currency_from_code": "USD",
+  "currency_to_code": "VES",
+  "rate_type_code": "oficial",
+  "fetched_at": "2026-07-30T04:00:00Z"
+}
+```
+
+> **Nota de desarrollo:** en el emulador Android el backend se configura en `http://10.0.2.2:9000/` (`10.0.2.2` es el loopback del host). En un dispositivo fisico o para produccion debe apuntarse a la URL publica del backend.
 
 ## Construir para produccion
 

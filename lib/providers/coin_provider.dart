@@ -59,6 +59,13 @@ class CoinProvider extends CmmGeneralProvider {
 
     if (originCurrency == destinationCurrency) return amount;
 
+    //* Evitar Infinity/NaN si la tasa seleccionada es 0
+    if (amount == 0) {
+      currentAmount = 0;
+      notifyListeners();
+      return 0;
+    }
+
     // 1. Convertir origen a USD
     double amountInUSD;
     if (originCurrency == Currency.usd || originCurrency == Currency.usdt) {

@@ -14,7 +14,6 @@ class ExchangeRateContainer extends StatefulWidget {
   final double size;
   final double? value;
   final String nameType;
-  final bool upValue;
   final bool isSelected;
   final Icon? icon;
   final double? percentageDifference;
@@ -25,7 +24,6 @@ class ExchangeRateContainer extends StatefulWidget {
     required this.size,
     required this.value,
     required this.nameType,
-    required this.upValue,
     required this.isSelected,
     this.icon = const Icon(Icons.currency_exchange),
     this.percentageDifference = 0 ,
