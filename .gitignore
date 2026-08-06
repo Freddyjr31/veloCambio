@@ -107,6 +107,11 @@ app.*.map.json
 .env.*
 *.env
 
+# Env templates are tracked (no secretos, solo URLs publicas)
+!.env.example
+!assets/env/.env.dev.example
+!assets/env/.env.prod.example
+
 # Coverage
 coverage/
 

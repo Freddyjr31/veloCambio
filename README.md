@@ -32,6 +32,7 @@ App de calculadora de cambio de monedas para Venezuela, desarrollada en Flutter.
 | Framework | Flutter (SDK ^3.8.1) |
 | State Management | Provider |
 | HTTP Client | Dio con interceptores personalizados |
+| Config | flutter_dotenv + Android flavors (dev/prod) |
 | Local Storage | Hive (NoSQL) + SharedPreferences |
 | UI | Material Design, Skeletonizer |
 | Code Generation | build_runner + hive_generator |
@@ -60,17 +61,19 @@ flutter pub get
 # Generar adaptadores de Hive (si es necesario)
 dart run build_runner build --delete-conflicting-outputs
 
-# Ejecutar la app
-flutter run
+# Ejecutar la app (dev)
+flutter run --flavor dev
 ```
 
 ## Ejecutar en plataformas especificas
 
+> Al estar definidos los flavors `dev`/`prod`, Flutter exige `--flavor` al compilar.
+
 ```bash
-flutter run -d windows    # Windows
-flutter run -d chrome     # Web
-flutter run -d android    # Android
-flutter run -d ios        # iOS
+flutter run -d windows --flavor dev   # Windows
+flutter run -d chrome --flavor dev    # Web
+flutter run -d android --flavor dev   # Android
+flutter run -d ios --flavor dev       # iOS
 ```
 
 ## Estructura del proyecto
@@ -84,6 +87,8 @@ lib/
 │   │   ├── dio_client.dart      # Cliente Dio para el backend (tasas)
 │   │   ├── binance_dio.dart     # Cliente Dio para el backend (USDT P2P)
 │   │   └── interceptor/         # Interceptores personalizados (errores agrupados)
+│   ├── config/
+│   │   └── app_config.dart      # Carga de entornos por flavor (flutter_dotenv)
 │   ├── themes/                  # Tema y estilos
 │   └── services/                # Servicio de preferencias + HomeWidgetService (widget BCV)
 ├── datasource/
@@ -162,7 +167,40 @@ Todos los endpoints devuelven el mismo formato JSON plano:
 }
 ```
 
-> **Nota de desarrollo:** en el emulador Android el backend se configura en `http://10.0.2.2:9000/` (`10.0.2.2` es el loopback del host). En un dispositivo fisico o para produccion debe apuntarse a la URL publica del backend.
+> **Nota de desarrollo:** la base URL del backend se define por **flavor** en los archivos `.env` (ver seccion [Entornos y flavors](#entornos-y-flavors)). En el emulador Android se usa `http://10.0.2.2:9000/` (`10.0.2.2` es el loopback del host). En un dispositivo fisico o para produccion se apunta a la URL publica del backend.
+
+## Entornos y flavors
+
+La app maneja dos entornos de build mediante **Android flavors** + variables de entorno cargadas con `flutter_dotenv`. El flavor se selecciona en el comando de compilacion; **no hay que editar ningun `true/false`** en el codigo.
+
+| Flavor | Base URL (backend) | Application ID | Nombre de la app | Comando |
+|---|---|---|---|---|
+| `dev` | `http://10.0.2.2:9000/` (backend local) | `com.velocambio.app.dev` | VeloCambio Dev | `flutter run --flavor dev` |
+| `prod` | `https://velocambio-back.onrender.com/` | `com.velocambio.app` | VeloCambio | `flutter run --flavor prod` |
+
+### Archivos de entorno
+
+| Archivo | Git | Contenido |
+|---|---|---|
+| `assets/env/.env.dev` | ignorado | URL del backend de desarrollo (local) |
+| `assets/env/.env.prod` | ignorado | URL del backend de produccion |
+| `assets/env/.env.dev.example` | trackeado | plantilla de `dev` |
+| `assets/env/.env.prod.example` | trackeado | plantilla de `prod` |
+| `.env.example` | trackeado | referencia global |
+
+Los archivos reales `.env.dev`/`.env.prod` estan en `.gitignore` (pueden contener secretos). Para generar un APK es obligatorio que existan, asi que copia el ejemplo correspondiente antes de compilar:
+
+```bash
+cp assets/env/.env.dev.example  assets/env/.env.dev
+cp assets/env/.env.prod.example assets/env/.env.prod
+```
+
+### Como funciona
+
+- `lib/core/config/app_config.dart` lee el flavor en tiempo de compilacion via `String.fromEnvironment('FLUTTER_APP_FLAVOR', defaultValue: 'dev')` y `AppConfig.loadEnv()` carga `assets/env/.env.$appEnvironment` (con `isOptional: true`, con fallback a `http://10.0.2.2:9000/`).
+- `lib/main.dart` asigna la URL a los clientes Dio (`dio.options.baseUrl` y `binanceDio.options.baseUrl`) al arrancar la app.
+- `android/app/build.gradle.kts` define los flavors `dev` (applicationIdSuffix `.dev`, `versionNameSuffix -dev`, nombre "VeloCambio Dev") y `prod` (sin sufijo, "VeloCambio"). Ambos son el mismo codigo Flutter; solo cambia la configuracion de build.
+- El widget de home screen guarda la base URL activa en `bcv_base_url` desde `dio.options.baseUrl`, por lo que el worker tambien apunta al entorno correcto.
 
 ## Widget de home screen (Tasa BCV)
 
@@ -207,25 +245,28 @@ Home screen (AppWidgetProvider)
 | `bcv_date` | String | `Actualizado: HH:mm` |
 | `bcv_base_url` | String | Base URL del backend para que el worker consulte la tasa |
 
-> Requiere el plugin [`home_widget`](https://pub.dev/packages/home_widget) (codigo nativo Kotlin). El worker consulta el backend usando la URL guardada en `bcv_base_url` (en emulador `http://10.0.2.2:9000/`); si no hay datos disponibles el widget muestra `--`.
+> Requiere el plugin [`home_widget`](https://pub.dev/packages/home_widget) (codigo nativo Kotlin). El worker consulta el backend usando la URL guardada en `bcv_base_url`, que se rellena al arrancar la app con `dio.options.baseUrl` (definida por flavor en los `.env`); si no hay datos disponibles el widget muestra `--`.
 
 ## Construir para produccion
 
 ```bash
-# Android (APK)
-flutter build apk
+# Android (APK) - produccion
+flutter build apk --flavor prod
+
+# Android (APK) - desarrollo
+flutter build apk --flavor dev
 
 # Android (App Bundle - Play Store)
-flutter build appbundle
+flutter build appbundle --flavor prod
 
 # iOS
-flutter build ios
+flutter build ios --flavor prod
 
 # Web
-flutter build web
+flutter build web --flavor prod
 
 # Windows
-flutter build windows
+flutter build windows --flavor prod
 ```
 
 ## Contribuir

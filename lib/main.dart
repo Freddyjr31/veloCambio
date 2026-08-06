@@ -6,6 +6,9 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:velocambio/app.dart';
+import 'package:velocambio/core/config/app_config.dart';
+import 'package:velocambio/core/http/binance_dio.dart';
+import 'package:velocambio/core/http/dio_client.dart';
 import 'package:velocambio/models/adapters/currency_history_adapters.dart';
 import 'package:velocambio/models/adapters/custom_model_adapter.dart';
 import 'package:velocambio/models/adapters/euro_model_adapter.dart';
@@ -16,6 +19,11 @@ Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
   GoogleFonts.config.allowRuntimeFetching = false;
+
+  await AppConfig.loadEnv();
+  dio.options.baseUrl = AppConfig.baseUrl;
+  binanceDio.options.baseUrl = AppConfig.baseUrl;
+
   //* Admob
   await MobileAds.instance.initialize();
 

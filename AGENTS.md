@@ -26,6 +26,8 @@ lib/
 │   │   ├── dio_client.dart      # Dio client for dolarapi.com
 │   │   ├── binance_dio.dart     # Dio client for Binance P2P
 │   │   └── interceptor/         # Custom interceptors
+│   ├── config/
+│   │   └── app_config.dart      # Env loading per flavor (flutter_dotenv)
 │   ├── themes/                  # Theme data and styles
 │   └── services/                # App preferences (SharedPreferences)
 ├── datasource/
@@ -64,14 +66,17 @@ lib/
 
 ### Run the app
 ```bash
-flutter run
+flutter run --flavor dev          # Entorno de desarrollo (backend local 10.0.2.2:9000)
+flutter run --flavor prod         # Entorno de produccion (velocambio-back.onrender.com)
 ```
+
+> Con flavors definidos, Flutter exige `--flavor`. Sin `--flavor`, falla.
 
 ### Run on specific platform
 ```bash
-flutter run -d windows
-flutter run -d chrome
-flutter run -d android
+flutter run -d windows --flavor dev
+flutter run -d chrome --flavor dev
+flutter run -d android --flavor dev
 ```
 
 ### Generate Hive adapters (after model changes)
@@ -97,17 +102,27 @@ flutter test
 
 ### Build release
 ```bash
-flutter build apk          # Android
-flutter build appbundle    # Android (Play Store)
-flutter build ios          # iOS
-flutter build web          # Web
-flutter build windows      # Windows
+flutter build apk --flavor prod          # Android
+flutter build appbundle --flavor prod    # Android (Play Store)
+flutter build ios --flavor prod          # iOS
+flutter build web --flavor prod          # Web
+flutter build windows --flavor prod      # Windows
 ```
 
 ### Generate app icons
 ```bash
 dart run flutter_launcher_icons
 ```
+
+## Environments (flavors)
+
+- Flavor `dev`: backend local `http://10.0.2.2:9000/`, app id `com.velocambio.app.dev`, name "VeloCambio Dev".
+- Flavor `prod`: backend `https://velocambio-back.onrender.com/`, app id `com.velocambio.app`, name "VeloCambio".
+- Env files: `assets/env/.env.dev` and `assets/env/.env.prod` (gitignored). Templates `assets/env/*.example` are tracked.
+- To build an APK, the real `.env.dev`/`.env.prod` must exist: `cp assets/env/.env.dev.example assets/env/.env.dev` and same for prod.
+- `lib/core/config/app_config.dart` selects the env via `String.fromEnvironment('FLUTTER_APP_FLAVOR')` (default `dev`) and loads `assets/env/.env.$appEnvironment` with `flutter_dotenv` (`isOptional: true`).
+- `lib/main.dart` assigns `dio.options.baseUrl` and `binanceDio.options.baseUrl` from `AppConfig.baseUrl` at startup. Dio clients are created with `baseUrl: ''`.
+- The home-screen widget worker reads `bcv_base_url` (SharedPreferences), filled from `dio.options.baseUrl`.
 
 ## Code Conventions
 

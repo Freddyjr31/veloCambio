@@ -61,6 +61,21 @@ android {
             )
         }
     }
+
+    flavorDimensions += "env"
+    productFlavors {
+        create("dev") {
+            dimension = "env"
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+            resValue("string", "app_name", "VeloCambio Dev")
+        }
+        create("prod") {
+            dimension = "env"
+            applicationIdSuffix = ""
+            resValue("string", "app_name", "VeloCambio")
+        }
+    }
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
