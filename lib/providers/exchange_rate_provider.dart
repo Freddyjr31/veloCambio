@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/widgets.dart';
 import 'package:velocambio/core/providers/cmm_general_provider.dart';
+import 'package:velocambio/core/services/home_widget_service.dart';
 import 'package:velocambio/datasource/usd_api.dart';
 import 'package:velocambio/models/rate_api_model.dart';
 
@@ -80,6 +81,10 @@ class UsdExchangeRateProvider extends CmmGeneralProvider{
 
       oficialRate = resp.price;
       oficialRateUpdateDate = resp.fetched_at;
+
+      if (resp.price > 0) {
+        await HomeWidgetService.syncBcvRateToWidget(resp);
+      }
 
     } catch (e) {
       // Aquí podrías manejar el error de forma global

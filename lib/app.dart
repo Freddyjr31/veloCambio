@@ -26,7 +26,7 @@ class _MainAppState extends State<MainApp> {
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
           themeMode: ThemeMode.dark,
-          home: MainScreen(),
+          home: const SplashScreen(),
         ),
       ),
     );

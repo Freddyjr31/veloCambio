@@ -18,6 +18,7 @@ App de calculadora de cambio de monedas para Venezuela, desarrollada en Flutter.
 - **Persistencia local** con Hive para historial de conversiones
 - **Tema oscuro** por defecto
 - **Disclaimer BCV** -- modal informativo sobre las tasas oficiales al iniciar la app
+- **Widget de home screen** -- widget nativo de Android que muestra la tasa oficial BCV, con actualizacion automatica cada 30 minutos (WorkManager)
 
 ## Capturas de pantalla
 
@@ -35,6 +36,7 @@ App de calculadora de cambio de monedas para Venezuela, desarrollada en Flutter.
 | UI | Material Design, Skeletonizer |
 | Code Generation | build_runner + hive_generator |
 | Ads | Google AdMob (google_mobile_ads) |
+| Home widget | home_widget (Android nativo) + WorkManager |
 | Backend | FastAPI (cacheo de tasas) |
 | API | Backend propio + [dolarapi.com](https://ve.dolarapi.com/) + [Binance P2P](https://p2p.binance.com/) |
 
@@ -83,7 +85,7 @@ lib/
 │   │   ├── binance_dio.dart     # Cliente Dio para el backend (USDT P2P)
 │   │   └── interceptor/         # Interceptores personalizados (errores agrupados)
 │   ├── themes/                  # Tema y estilos
-│   └── services/                # Servicio de preferencias (SharedPreferences)
+│   └── services/                # Servicio de preferencias + HomeWidgetService (widget BCV)
 ├── datasource/
 │   ├── usd_api.dart             # Llamadas API para tasas USD (oficial + promedio)
 │   ├── euro_api.dart            # Llamadas API para tasa EUR
@@ -161,6 +163,51 @@ Todos los endpoints devuelven el mismo formato JSON plano:
 ```
 
 > **Nota de desarrollo:** en el emulador Android el backend se configura en `http://10.0.2.2:9000/` (`10.0.2.2` es el loopback del host). En un dispositivo fisico o para produccion debe apuntarse a la URL publica del backend.
+
+## Widget de home screen (Tasa BCV)
+
+La app incluye un **widget nativo de Android** que muestra la tasa oficial BCV (bolivar) directamente en el home screen. Es **solo Android**; en iOS no esta implementado.
+
+### Como se agrega el widget
+
+1. Mantener presionado un espacio vacio del home screen.
+2. Tocar **Widgets** y buscar **VeloCambio** -> **Tasa BCV**.
+3. Arrastrarlo a la pantalla y ajustar su tamano (minimo 3x1).
+
+El widget muestra:
+- **BCV OFICIAL** -- etiqueta del widget
+- **Tasa** -- ultimo precio oficial del BCV (ej: `1.234,567 VES`), o `--` si aun no hay datos
+- **Actualizado: dd/MM HH:mm** -- hora local de la ultima actualizacion
+- Al tocar el widget se abre la app
+
+### Arquitectura
+
+```
+Flutter (HomeWidgetService)
+    │  HomeWidget.saveWidgetData()  →  SharedPreferences "HomeWidgetPreferences"
+    │  HomeWidget.updateWidget()
+    ▼
+Kotlin (BcvRateWidget / RateSyncWorker)
+    │  leen "HomeWidgetPreferences" y construyen RemoteViews
+    ▼
+Home screen (AppWidgetProvider)
+```
+
+- `lib/core/services/home_widget_service.dart` -- `HomeWidgetService.syncBcvRateToWidget()` guarda la tasa en las preferencias y dispara la actualizacion del widget. Se invoca desde `ExchangeRateProvider.getUsdExchangeRate()` cuando el backend responde con un precio valido (`price > 0`).
+- `android/app/src/main/kotlin/com/velocambio/app/BcvRateWidget.kt` -- `HomeWidgetProvider` que construye las `RemoteViews` del widget al agregarse o actualizarse.
+- `android/app/src/main/kotlin/com/velocambio/app/RateSyncWorker.kt` -- `CoroutineWorker` de WorkManager que consulta `GET rates/usd_oficial`, guarda el resultado en las preferencias y actualiza el widget. Reintenta ante fallos.
+- `android/app/src/main/kotlin/com/velocambio/app/MainActivity.kt` -- agenda un trabajo periodico unico de 30 minutos (`bcv_rate_widget_sync`) con `ExistingPeriodicWorkPolicy.UPDATE`.
+- Recursos de UI del widget en `android/app/src/main/res/`: `layout/bcv_rate_widget.xml`, `drawable/widget_bg.xml` (fondo `#0C0B20`), `xml/bcv_rate_widget_info.xml` (actualizacion cada `updatePeriodMillis=1800000`).
+
+### Claves compartidas (SharedPreferences `HomeWidgetPreferences`)
+
+| Clave | Tipo | Descripcion |
+|---|---|---|
+| `bcv_rate` | String | Tasa con 3 decimales (`price.toStringAsFixed(3)`) |
+| `bcv_date` | String | `Actualizado: HH:mm` |
+| `bcv_base_url` | String | Base URL del backend para que el worker consulte la tasa |
+
+> Requiere el plugin [`home_widget`](https://pub.dev/packages/home_widget) (codigo nativo Kotlin). El worker consulta el backend usando la URL guardada en `bcv_base_url` (en emulador `http://10.0.2.2:9000/`); si no hay datos disponibles el widget muestra `--`.
 
 ## Construir para produccion
 

@@ -5,8 +5,8 @@ import 'package:velocambio/core/http/interceptor/interceptor.dart';
 
 final binanceDio = Dio(
   BaseOptions(
-    // baseUrl: 'https://p2p.binance.com/',
     baseUrl: 'http://10.0.2.2:9000/',
+    // baseUrl: 'http://127.0.0.1:9000/',
     connectTimeout: Duration(seconds: 30),
     receiveTimeout: Duration(seconds: 15),
     headers: {
