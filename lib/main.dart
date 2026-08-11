@@ -7,7 +7,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:velocambio/app.dart';
 import 'package:velocambio/core/config/app_config.dart';
-import 'package:velocambio/core/http/binance_dio.dart';
+// import 'package:velocambio/core/http/binance_dio.dart';
 import 'package:velocambio/core/http/dio_client.dart';
 import 'package:velocambio/models/adapters/currency_history_adapters.dart';
 import 'package:velocambio/models/adapters/custom_model_adapter.dart';
@@ -22,7 +22,7 @@ Future<void> main() async {
 
   await AppConfig.loadEnv();
   dio.options.baseUrl = AppConfig.baseUrl;
-  binanceDio.options.baseUrl = AppConfig.baseUrl;
+  // binanceDio.options.baseUrl = AppConfig.baseUrl;
 
   //* Admob
   await MobileAds.instance.initialize();

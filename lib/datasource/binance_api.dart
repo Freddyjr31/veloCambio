@@ -1,8 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
 
+// import 'package:velocambio/core/http/binance_dio.dart' show binanceDio;
 import 'package:dio/dio.dart';
-import 'package:velocambio/core/http/binance_dio.dart' show binanceDio;
+import 'package:velocambio/core/http/dio_client.dart';
 import 'package:velocambio/core/providers/cmm_general_provider.dart';
 import 'package:velocambio/models/rate_api_model.dart';
 
@@ -71,7 +72,7 @@ class BinanceUSDTApi extends CmmGeneralProvider {
 
     try {
       super.setLoadingStatus(true);
-      final req = await binanceDio.get('rates/usdt');
+      final req = await dio.get('rates/usdt');
       log(req.data.toString());
 
       super.setStatusCode(req.statusCode!);
