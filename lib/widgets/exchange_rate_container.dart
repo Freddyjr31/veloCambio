@@ -15,7 +15,9 @@ class ExchangeRateContainer extends StatefulWidget {
   final String nameType;
   final bool isSelected;
   final Icon? icon;
-  final double? percentageDifference;
+  final double? brecha;
+  final double? variacion24h;
+  final double? variacion7d;
 
   const ExchangeRateContainer({
     required this.imagePath,
@@ -25,7 +27,9 @@ class ExchangeRateContainer extends StatefulWidget {
     required this.nameType,
     required this.isSelected,
     this.icon = const Icon(Icons.currency_exchange),
-    this.percentageDifference = 0,
+    this.brecha = 0,
+    this.variacion24h = 0,
+    this.variacion7d = 0,
     super.key,
   });
 
@@ -69,7 +73,8 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
           Container(
             width: widget.size,
             height: 60,
-            padding: EdgeInsets.all(15),
+            // padding: EdgeInsets.all(15),
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 1),
             decoration: BoxDecoration(
               color: widget.isSelected
                   ? primaryColor.withValues(alpha: 0.05)
@@ -114,63 +119,113 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
 
                 SizedBox(height: 10),
 
-                Skeletonizer(
-                  enabled: exchangeProvider.isLoading,
-                  effect: ShimmerEffect(
-                    baseColor: Colors.grey[50]!.withAlpha(50),
-                    highlightColor: Colors.grey[50]!.withAlpha(100),
-                    duration: Duration(seconds: 1),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        '${widget.value?.toStringAsFixed(3)} VES',
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(
-                              color: widget.isSelected
-                                  ? primaryColor
-                                  : Colors.grey[600],
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+
+                        Skeletonizer(
+                          enabled: exchangeProvider.isLoading,
+                            effect: ShimmerEffect(
+                              baseColor: Colors.grey[50]!.withAlpha(50),
+                              highlightColor: Colors.grey[50]!.withAlpha(100),
+                              duration: Duration(seconds: 1),
                             ),
-                      ),
-
-                      if (widget.type == ExchangeType.custom)
-                        IconButton(
-                          color: widget.isSelected
-                              ? Colors.white
-                              : Colors.grey[600],
-                          padding: EdgeInsets.zero,
-                          icon: Icon(
-                            widget.isSelected
-                                ? Icons.delete
-                                : Icons.delete_outline,
+                          child: Text(
+                            '${widget.value?.toStringAsFixed(3)} VES',
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  color: widget.isSelected
+                                      ? primaryColor
+                                      : Colors.grey[600],
+                                ),
                           ),
-                          onPressed: () {
-                            customProvider.removeCustomModel(
-                              customProvider.selectedCustomModel!,
-                            );
-                            customProvider.customAmountController.clear();
-
-                            //* Si la tasa personalizada eliminada es la seleccionada, se selecciona la tasa oficial del BCV
-                            coinProvider.setAmount(
-                              exchangeProvider.oficialRate,
-                            );
-
-                            coinProvider.calculatedAmount(
-                              rateUsdBcv: exchangeProvider.oficialRate,
-                              rateUsdMarket: exchangeProvider.averageRate,
-                              rateEUR: euroProvider.oficialEuroRate,
-                              rateP2P: binanceProvider.p2pPrice,
-                            );
-
-                            coinProvider.changeExchangeType(
-                              ExchangeType.oficialUsd,
-                            );
-                          },
                         ),
-                    ],
-                  ),
+                
+                        if(widget.type != ExchangeType.oficialUsd && widget.type != ExchangeType.custom)
+                          Skeletonizer(
+                            enabled: exchangeProvider.isLoading,
+                            effect: ShimmerEffect(
+                              baseColor: Colors.grey[50]!.withAlpha(50),
+                              highlightColor: Colors.grey[50]!.withAlpha(100),
+                              duration: Duration(seconds: 1),
+                            ),
+                            child: Text(
+                              widget.brecha != null && widget.brecha != 0
+                                  ? 'Brecha: ${widget.brecha?.toStringAsFixed(2)}%'
+                                  : '',
+                              style: Theme.of(context).textTheme.labelSmall
+                                  ?.copyWith(
+                                    color: !widget.isSelected
+                                        ? Colors.grey[600]
+                                        : null,
+                                  ),
+                            ),
+                          ),
+
+                        if(widget.type != ExchangeType.custom)
+                          Skeletonizer(
+                            enabled: exchangeProvider.isLoading,
+                            effect: ShimmerEffect(
+                              baseColor: Colors.grey[50]!.withAlpha(50),
+                              highlightColor: Colors.grey[50]!.withAlpha(100),
+                              duration: Duration(seconds: 1),
+                            ),
+                            child: Text(
+                              (widget.variacion24h != null || widget.variacion7d != null)
+                                  ? '24 hr: ${widget.variacion24h?.toStringAsFixed(2)}% | 7d: ${widget.variacion7d?.toStringAsFixed(2)}%'
+                                  : '',
+                              style: Theme.of(context).textTheme.labelSmall
+                                  ?.copyWith(
+                                    color: !widget.isSelected
+                                        ? Colors.grey[600]
+                                        : null,
+                                  ),
+                            ),
+                          ),
+                      ],
+                    ),
+                
+                    if (widget.type == ExchangeType.custom)
+                      IconButton(
+                        color: widget.isSelected
+                            ? Colors.white
+                            : Colors.grey[600],
+                        padding: EdgeInsets.zero,
+                        icon: Icon(
+                          widget.isSelected
+                              ? Icons.delete
+                              : Icons.delete_outline,
+                        ),
+                        onPressed: () {
+                          customProvider.removeCustomModel(
+                            customProvider.selectedCustomModel!,
+                          );
+                          customProvider.customAmountController.clear();
+                
+                          //* Si la tasa personalizada eliminada es la seleccionada, se selecciona la tasa oficial del BCV
+                          coinProvider.setAmount(
+                            exchangeProvider.oficialRate,
+                          );
+                
+                          coinProvider.calculatedAmount(
+                            rateUsdBcv: exchangeProvider.oficialRate,
+                            rateUsdMarket: exchangeProvider.averageRate,
+                            rateEUR: euroProvider.oficialEuroRate,
+                            rateP2P: binanceProvider.p2pPrice,
+                          );
+                
+                          coinProvider.changeExchangeType(
+                            ExchangeType.oficialUsd,
+                          );
+                        },
+                      ),
+                  ],
                 ),
               ],
             ),

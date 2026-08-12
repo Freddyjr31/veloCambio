@@ -27,6 +27,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+
   Future<void> _safeGet(Future<void> Function() fn, String name) async {
     try {
       await fn();
@@ -40,6 +41,7 @@ class _MainScreenState extends State<MainScreen> {
     UsdExchangeRateProvider exchangeProvider,
     EuroProvider euroProvider,
     BinanceProvider binanceProvider,
+    RatesStatsProvider statsProvider,
   ) async {
     //* Provider de tasas de cambio USD
     await _safeGet(() => exchangeProvider.getUsdExchangeRate(), 'USD oficial');
@@ -49,6 +51,7 @@ class _MainScreenState extends State<MainScreen> {
       () => exchangeProvider.getUsdMarketExchangeRate(),
       'USD mercado',
     );
+    await _safeGet(() => statsProvider.getStats(), 'Brecha y variaciones');
 
     log('Oficial: ${exchangeProvider.oficialRate}', name: 'MainScreen');
     log('Average: ${exchangeProvider.averageRate}', name: 'MainScreen');
@@ -94,6 +97,7 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      
       //* Provider de tasas de cambio USD
       final exchangeProvider = context.read<UsdExchangeRateProvider>();
 
@@ -106,11 +110,11 @@ class _MainScreenState extends State<MainScreen> {
       //* Provider de Binance P2P
       final binanceProvider = context.read<BinanceProvider>();
 
-      //* Dialog de aviso del BCV
-      BcvDisclaimerModal.show(context);
-
       //* Provider de primera vez
       // bool firstTime = await checkFirstTime();
+
+      //* Provider de brechas y variaciones
+      final statsProvider = context.read<RatesStatsProvider>();
 
       log('Bienvenido!', name: 'MainScreen');
 
@@ -119,7 +123,13 @@ class _MainScreenState extends State<MainScreen> {
         exchangeProvider,
         euroProvider,
         binanceProvider,
+        statsProvider,
       );
+
+      //* Dialog de aviso del BCV
+      if (!mounted) return;
+      BcvDisclaimerModal.show(context);
+
     });
   }
 
@@ -155,6 +165,7 @@ class _MainScreenState extends State<MainScreen> {
     final euroProvider = context.watch<EuroProvider>();
     final customProvider = context.watch<CustomProvider>();
     final binanceProvider = context.watch<BinanceProvider>();
+    final statsProvider = context.watch<RatesStatsProvider>();
 
     void selectedTypeRate(ExchangeType type, double rate, String currencyCode) {
       HapticFeedback.selectionClick();
@@ -215,6 +226,7 @@ class _MainScreenState extends State<MainScreen> {
                           exchangeProvider,
                           euroProvider,
                           binanceProvider,
+                          statsProvider,
                         ),
                       ),
                     ),
@@ -248,8 +260,13 @@ class _MainScreenState extends State<MainScreen> {
                       nameType: 'BCV Oficial',
                       isSelected: selectedType == ExchangeType.oficialUsd,
                       icon: const Icon(Icons.account_balance),
-                      percentageDifference:
-                          exchangeProvider.oficialRatePercentage,
+                      brecha: statsProvider.brechaDe(ExchangeType.oficialUsd),
+                      variacion24h: statsProvider.variacion24hDe(
+                        ExchangeType.oficialUsd,
+                      ),
+                      variacion7d: statsProvider.variacion7dDe(
+                        ExchangeType.oficialUsd,
+                      ),
                     ),
                   ),
 
@@ -267,8 +284,13 @@ class _MainScreenState extends State<MainScreen> {
                       nameType: 'Promedio',
                       isSelected: selectedType == ExchangeType.averageUsd,
                       icon: const Icon(Icons.currency_exchange),
-                      percentageDifference:
-                          exchangeProvider.averageRatePercentage,
+                      brecha: statsProvider.brechaDe(ExchangeType.averageUsd),
+                      variacion24h: statsProvider.variacion24hDe(
+                        ExchangeType.averageUsd,
+                      ),
+                      variacion7d: statsProvider.variacion7dDe(
+                        ExchangeType.averageUsd,
+                      ),
                     ),
                   ),
 
@@ -287,7 +309,13 @@ class _MainScreenState extends State<MainScreen> {
                       // isSelected: selectEuroOficialRate,
                       isSelected: selectedType == ExchangeType.oficialEur,
                       icon: const Icon(Icons.account_balance),
-                      percentageDifference: 0,
+                      brecha: statsProvider.brechaDe(ExchangeType.oficialEur),
+                      variacion24h: statsProvider.variacion24hDe(
+                        ExchangeType.oficialEur,
+                      ),
+                      variacion7d: statsProvider.variacion7dDe(
+                        ExchangeType.oficialEur,
+                      ),
                     ),
                   ),
 
@@ -306,7 +334,13 @@ class _MainScreenState extends State<MainScreen> {
                       // isSelected: selectP2pRate,
                       isSelected: selectedType == ExchangeType.p2pUsdt,
                       icon: const Icon(Icons.currency_bitcoin),
-                      percentageDifference: 0,
+                      brecha: statsProvider.brechaDe(ExchangeType.p2pUsdt),
+                      variacion24h: statsProvider.variacion24hDe(
+                        ExchangeType.p2pUsdt,
+                      ),
+                      variacion7d: statsProvider.variacion7dDe(
+                        ExchangeType.p2pUsdt,
+                      ),
                     ),
                   ),
                 ],
@@ -328,7 +362,6 @@ class _MainScreenState extends State<MainScreen> {
                     isSelected:
                         coinProvider.exchangeType == ExchangeType.custom,
                     icon: const Icon(Icons.edit),
-                    percentageDifference: 0,
                   ),
                 ),
               ] else ...[

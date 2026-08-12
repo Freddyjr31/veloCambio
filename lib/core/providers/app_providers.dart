@@ -9,6 +9,7 @@ import 'package:velocambio/providers/coin_provider.dart';
 import 'package:velocambio/providers/custom_provider.dart';
 import 'package:velocambio/providers/euro_provider.dart';
 import 'package:velocambio/providers/exchange_rate_provider.dart';
+import 'package:velocambio/providers/rates_stats_provider.dart';
 
 class AppProviders extends ChangeNotifier {
 
@@ -20,6 +21,7 @@ class AppProviders extends ChangeNotifier {
     ChangeNotifierProvider<EuroProvider>(create: (_) => EuroProvider()),
     ChangeNotifierProvider<CustomProvider>(create: (_) => CustomProvider()),
     ChangeNotifierProvider<BinanceProvider>(create: (_) => BinanceProvider()),
+    ChangeNotifierProvider<RatesStatsProvider>(create: (_) => RatesStatsProvider()),
   ];
 
   static List<CmmGeneralProvider> getDisposeProviders(BuildContext context) {
@@ -30,7 +32,8 @@ class AppProviders extends ChangeNotifier {
       context.read<ConnectivityProvider>(),
       context.read<EuroProvider>(),
       context.read<CustomProvider>(),
-      context.read<BinanceProvider>()
+      context.read<BinanceProvider>(),
+      context.read<RatesStatsProvider>()
     ];
   }
 

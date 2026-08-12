@@ -153,6 +153,8 @@ La app consume un backend propio (FastAPI) que cachea las tasas de [dolarapi.com
 | `GET rates/usd_promedio` | Tasa USD promedio/mercado |
 | `GET rates/eur` | Tasa EUR |
 | `GET rates/usdt` | Tasa USDT P2P (Binance) |
+| `GET rates/brecha` | Brecha cambiaria de cada tasa (paralelo, EUR, USDT) respecto al dolar oficial |
+| `GET rates/variaciones` | Variacion de 24 horas y 7 dias por tasa (oficial, paralelo, EUR, USDT) |
 
 Todos los endpoints devuelven el mismo formato JSON plano:
 

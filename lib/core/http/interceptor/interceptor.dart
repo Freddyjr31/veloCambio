@@ -18,6 +18,8 @@ class CustomInterceptors extends Interceptor {
     'rates/usd_promedio': 'Dólar Promedio',
     'rates/eur': 'Euro',
     'rates/usdt': 'USDT P2P',
+    'rates/brecha': 'Brecha cambiaria',
+    'rates/variaciones': 'Variaciones',
     'bapi/c2c/v2/friendly/c2c/adv/search': 'USDT P2P',
     'v1/dolares': 'Dólar',
     'v1/euros': 'Euro',
