@@ -6,7 +6,6 @@ import 'package:flutter/widgets.dart';
 import 'package:toastification/toastification.dart';
 
 class CustomInterceptors extends Interceptor {
-
   //* Agrupación de errores consecutivos (ej. falla de todos los endpoints al arrancar)
   Timer? _errorDebounce;
   final List<(String, String)> _pendingErrors = [];
@@ -31,7 +30,6 @@ class CustomInterceptors extends Interceptor {
   }
 
   String _friendlyErrorMessage(DioException err) {
-
     //* 1. Prioridad: mensaje del backend (campo "detail")
     final data = err.response?.data;
     if (data is Map) {
@@ -93,9 +91,11 @@ class CustomInterceptors extends Interceptor {
       //* Varios endpoints fallaron → toast único y limpio
       toastification.show(
         title: const Text('Error'),
-        description: const Text('No se pudieron cargar las tasas. Revisa tu conexión'),
+        description: const Text(
+          'No se pudieron cargar las tasas. Revisa tu conexión',
+        ),
         type: ToastificationType.error,
-        style: ToastificationStyle.fillColored
+        style: ToastificationStyle.fillColored,
       );
     } else {
       //* Un solo error → indica qué moneda falló
@@ -104,7 +104,7 @@ class CustomInterceptors extends Interceptor {
         title: Text(currency),
         description: Text(message),
         type: ToastificationType.error,
-        style: ToastificationStyle.fillColored
+        style: ToastificationStyle.fillColored,
       );
     }
 
@@ -119,13 +119,15 @@ class CustomInterceptors extends Interceptor {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    log('RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}', name: 'HTTP');
+    log(
+      'RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}',
+      name: 'HTTP',
+    );
     super.onResponse(response, handler);
   }
 
   @override
   Future onError(DioException err, ErrorInterceptorHandler handler) async {
-
     log('ERROR [${err.message}]', name: 'HTTP');
 
     final currency = _endpointLabel(err) ?? 'Error';

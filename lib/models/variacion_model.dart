@@ -1,4 +1,3 @@
-
 // ignore_for_file: non_constant_identifier_names
 
 class VariacionesResponseModel {
@@ -15,11 +14,11 @@ class VariacionesResponseModel {
   });
 
   factory VariacionesResponseModel.empty() => VariacionesResponseModel(
-        usdOficial: RateVariacionModel.empty(),
-        usdParalelo: RateVariacionModel.empty(),
-        eur: RateVariacionModel.empty(),
-        usdt: RateVariacionModel.empty(),
-      );
+    usdOficial: RateVariacionModel.empty(),
+    usdParalelo: RateVariacionModel.empty(),
+    eur: RateVariacionModel.empty(),
+    usdt: RateVariacionModel.empty(),
+  );
 
   factory VariacionesResponseModel.fromJson(Map<String, dynamic> json) {
     final rates = json['rates'] as Map<String, dynamic>? ?? {};
@@ -54,11 +53,11 @@ class RateVariacionModel {
   });
 
   factory RateVariacionModel.empty() => RateVariacionModel(
-        price: 0,
-        variacion24h: 0,
-        variacion7d: 0,
-        fetchedAt: DateTime.now(),
-      );
+    price: 0,
+    variacion24h: 0,
+    variacion7d: 0,
+    fetchedAt: DateTime.now(),
+  );
 
   factory RateVariacionModel.fromJson(Map<String, dynamic> json) =>
       RateVariacionModel(
@@ -67,6 +66,6 @@ class RateVariacionModel {
         variacion7d: (json['variacion_7d'] as num?)?.toDouble() ?? 0,
         fetchedAt:
             DateTime.tryParse(json['fetched_at']?.toString() ?? '') ??
-                DateTime.now(),
+            DateTime.now(),
       );
 }

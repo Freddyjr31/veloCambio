@@ -28,7 +28,9 @@ class CustomModel extends HiveObject {
     return CustomModel(
       name: json['name'],
       value: (json['value'] as num).toDouble(),
-      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
+      createdAt: DateTime.parse(
+        json['createdAt'] ?? DateTime.now().toIso8601String(),
+      ),
       fechaActualizacion: DateTime.parse(json['fechaActualizacion']),
     );
   }

@@ -28,22 +28,52 @@ class AppTheme {
     ),
     textTheme: GoogleFonts.spaceGroteskTextTheme(
       const TextTheme(
-        headlineLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87),
-        headlineMedium: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black87),
-        titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
-        titleMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black87),
-        bodyLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.normal, color: Colors.black),
-        bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Colors.black),
-        bodySmall: TextStyle(fontSize: 12, fontWeight: FontWeight.normal, color: Colors.black54),
-        labelLarge: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87),
+        headlineLarge: TextStyle(
+          fontSize: 28,
+          fontWeight: FontWeight.bold,
+          color: Colors.black87,
+        ),
+        headlineMedium: TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+          color: Colors.black87,
+        ),
+        titleLarge: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Colors.black87,
+        ),
+        titleMedium: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          color: Colors.black87,
+        ),
+        bodyLarge: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.normal,
+          color: Colors.black,
+        ),
+        bodyMedium: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.normal,
+          color: Colors.black,
+        ),
+        bodySmall: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.normal,
+          color: Colors.black54,
+        ),
+        labelLarge: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          color: Colors.black87,
+        ),
       ),
     ),
     cardTheme: CardThemeData(
       color: Colors.white,
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     ),
     inputDecorationTheme: InputDecorationTheme(
       fillColor: Colors.blueGrey[50],
@@ -52,17 +82,18 @@ class AppTheme {
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         gapPadding: 2,
-        borderSide: BorderSide(color: Colors.blueGrey[300]!, width: 1),),
+        borderSide: BorderSide(color: Colors.blueGrey[300]!, width: 1),
+      ),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         gapPadding: 2,
         borderSide: BorderSide(color: Colors.blueGrey[300]!, width: 1),
-        ),
+      ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         gapPadding: 2,
         borderSide: BorderSide(color: Colors.blueGrey[300]!, width: 1),
-        ),
+      ),
       contentPadding: EdgeInsets.symmetric(horizontal: 10),
     ),
   );
@@ -98,7 +129,7 @@ class AppTheme {
       onError: Colors.white,
       outline: Colors.white24,
       outlineVariant: Colors.white12,
-      onInverseSurface: Colors.white, 
+      onInverseSurface: Colors.white,
     ),
     appBarTheme: const AppBarTheme(
       backgroundColor: backgroundColor,
@@ -109,7 +140,8 @@ class AppTheme {
       surfaceTintColor: Colors.transparent,
       backgroundColor: Colors.transparent,
       modalBackgroundColor: Colors.transparent,
-      modalBarrierColor: Colors.black54, // Overlay completamente neutro (gris/negro)
+      modalBarrierColor:
+          Colors.black54, // Overlay completamente neutro (gris/negro)
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
@@ -117,9 +149,7 @@ class AppTheme {
         foregroundColor: Colors.white,
         overlayColor: primaryColor,
         elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       ),
     ),
     textButtonTheme: TextButtonThemeData(
@@ -134,17 +164,49 @@ class AppTheme {
         overlayColor: primaryColor,
       ),
     ),
-    
+
     textTheme: GoogleFonts.spaceGroteskTextTheme(
       const TextTheme(
-        headlineLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
-        headlineMedium: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
-        titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
-        titleMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
-        bodyLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.normal, color: Colors.white70),
-        bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Colors.white70),
-        bodySmall: TextStyle(fontSize: 12, fontWeight: FontWeight.normal, color: Colors.white54),
-        labelLarge: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
+        headlineLarge: TextStyle(
+          fontSize: 28,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+        headlineMedium: TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+        titleLarge: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+        titleMedium: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
+        ),
+        bodyLarge: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.normal,
+          color: Colors.white70,
+        ),
+        bodyMedium: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.normal,
+          color: Colors.white70,
+        ),
+        bodySmall: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.normal,
+          color: Colors.white54,
+        ),
+        labelLarge: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
+        ),
       ),
     ),
     cardTheme: CardThemeData(
@@ -154,23 +216,24 @@ class AppTheme {
     ),
     inputDecorationTheme: InputDecorationTheme(
       fillColor: backgroundColor,
-      
+
       // focusColor: surfaceColor,
       // hoverColor: surfaceColor,
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         gapPadding: 2,
-        borderSide: const BorderSide(color: Colors.white, width: 1),),
+        borderSide: const BorderSide(color: Colors.white, width: 1),
+      ),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         gapPadding: 2,
         borderSide: const BorderSide(color: Colors.white, width: 1),
-        ),
+      ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         gapPadding: 2,
         borderSide: const BorderSide(color: Colors.white, width: 1),
-        ),
+      ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 10),
     ),
   );

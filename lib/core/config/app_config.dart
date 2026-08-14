@@ -5,11 +5,11 @@ const String appEnvironment = String.fromEnvironment(
   defaultValue: 'dev',
 );
 
-const String _defaultBaseUrl = 'http://10.0.2.2:9000/';
+// const String _defaultBaseUrl = 'http://10.0.2.2:9000/';
+const String _defaultBaseUrl = 'http://127.0.0.1:9000/';
 
 class AppConfig {
-  static String get baseUrl =>
-      dotenv.env['BASE_URL'] ?? _defaultBaseUrl;
+  static String get baseUrl => dotenv.env['BASE_URL'] ?? _defaultBaseUrl;
 
   static Future<void> loadEnv() async {
     await dotenv.load(

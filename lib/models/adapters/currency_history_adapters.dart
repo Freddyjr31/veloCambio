@@ -4,13 +4,12 @@ part 'currency_history_adapters.g.dart';
 
 @HiveType(typeId: 1) // Un ID único para este modelo
 class CurrencyHistoryModel extends HiveObject {
-
   @HiveField(0)
   final DateTime createdAt;
-  
+
   @HiveField(1)
   final double? previusValue;
-  
+
   @HiveField(2)
   final double? value;
 
@@ -87,21 +86,26 @@ class CurrencyHistoryModel extends HiveObject {
     'average_update_date': averageRateUpdateDate?.toIso8601String(),
   };
 
-  factory CurrencyHistoryModel.fromJson(Map<String, dynamic> json) => CurrencyHistoryModel(
-    createdAt: DateTime.parse(json['created_at']),
-    previusValue: json['previus_value'],
-    value: json['value'],
-    incrementValue: json['increment_value'],
-    percentageDifference: json['percentage_difference'],
-    marketUsdPreviusValue: json['market_usd_previus_value'],
-    marketUsdValue: json['market_usd_value'],
-    marketUsdIncrementValue: json['market_usd_increment_value'],
-    marketUsdPercentageDifference: json['market_usd_percentage_difference'],
-    euroPreviusValue: json['euro_previus_value'],
-    euroValue: json['euro_value'],
-    euroIncrementValue: json['euro_increment_value'],
-    euroPercentageDifference: json['euro_percentage_difference'],
-    oficialRateUpdateDate: json['oficial_update_date'] != null ? DateTime.parse(json['oficial_update_date']) : null,
-    averageRateUpdateDate: json['average_update_date'] != null ? DateTime.parse(json['average_update_date']) : null,
-  );
+  factory CurrencyHistoryModel.fromJson(Map<String, dynamic> json) =>
+      CurrencyHistoryModel(
+        createdAt: DateTime.parse(json['created_at']),
+        previusValue: json['previus_value'],
+        value: json['value'],
+        incrementValue: json['increment_value'],
+        percentageDifference: json['percentage_difference'],
+        marketUsdPreviusValue: json['market_usd_previus_value'],
+        marketUsdValue: json['market_usd_value'],
+        marketUsdIncrementValue: json['market_usd_increment_value'],
+        marketUsdPercentageDifference: json['market_usd_percentage_difference'],
+        euroPreviusValue: json['euro_previus_value'],
+        euroValue: json['euro_value'],
+        euroIncrementValue: json['euro_increment_value'],
+        euroPercentageDifference: json['euro_percentage_difference'],
+        oficialRateUpdateDate: json['oficial_update_date'] != null
+            ? DateTime.parse(json['oficial_update_date'])
+            : null,
+        averageRateUpdateDate: json['average_update_date'] != null
+            ? DateTime.parse(json['average_update_date'])
+            : null,
+      );
 }

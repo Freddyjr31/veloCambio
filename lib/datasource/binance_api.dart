@@ -63,11 +63,8 @@ import 'package:velocambio/models/rate_api_model.dart';
 //   }
 // }
 
-
 class BinanceUSDTApi extends CmmGeneralProvider {
-
   Future<RateApiResponseModel> getUSDT() async {
-
     RateApiResponseModel resp = RateApiResponseModel.empty();
 
     try {
@@ -78,7 +75,7 @@ class BinanceUSDTApi extends CmmGeneralProvider {
       super.setStatusCode(req.statusCode!);
       notifyListeners();
 
-      if(req.statusCode == HttpStatus.ok) {
+      if (req.statusCode == HttpStatus.ok) {
         super.setErrors(false);
         super.setErrorMessage('');
         resp = RateApiResponseModel.fromJson(req.data);
@@ -86,7 +83,6 @@ class BinanceUSDTApi extends CmmGeneralProvider {
       }
 
       super.setLoadingStatus(false);
-      
     } on SocketException {
       log('No hay internet', name: 'NO INTERNET - BINANCE');
       throw Exception('No hay internet');

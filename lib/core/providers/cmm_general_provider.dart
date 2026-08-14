@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CmmGeneralProvider extends ChangeNotifier{
-  
+class CmmGeneralProvider extends ChangeNotifier {
   bool haveErrors = false;
   void setErrors(bool val) {
     haveErrors = val;

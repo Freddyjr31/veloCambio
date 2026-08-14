@@ -29,11 +29,14 @@ lib/
 │   ├── config/
 │   │   └── app_config.dart      # Env loading per flavor (flutter_dotenv)
 │   ├── themes/                  # Theme data and styles
+│   ├── utils/operations.dart    # Pure math helpers (% / add / subtract)
 │   └── services/                # App preferences (SharedPreferences)
 ├── datasource/
 │   ├── usd_api.dart             # USD exchange rate API calls
 │   ├── euro_api.dart            # EUR exchange rate API calls
 │   ├── binance_api.dart         # Binance P2P USDT/VES API calls
+│   ├── bcv_history_api.dart     # GET rates/historico/bcv (paginated history)
+│   ├── rates_stats_api.dart     # GET rates/brecha + rates/variaciones
 │   ├── database_datasource.dart # (Legacy - commented out, Supabase)
 │   └── services/
 │       └── database_hive_services.dart  # Hive read/write operations
@@ -43,6 +46,8 @@ lib/
 │   ├── binance_usdt_model.dart  # USDT P2P rate model (Binance)
 │   ├── custom_model.dart        # Custom exchange rate model
 │   ├── currency_history_model.dart  # History record model
+│   ├── bcv_history_model.dart   # BCV history response + item (no Hive)
+│   ├── multi_item_model.dart    # Multi-items calculator item (no Hive)
 │   └── adapters/                # Hive TypeAdapters (generated + manual)
 ├── providers/
 │   ├── app_providers.dart       # MultiProvider setup
@@ -52,13 +57,21 @@ lib/
 │   ├── euro_provider.dart       # EUR exchange rate state
 │   ├── binance_provider.dart    # USDT P2P exchange rate state
 │   ├── custom_provider.dart     # Custom rate state
+│   ├── bcv_history_provider.dart # BCV history + lazy pagination
+│   ├── multi_items_provider.dart # Multi-items calculator state
 │   └── conectivity_status_provider.dart  # Network connectivity
 ├── screens/
-│   └── main_screen.dart         # Single screen (all UI)
+│   ├── main_screen.dart         # Shell: Scaffold + NavigationBar + IndexedStack
+│   ├── home_tab.dart            # Tab 1: rates + custom rate + calculator
+│   ├── multi_items_tab.dart     # Tab 2: evaluate several amounts at once
+│   ├── history_tab.dart         # Tab 3: BCV history table (lazy loading)
+│   └── splash_screen.dart       # Splash screen
 └── widgets/
     ├── appBar.dart              # Custom AppBar widget
     ├── calculator.dart          # Currency calculator/converter
     ├── exchange_rate_container.dart  # Rate display cards
+    ├── operations_modal.dart    # % / add / subtract bottom sheet modal
+    ├── invert_coin_button.dart  # Swap origin/destination button
     └── bcv_dialog.dart          # BCV disclaimer dialog
 ```
 
@@ -139,10 +152,16 @@ dart run flutter_launcher_icons
 
 1. **Providers** manage state and business logic. Never do API calls directly in widgets.
 2. **Datasources** handle raw API communication. They extend `CmmGeneralProvider` for loading/error state.
-3. **Models** are plain Dart classes with Hive `@HiveType` annotations.
-4. **Single screen:** The app currently uses only `MainScreen`. If adding screens, use `Navigator.push` or add a routing package.
+3. **Models** are plain Dart classes with Hive `@HiveType` annotations. Non-persisted DTOs (e.g. `bcv_history_model.dart`, `multi_item_model.dart`) don't use Hive.
+4. **Single screen + tabs:** `MainScreen` is a shell (`Scaffold` + `NavigationBar` + `IndexedStack`). New views must be added as a new tab widget (e.g. `home_tab.dart`, `multi_items_tab.dart`, `history_tab.dart`) registered in the `IndexedStack` — do NOT use `Navigator.push` for main tabs. Use bottom sheets (`showModalBottomSheet`) for transient tools (e.g. `OperationsModal`, custom rate form).
 5. **No secrets in code.** Environment-specific values go in `.env` files (gitignored).
 6. **Clean Arquithecture.**
+
+## Utilities / Tabs overview
+
+- **Operaciones (modal):** opened from the Calculator header (`%` icon). Calculates percentages, gets the `%` of an amount (`X% de`), or adds/subtracts a fixed value on top of the current conversion result. Pure logic lives in `core/utils/operations.dart`.
+- **Multi-items (tab 2):** evaluates several amounts at once. Each item uses the global selected rate by default (editable per item; the `sync` icon restores the global rate). State lives only in memory (`MultiItemsProvider`), not persisted. Result is always VES.
+- **Histórico (tab 3):** BCV official rate history table. Fetches `GET /rates/historico/bcv?page=X&page_size=50` via `BcvHistoryApi` with lazy pagination in `BcvHistoryProvider` (`fetchHistory` = page 1, `loadMore` = next page). The API already returns each page **descending** (most-recent-first, `page=1` = newest), so no reversal is applied. `page_size` is fixed to 50.
 
 ## Common Tasks
 

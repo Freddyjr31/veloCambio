@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:velocambio/core/helpers/ad_helper.dart';
 
-
 class BottomBannerAd extends StatefulWidget {
   const BottomBannerAd({super.key});
 

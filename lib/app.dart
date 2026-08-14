@@ -14,10 +14,8 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-
   @override
   Widget build(BuildContext context) {
-
     return ToastificationWrapper(
       child: MultiProvider(
         providers: AppProviders.providers,

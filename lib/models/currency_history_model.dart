@@ -1,7 +1,6 @@
 class CurrencyHistoryModel {
-
   final DateTime createdAt; // timestamp with time zone -> DateTime
-  
+
   // Valores BCV (o base)
   final double? previusValue; // numeric -> double
   final double? value;
@@ -21,8 +20,7 @@ class CurrencyHistoryModel {
   final double? euroPercentageDifference;
 
   final DateTime? averageRateUpdateDate;
-  final DateTime? oficialRateUpdateDate; 
-
+  final DateTime? oficialRateUpdateDate;
 
   CurrencyHistoryModel({
     required this.createdAt,
@@ -77,8 +75,12 @@ class CurrencyHistoryModel {
       euroValue: json['euro_value'],
       euroIncrementValue: json['euro_increment_value'],
       euroPercentageDifference: json['euro_percentage_difference'],
-      oficialRateUpdateDate: json['oficial_update_date'] != null ? DateTime.parse(json['oficial_update_date']) : null,
-      averageRateUpdateDate: json['average_update_date'] != null ? DateTime.parse(json['average_update_date']) : null,
+      oficialRateUpdateDate: json['oficial_update_date'] != null
+          ? DateTime.parse(json['oficial_update_date'])
+          : null,
+      averageRateUpdateDate: json['average_update_date'] != null
+          ? DateTime.parse(json['average_update_date'])
+          : null,
     );
   }
 }

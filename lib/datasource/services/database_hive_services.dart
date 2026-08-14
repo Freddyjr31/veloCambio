@@ -4,7 +4,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:velocambio/models/adapters/currency_history_adapters.dart';
 
 class DatabaseHiveServices {
-
   static const String _boxName = 'dolar_history';
 
   // Abrir la caja (se puede llamar al inicio o en cada operación)
@@ -34,18 +33,18 @@ class DatabaseHiveServices {
 
   //* Guardar un elemento
   Future<bool> saveCurrencyHistory(CurrencyHistoryModel item) async {
-
     final box = await _getBox();
-    
+
     try {
       await box.add(item);
-      log('Insertado correctamente en la caja', name: 'HIVE - saveCurrencyHistory');
+      log(
+        'Insertado correctamente en la caja',
+        name: 'HIVE - saveCurrencyHistory',
+      );
       return true;
     } catch (e) {
       log('Error al insertar: $e', name: 'HIVE - insertPaymentDataSource');
       return false;
     }
-
   }
-
 }

@@ -1,10 +1,7 @@
-
 class EuroExchangeModel {
   final List<EuroExchangeTypeModel> exchange;
 
-  EuroExchangeModel({
-    required this.exchange,
-  });
+  EuroExchangeModel({required this.exchange});
 
   factory EuroExchangeModel.fromList(List list) {
     return EuroExchangeModel(
@@ -31,7 +28,7 @@ class EuroExchangeTypeModel {
     this.venta,
     required this.promedio,
     this.fechaActualizacion,
-    this.fecha
+    this.fecha,
   });
 
   //* TO JSON
@@ -57,12 +54,12 @@ class EuroExchangeTypeModel {
       compra: json['compra'] ?? 0.0,
       venta: json['venta'] ?? 0.0,
       promedio: json['promedio'],
-      fechaActualizacion: json['fechaActualizacion'] != null 
-        ? DateTime.parse(json['fechaActualizacion']) 
-        : DateTime.now(),
-      fecha: json['fecha'] != null 
-        ? DateTime.parse(json['fecha']) 
-        : DateTime.now(),
+      fechaActualizacion: json['fechaActualizacion'] != null
+          ? DateTime.parse(json['fechaActualizacion'])
+          : DateTime.now(),
+      fecha: json['fecha'] != null
+          ? DateTime.parse(json['fecha'])
+          : DateTime.now(),
     );
   }
 }

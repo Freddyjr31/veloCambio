@@ -38,23 +38,24 @@ class BinanceAdModel {
     return BinanceAdModel(
       price: double.tryParse(adv['price']?.toString() ?? '0') ?? 0,
       traderName: advertiser?['nickName'] ?? '',
-      paymentMethods: (adv['tradeMethods'] as List?)
-              ?.map((m) =>
-                  (m as Map<String, dynamic>)['tradeMethodName']?.toString() ??
-                  '')
+      paymentMethods:
+          (adv['tradeMethods'] as List?)
+              ?.map(
+                (m) =>
+                    (m as Map<String, dynamic>)['tradeMethodName']
+                        ?.toString() ??
+                    '',
+              )
               .toList() ??
           [],
-      minAmount: double.tryParse(
-              adv['minSingleTransAmount']?.toString() ?? '0') ??
-          0,
-      maxAmount: double.tryParse(
-              adv['maxSingleTransAmount']?.toString() ?? '0') ??
-          0,
+      minAmount:
+          double.tryParse(adv['minSingleTransAmount']?.toString() ?? '0') ?? 0,
+      maxAmount:
+          double.tryParse(adv['maxSingleTransAmount']?.toString() ?? '0') ?? 0,
       surplusAmount:
           double.tryParse(adv['surplusAmount']?.toString() ?? '0') ?? 0,
       monthOrderCount: advertiser?['monthFinishOrderCount'] ?? 0,
-      monthFinishRate:
-          (advertiser?['monthFinishRate'] ?? 0.0).toDouble(),
+      monthFinishRate: (advertiser?['monthFinishRate'] ?? 0.0).toDouble(),
     );
   }
 }

@@ -1,4 +1,3 @@
-
 // import 'dart:developer';
 
 // import 'package:velocambio/main.dart';
@@ -13,7 +12,7 @@
 //         await supabase
 //             .from('dolar_history')
 //             .insert(data.toJson());
-            
+
 //         log('Insertado correctamente', name: 'insertPaymentDataSource');
 //         return true;
 //       } catch (error) {

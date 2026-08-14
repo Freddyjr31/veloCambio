@@ -1,6 +1,4 @@
-
 enum Currency {
-  
   usd(
     code: 'USD',
     name: 'Dólar Estadounidense',
@@ -30,8 +28,7 @@ enum Currency {
     name: 'USDT',
     symbol: '\$',
     flagPath: 'assets/images/Flag_United_States.svg.png',
-  )
-  ;
+  );
 
   final String code;
   final String name;

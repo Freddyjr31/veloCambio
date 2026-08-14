@@ -123,19 +123,17 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-
                         Skeletonizer(
                           enabled: exchangeProvider.isLoading,
-                            effect: ShimmerEffect(
-                              baseColor: Colors.grey[50]!.withAlpha(50),
-                              highlightColor: Colors.grey[50]!.withAlpha(100),
-                              duration: Duration(seconds: 1),
-                            ),
+                          effect: ShimmerEffect(
+                            baseColor: Colors.grey[50]!.withAlpha(50),
+                            highlightColor: Colors.grey[50]!.withAlpha(100),
+                            duration: Duration(seconds: 1),
+                          ),
                           child: Text(
                             '${widget.value?.toStringAsFixed(3)} VES',
                             style: Theme.of(context).textTheme.titleMedium
@@ -146,8 +144,9 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
                                 ),
                           ),
                         ),
-                
-                        if(widget.type != ExchangeType.oficialUsd && widget.type != ExchangeType.custom)
+
+                        if (widget.type != ExchangeType.oficialUsd &&
+                            widget.type != ExchangeType.custom)
                           Skeletonizer(
                             enabled: exchangeProvider.isLoading,
                             effect: ShimmerEffect(
@@ -168,7 +167,7 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
                             ),
                           ),
 
-                        if(widget.type != ExchangeType.custom)
+                        if (widget.type != ExchangeType.custom)
                           Skeletonizer(
                             enabled: exchangeProvider.isLoading,
                             effect: ShimmerEffect(
@@ -177,7 +176,8 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
                               duration: Duration(seconds: 1),
                             ),
                             child: Text(
-                              (widget.variacion24h != null || widget.variacion7d != null)
+                              (widget.variacion24h != null ||
+                                      widget.variacion7d != null)
                                   ? '24 hr: ${widget.variacion24h?.toStringAsFixed(2)}% | 7d: ${widget.variacion7d?.toStringAsFixed(2)}%'
                                   : '',
                               style: Theme.of(context).textTheme.labelSmall
@@ -190,7 +190,7 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
                           ),
                       ],
                     ),
-                
+
                     if (widget.type == ExchangeType.custom)
                       IconButton(
                         color: widget.isSelected
@@ -207,19 +207,17 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
                             customProvider.selectedCustomModel!,
                           );
                           customProvider.customAmountController.clear();
-                
+
                           //* Si la tasa personalizada eliminada es la seleccionada, se selecciona la tasa oficial del BCV
-                          coinProvider.setAmount(
-                            exchangeProvider.oficialRate,
-                          );
-                
+                          coinProvider.setAmount(exchangeProvider.oficialRate);
+
                           coinProvider.calculatedAmount(
                             rateUsdBcv: exchangeProvider.oficialRate,
                             rateUsdMarket: exchangeProvider.averageRate,
                             rateEUR: euroProvider.oficialEuroRate,
                             rateP2P: binanceProvider.p2pPrice,
                           );
-                
+
                           coinProvider.changeExchangeType(
                             ExchangeType.oficialUsd,
                           );

@@ -16,7 +16,6 @@ import 'package:velocambio/models/adapters/usd_bcv_model_adapter.dart';
 import 'package:velocambio/models/adapters/usd_market_model_adapter.dart';
 
 Future<void> main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
   GoogleFonts.config.allowRuntimeFetching = false;
 
@@ -28,7 +27,6 @@ Future<void> main() async {
   await MobileAds.instance.initialize();
 
   try {
-    
     final dir = await getApplicationSupportDirectory();
     final path = '${dir.path}/velocambio/hive';
     await Hive.initFlutter(path);
@@ -43,12 +41,12 @@ Future<void> main() async {
     await Hive.openBox<UsdMarketModel>('promedio_box');
     await Hive.openBox<EuroModel>('euro_box');
     await Hive.openBox<CustomModel>('custom_box');
-
   } on Exception catch (e) {
     log(e.toString(), name: 'MAIN - INITIALIZE');
   }
 
-  ErrorWidget.builder = (FlutterErrorDetails details, {StackTrace? stackTrace}) {
+  ErrorWidget
+      .builder = (FlutterErrorDetails details, {StackTrace? stackTrace}) {
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Material(
@@ -64,11 +62,7 @@ Future<void> main() async {
                     color: Colors.red[100],
                     borderRadius: BorderRadius.circular(100),
                   ),
-                  child: const Icon(
-                    Icons.error,
-                    color: Colors.red,
-                    size: 100,
-                  ),
+                  child: const Icon(Icons.error, color: Colors.red, size: 100),
                 ),
                 SizedBox(height: 20),
                 Center(
@@ -85,12 +79,10 @@ Future<void> main() async {
               ],
             ),
           ),
-        )
+        ),
       ),
     );
   };
 
-  runApp(
-    const MainApp()
-    );
+  runApp(const MainApp());
 }

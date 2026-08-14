@@ -16,8 +16,14 @@ class HomeWidgetService {
         _bcvRateKey,
         model.price.toStringAsFixed(3),
       );
-      await HomeWidget.saveWidgetData<String>(_bcvDateKey, _formatDate(model.fetched_at));
-      await HomeWidget.saveWidgetData<String>(_bcvBaseUrlKey, dio.options.baseUrl);
+      await HomeWidget.saveWidgetData<String>(
+        _bcvDateKey,
+        _formatDate(model.fetched_at),
+      );
+      await HomeWidget.saveWidgetData<String>(
+        _bcvBaseUrlKey,
+        dio.options.baseUrl,
+      );
       await HomeWidget.updateWidget(name: _androidWidgetName);
     } catch (_) {}
   }

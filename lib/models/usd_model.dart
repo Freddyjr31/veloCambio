@@ -1,17 +1,11 @@
-
 class UsdExchangeModel {
-  
   final List<UsdExchangeTypeModel> exchange;
-  
-  UsdExchangeModel({
-    required this.exchange,
-  });
+
+  UsdExchangeModel({required this.exchange});
 
   //* TO JSON
   Map<String, dynamic> toJson() {
-    return {
-      'exchange': exchange.map((e) => e.toJson()).toList(),
-    };
+    return {'exchange': exchange.map((e) => e.toJson()).toList()};
   }
 
   //* FROM JSON
@@ -46,7 +40,7 @@ class UsdExchangeTypeModel {
     this.venta,
     required this.promedio,
     this.fechaActualizacion,
-    this.fecha
+    this.fecha,
   });
 
   //* TO JSON
@@ -72,12 +66,12 @@ class UsdExchangeTypeModel {
       compra: json['compra'] ?? 0.0,
       venta: json['venta'] ?? 0.0,
       promedio: json['promedio'],
-      fechaActualizacion: json['fechaActualizacion'] != null 
-        ? DateTime.parse(json['fechaActualizacion']) 
-        : DateTime.now(),
-      fecha: json['fecha'] != null 
-        ? DateTime.parse(json['fecha']) 
-        : DateTime.now(),
+      fechaActualizacion: json['fechaActualizacion'] != null
+          ? DateTime.parse(json['fechaActualizacion'])
+          : DateTime.now(),
+      fecha: json['fecha'] != null
+          ? DateTime.parse(json['fecha'])
+          : DateTime.now(),
     );
   }
 }

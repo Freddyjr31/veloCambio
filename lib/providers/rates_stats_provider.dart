@@ -7,7 +7,6 @@ import 'package:velocambio/models/exchange_types_model.dart';
 import 'package:velocambio/models/variacion_model.dart';
 
 class RatesStatsProvider extends CmmGeneralProvider {
-
   late RatesStatsApi ratesStatsApi = RatesStatsApi();
 
   BrechaResponseModel brecha = BrechaResponseModel.empty();

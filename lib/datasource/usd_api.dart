@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 import 'dart:io';
 
@@ -8,7 +7,7 @@ import 'package:velocambio/core/providers/cmm_general_provider.dart';
 import 'package:velocambio/models/rate_api_model.dart';
 
 // class UsdsExchangeRateApi extends CmmGeneralProvider {
-  
+
 //   Future<UsdExchangeModel> getExchangeRate() async {
 
 //    late UsdExchangeModel resp;
@@ -23,7 +22,7 @@ import 'package:velocambio/models/rate_api_model.dart';
 //       if (req.statusCode == HttpStatus.ok) {
 //         super.setErrors(false);
 //         super.setErrorMessage('');
-        
+
 //         // log('${req.data}');
 //         resp = UsdExchangeModel.fromList(req.data);
 //         super.setLoadingStatus(false);
@@ -41,15 +40,13 @@ import 'package:velocambio/models/rate_api_model.dart';
 //     }
 
 //     notifyListeners();
-      
+
 //     return resp;
 //   }
 // }
 
 class UsdRateApi extends CmmGeneralProvider {
-
   Future<RateApiResponseModel> getUsdOfficial() async {
-
     RateApiResponseModel resp = RateApiResponseModel.empty();
 
     try {
@@ -57,14 +54,13 @@ class UsdRateApi extends CmmGeneralProvider {
       final req = await dio.get('rates/usd_oficial');
       log(req.data.toString());
       super.setStatusCode(req.statusCode!);
-      
-      if(req.statusCode == HttpStatus.ok) {
+
+      if (req.statusCode == HttpStatus.ok) {
         super.setErrors(false);
         super.setErrorMessage('');
         resp = RateApiResponseModel.fromJson(req.data);
         log("Response convertida: $resp tipos de cambio encontrados");
       }
-      
     } on SocketException {
       log('No hay internet', name: 'NO INTERNET');
       throw Exception('No hay internet');
@@ -86,7 +82,6 @@ class UsdRateApi extends CmmGeneralProvider {
   }
 
   Future<RateApiResponseModel> getUsdMarket() async {
-
     RateApiResponseModel resp = RateApiResponseModel.empty();
 
     try {
@@ -96,14 +91,13 @@ class UsdRateApi extends CmmGeneralProvider {
       log(req.data.toString());
       super.setStatusCode(req.statusCode!);
       notifyListeners();
-      
-      if(req.statusCode == HttpStatus.ok) {
+
+      if (req.statusCode == HttpStatus.ok) {
         super.setErrors(false);
         super.setErrorMessage('');
         resp = RateApiResponseModel.fromJson(req.data);
         log("Response convertida: $resp tipos de cambio encontrados");
       }
-      
     } on SocketException {
       log('No hay internet', name: 'NO INTERNET');
       throw Exception('No hay internet');

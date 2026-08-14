@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 
 import 'package:flutter/widgets.dart';
@@ -7,8 +6,7 @@ import 'package:velocambio/core/services/home_widget_service.dart';
 import 'package:velocambio/datasource/usd_api.dart';
 import 'package:velocambio/models/rate_api_model.dart';
 
-class UsdExchangeRateProvider extends CmmGeneralProvider{
-
+class UsdExchangeRateProvider extends CmmGeneralProvider {
   TextEditingController amountController = TextEditingController();
 
   //* Para saber si subio o bajo el valor de la tasa oficial
@@ -17,6 +15,7 @@ class UsdExchangeRateProvider extends CmmGeneralProvider{
     oficialRateUpValue = val;
     notifyListeners();
   }
+
   //* Para saber si subio o bajo el valor de la tasa promedio
   bool averageRateUpValue = false;
   void setAverageRateUpValue(bool val) {
@@ -67,15 +66,13 @@ class UsdExchangeRateProvider extends CmmGeneralProvider{
   late UsdRateApi usdsExchangeRateApi = UsdRateApi();
 
   Future<RateApiResponseModel> getUsdExchangeRate() async {
-    
     log('Function getUsdExchangeRate');
     super.setLoadingStatus(true);
     notifyListeners();
 
     RateApiResponseModel resp = RateApiResponseModel.empty();
 
-    try{
-      
+    try {
       resp = await usdsExchangeRateApi.getUsdOfficial();
       debugPrint('Respuesta de la API: $resp');
 
@@ -85,7 +82,6 @@ class UsdExchangeRateProvider extends CmmGeneralProvider{
       if (resp.price > 0) {
         await HomeWidgetService.syncBcvRateToWidget(resp);
       }
-
     } catch (e) {
       // Aquí podrías manejar el error de forma global
       log('Error en el provider: $e');
@@ -98,22 +94,19 @@ class UsdExchangeRateProvider extends CmmGeneralProvider{
   }
 
   Future<RateApiResponseModel> getUsdMarketExchangeRate() async {
-    
     log('Function getUsdExchangeRate');
     super.setLoadingStatus(true);
     notifyListeners();
 
     RateApiResponseModel resp = RateApiResponseModel.empty();
 
-    try{
-      
+    try {
       resp = await usdsExchangeRateApi.getUsdMarket();
       debugPrint('Respuesta de la API: $resp');
       debugPrint(resp.toString());
 
       averageRate = resp.price;
       averageRateUpdateDate = resp.fetched_at;
-
     } catch (e) {
       // Aquí podrías manejar el error de forma global
       log('Error en el provider: $e');
@@ -125,8 +118,6 @@ class UsdExchangeRateProvider extends CmmGeneralProvider{
     return resp;
   }
 
-
-
   @override
   void disposeValues() {
     super.disposeValues();
@@ -135,5 +126,4 @@ class UsdExchangeRateProvider extends CmmGeneralProvider{
     setOficialRateUpValue(false);
     setAverageRateUpValue(false);
   }
-
 }

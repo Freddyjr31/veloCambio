@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 
 class BcvDisclaimerModal {
   static void show(BuildContext context) {
-
     Size size = MediaQuery.of(context).size;
-    
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -19,15 +18,13 @@ class BcvDisclaimerModal {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-
               Image.asset(
                 'assets/images/app_icon-removebg_small.PNG',
                 width: size.width * 0.5,
               ),
-                
-              Text('Aviso Importante')
 
-              ],
+              Text('Aviso Importante'),
+            ],
           ),
           content: SingleChildScrollView(
             child: const Column(

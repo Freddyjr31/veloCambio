@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -11,7 +10,6 @@ import 'package:velocambio/providers/exchange_rate_provider.dart';
 
 // ignore: must_be_immutable
 class InvertCoinButton extends StatefulWidget {
-  
   late CoinProvider coinProvider;
   late UsdExchangeRateProvider exchangeRateProvider;
   late EuroProvider euroProvider;
@@ -26,44 +24,40 @@ class InvertCoinButton extends StatefulWidget {
     required this.euroProvider,
     required this.usdtProvider,
     required this.destinationCurrency,
-    required this.originCurrency
-    });
+    required this.originCurrency,
+  });
 
   @override
   State<StatefulWidget> createState() => _InvertCoinButtonState();
 }
-class _InvertCoinButtonState extends State<InvertCoinButton> {
 
+class _InvertCoinButtonState extends State<InvertCoinButton> {
   @override
   Widget build(BuildContext context) {
-
     var coinProvider = widget.coinProvider;
     var exchangeProvider = widget.exchangeRateProvider;
     var euroProvider = widget.euroProvider;
     var binanceProvider = widget.usdtProvider;
     var destinationCurrency = widget.destinationCurrency;
     var originCurrency = widget.originCurrency;
-    
+
     return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
-        child: Row(
-          spacing: 5,
-          children: [
-            
-            //* Icono de la moneda de origen
-            Text(
-              coinProvider.inputCurrencyCoin,
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-      
-            Tooltip(
-              message: 'Cambiar monedas',
-              child: Container(
-                width: 30,
-                height: 30,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                ),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
+      child: Row(
+        spacing: 5,
+        children: [
+          //* Icono de la moneda de origen
+          Text(
+            coinProvider.inputCurrencyCoin,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+
+          Tooltip(
+            message: 'Cambiar monedas',
+            child: Container(
+              width: 30,
+              height: 30,
+              decoration: BoxDecoration(shape: BoxShape.circle),
               child: IconButton(
                 style: ButtonStyle(
                   padding: WidgetStateProperty.all(EdgeInsets.zero),
@@ -73,49 +67,59 @@ class _InvertCoinButtonState extends State<InvertCoinButton> {
                   backgroundColor: WidgetStateProperty.all(Colors.white12),
                 ),
                 onPressed: () {
-            
                   // setState(() {
                   //   widget.isVes = !widget.isVes;
                   // });
-                  
+
                   //* Intercambiar las monedas
                   coinProvider.changeOriginCurrency(destinationCurrency);
                   coinProvider.changeDestinationCurrency(originCurrency);
-            
-                  //* aqui intercambio las tasas de cambio
-                  if(!coinProvider.isDestinationVES()) {
 
+                  //* aqui intercambio las tasas de cambio
+                  if (!coinProvider.isDestinationVES()) {
                     coinProvider.setInputCurrencyCoin(Currency.ves.code);
 
-                    log(coinProvider.inputCurrencyCoin, name: 'inputCurrencyCoin');
+                    log(
+                      coinProvider.inputCurrencyCoin,
+                      name: 'inputCurrencyCoin',
+                    );
 
-                    if(ExchangeType.oficialUsd == coinProvider.exchangeType || ExchangeType.averageUsd == coinProvider.exchangeType) {
+                    if (ExchangeType.oficialUsd == coinProvider.exchangeType ||
+                        ExchangeType.averageUsd == coinProvider.exchangeType) {
                       coinProvider.setOutputCurrencyCoin(Currency.usd.code);
-                    } else if (ExchangeType.oficialEur == coinProvider.exchangeType) {
+                    } else if (ExchangeType.oficialEur ==
+                        coinProvider.exchangeType) {
                       coinProvider.setOutputCurrencyCoin(Currency.eur.code);
-                    } else if (ExchangeType.custom == coinProvider.exchangeType) {
+                    } else if (ExchangeType.custom ==
+                        coinProvider.exchangeType) {
                       coinProvider.setOutputCurrencyCoin(Currency.custom.code);
-                    } else if (ExchangeType.p2pUsdt == coinProvider.exchangeType) {
+                    } else if (ExchangeType.p2pUsdt ==
+                        coinProvider.exchangeType) {
                       coinProvider.setOutputCurrencyCoin(Currency.usdt.code);
                     }
-
                   } else {
-
                     coinProvider.setOutputCurrencyCoin(Currency.ves.code);
 
-                    log(coinProvider.outputCurrencyCoin, name: 'outputCurrencyCoin');
-                    
-                    if(ExchangeType.oficialUsd == coinProvider.exchangeType || ExchangeType.averageUsd == coinProvider.exchangeType) {
+                    log(
+                      coinProvider.outputCurrencyCoin,
+                      name: 'outputCurrencyCoin',
+                    );
+
+                    if (ExchangeType.oficialUsd == coinProvider.exchangeType ||
+                        ExchangeType.averageUsd == coinProvider.exchangeType) {
                       coinProvider.setInputCurrencyCoin(Currency.usd.code);
-                    } else if (ExchangeType.oficialEur == coinProvider.exchangeType) {
+                    } else if (ExchangeType.oficialEur ==
+                        coinProvider.exchangeType) {
                       coinProvider.setInputCurrencyCoin(Currency.eur.code);
-                    } else if (ExchangeType.custom == coinProvider.exchangeType) {
+                    } else if (ExchangeType.custom ==
+                        coinProvider.exchangeType) {
                       coinProvider.setInputCurrencyCoin(Currency.custom.code);
-                    } else if (ExchangeType.p2pUsdt == coinProvider.exchangeType) {
+                    } else if (ExchangeType.p2pUsdt ==
+                        coinProvider.exchangeType) {
                       coinProvider.setInputCurrencyCoin(Currency.usdt.code);
                     }
                   }
-            
+
                   //* Recalcular el monto con la nueva moneda de destino
                   coinProvider.calculatedAmount(
                     rateUsdBcv: exchangeProvider.oficialRate,
@@ -124,21 +128,18 @@ class _InvertCoinButtonState extends State<InvertCoinButton> {
                     rateP2P: binanceProvider.p2pPrice,
                   );
                 },
-                icon: const Icon(
-                  Icons.swap_horiz,
-                  color: Colors.white,
-                ),
+                icon: const Icon(Icons.swap_horiz, color: Colors.white),
               ),
-            )
             ),
-      
-            //* Icono de la moneda de destino
-            Text(
-              coinProvider.outputCurrencyCoin,
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-          ],
-        ),
-      );
+          ),
+
+          //* Icono de la moneda de destino
+          Text(
+            coinProvider.outputCurrencyCoin,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+        ],
+      ),
+    );
   }
 }

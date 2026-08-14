@@ -8,9 +8,7 @@ import 'package:velocambio/models/brecha_model.dart';
 import 'package:velocambio/models/variacion_model.dart';
 
 class RatesStatsApi extends CmmGeneralProvider {
-
   Future<BrechaResponseModel> getBrecha() async {
-
     BrechaResponseModel resp = BrechaResponseModel.empty();
 
     try {
@@ -26,7 +24,6 @@ class RatesStatsApi extends CmmGeneralProvider {
         resp = BrechaResponseModel.fromJson(req.data);
         log("Response convertida: $resp");
       }
-
     } on SocketException {
       log('No hay internet', name: 'NO INTERNET - BRECHA');
       throw Exception('No hay internet');
@@ -41,7 +38,6 @@ class RatesStatsApi extends CmmGeneralProvider {
   }
 
   Future<VariacionesResponseModel> getVariaciones() async {
-
     VariacionesResponseModel resp = VariacionesResponseModel.empty();
 
     try {
@@ -57,7 +53,6 @@ class RatesStatsApi extends CmmGeneralProvider {
         resp = VariacionesResponseModel.fromJson(req.data);
         log("Response convertida: $resp");
       }
-
     } on SocketException {
       log('No hay internet', name: 'NO INTERNET - VARIACIONES');
       throw Exception('No hay internet');

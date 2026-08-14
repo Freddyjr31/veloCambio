@@ -8,7 +8,6 @@ import 'package:velocambio/core/providers/cmm_general_provider.dart';
 enum ConnectivityStatus { isConnected, isDisconnected, notDetermined }
 
 class ConnectivityProvider extends CmmGeneralProvider {
-
   ConnectivityStatus _status = ConnectivityStatus.notDetermined;
   StreamSubscription? _subscription;
   // Getter para leer el estado desde la UI
