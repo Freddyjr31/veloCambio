@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:toastification/toastification.dart';
 import 'package:velocambio/core/themes/cmm_theme_data.dart';
-import 'package:velocambio/core/utlis/format_coins.dart';
 import 'package:velocambio/core/utils/operations.dart';
+import 'package:velocambio/core/utlis/format_coins.dart';
 import 'package:velocambio/widgets/operation_pill_button.dart';
 
 /// Tipos de operación disponibles en el modal.
@@ -315,7 +315,7 @@ class _OperationsModalState extends State<OperationsModal> {
                     ),
                   ),
 
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 16),
 
                   //* Selector de operacion: porcentajes agrupados arriba
                   Row(
@@ -335,7 +335,7 @@ class _OperationsModalState extends State<OperationsModal> {
                         .toList(),
                   ),
 
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 16),
 
                   //* Campo de valor/porcentaje
                   TextField(
@@ -358,11 +358,11 @@ class _OperationsModalState extends State<OperationsModal> {
                     ),
                   ),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
 
                   //* Resultado
                   Container(
-                    width: size.width * 0.85,
+                    width: double.infinity,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 12,

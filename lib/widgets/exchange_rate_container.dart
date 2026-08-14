@@ -48,8 +48,8 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
     final binanceProvider = context.watch<BinanceProvider>();
 
     return SizedBox(
+      height: widget.size / 5.2,
       width: widget.size,
-      height: 60,
       child: Stack(
         clipBehavior: Clip.hardEdge,
         children: [
@@ -72,7 +72,6 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
             ),
           Container(
             width: widget.size,
-            height: 60,
             // padding: EdgeInsets.all(15),
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 1),
             decoration: BoxDecoration(
@@ -101,9 +100,9 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
                             const Icon(Icons.flag, size: 15),
                       ),
                     ),
-
+    
                     SizedBox(width: 10),
-
+    
                     //* Text
                     Text(
                       widget.nameType,
@@ -116,9 +115,9 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
                     ),
                   ],
                 ),
-
+    
                 SizedBox(height: 10),
-
+    
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -138,13 +137,15 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
                             '${widget.value?.toStringAsFixed(3)} VES',
                             style: Theme.of(context).textTheme.titleMedium
                                 ?.copyWith(
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: widget.size / 24,
                                   color: widget.isSelected
                                       ? primaryColor
                                       : Colors.grey[600],
                                 ),
                           ),
                         ),
-
+    
                         if (widget.type != ExchangeType.oficialUsd &&
                             widget.type != ExchangeType.custom)
                           Skeletonizer(
@@ -160,13 +161,14 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
                                   : '',
                               style: Theme.of(context).textTheme.labelSmall
                                   ?.copyWith(
+                                    fontSize: widget.size / 36,
                                     color: !widget.isSelected
                                         ? Colors.grey[600]
                                         : null,
                                   ),
                             ),
                           ),
-
+    
                         if (widget.type != ExchangeType.custom)
                           Skeletonizer(
                             enabled: exchangeProvider.isLoading,
@@ -182,6 +184,7 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
                                   : '',
                               style: Theme.of(context).textTheme.labelSmall
                                   ?.copyWith(
+                                    fontSize: widget.size / 36,
                                     color: !widget.isSelected
                                         ? Colors.grey[600]
                                         : null,
@@ -190,7 +193,7 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
                           ),
                       ],
                     ),
-
+    
                     if (widget.type == ExchangeType.custom)
                       IconButton(
                         color: widget.isSelected
@@ -207,17 +210,19 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
                             customProvider.selectedCustomModel!,
                           );
                           customProvider.customAmountController.clear();
-
+    
                           //* Si la tasa personalizada eliminada es la seleccionada, se selecciona la tasa oficial del BCV
-                          coinProvider.setAmount(exchangeProvider.oficialRate);
-
+                          coinProvider.setAmount(
+                            exchangeProvider.oficialRate,
+                          );
+    
                           coinProvider.calculatedAmount(
                             rateUsdBcv: exchangeProvider.oficialRate,
                             rateUsdMarket: exchangeProvider.averageRate,
                             rateEUR: euroProvider.oficialEuroRate,
                             rateP2P: binanceProvider.p2pPrice,
                           );
-
+    
                           coinProvider.changeExchangeType(
                             ExchangeType.oficialUsd,
                           );
