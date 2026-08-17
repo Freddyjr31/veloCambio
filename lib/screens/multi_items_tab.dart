@@ -7,6 +7,7 @@ import 'package:velocambio/models/exchange_types_model.dart';
 import 'package:velocambio/models/multi_item_model.dart';
 import 'package:velocambio/providers/coin_provider.dart';
 import 'package:velocambio/providers/multi_items_provider.dart';
+import 'package:velocambio/providers/theme_provider.dart';
 import 'package:velocambio/widgets/bottom_baner_ad.dart';
 
 /// Pestaña de multi-items.
@@ -35,6 +36,9 @@ class MultiItemsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final multiProvider = context.watch<MultiItemsProvider>();
     final coinProvider = context.watch<CoinProvider>();
+    final size = MediaQuery.of(context).size;
+
+    final themeProvider = context.watch<ThemeProvider>();
 
     //* Tasa global = tasa seleccionada en la calculadora principal.
     final globalRate = coinProvider.amount;
@@ -102,8 +106,17 @@ class MultiItemsTab extends StatelessWidget {
                       ..setDefaultRate(globalRate)
                       ..addItem();
                   },
-                  icon: const Icon(Icons.add, size: 18),
-                  label: const Text('Agregar item'),
+                  icon: Icon(
+                    Icons.add,
+                    size: 18,
+                    color: themeProvider.isDark ? Colors.white : Colors.black,
+                  ),
+                  label: Text(
+                    'Agregar item',
+                    style: TextStyle(
+                      color: themeProvider.isDark ? Colors.white : Colors.black,
+                    ),
+                  ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor.withAlpha(60),
                     foregroundColor: Colors.white,
@@ -119,6 +132,8 @@ class MultiItemsTab extends StatelessWidget {
                         width: 1,
                       ),
                     ),
+                    elevation: 0,
+                    shadowColor: Colors.transparent,
                   ),
                 ),
               ],
@@ -205,7 +220,7 @@ class _MultiItemCard extends StatelessWidget {
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
-                  keyboardAppearance: Brightness.dark,
+                  keyboardAppearance: Theme.of(context).brightness,
                   textAlign: TextAlign.end,
                   onChanged: (value) {
                     multiProvider.updateAmount(
@@ -215,11 +230,10 @@ class _MultiItemCard extends StatelessWidget {
                   },
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: backgroundColor,
                     prefix: Text(
                       '$baseCurrency ',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.blueGrey[100],
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -232,7 +246,7 @@ class _MultiItemCard extends StatelessWidget {
 
               IconButton(
                 tooltip: 'Eliminar item',
-                icon: const Icon(Icons.delete_outline),
+                icon: const Icon(Icons.delete_outline, color: Colors.red),
                 onPressed: () => multiProvider.removeItem(index),
               ),
             ],
@@ -298,7 +312,7 @@ class _MultiItemCard extends StatelessWidget {
                         keyboardType: const TextInputType.numberWithOptions(
                           decimal: true,
                         ),
-                        keyboardAppearance: Brightness.dark,
+                        keyboardAppearance: Theme.of(context).brightness,
                         textAlign: TextAlign.end,
                         onChanged: (value) {
                           multiProvider.updateRate(
@@ -308,12 +322,13 @@ class _MultiItemCard extends StatelessWidget {
                         },
                         decoration: InputDecoration(
                           filled: true,
-                          fillColor: backgroundColor,
                           prefix: Text(
                             'Tasa ',
                             style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
-                                  color: Colors.blueGrey[100],
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface,
                                   fontWeight: FontWeight.bold,
                                 ),
                           ),

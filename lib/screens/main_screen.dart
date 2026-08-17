@@ -1,5 +1,6 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'package:velocambio/core/themes/cmm_theme_data.dart';
 import 'package:velocambio/screens/history_tab.dart';
 import 'package:velocambio/screens/home_tab.dart';
 import 'package:velocambio/screens/multi_items_tab.dart';
@@ -30,39 +31,53 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       appBar: MainAppBar(),
       body: IndexedStack(index: _currentIndex, children: _tabs),
       bottomNavigationBar: Container(
-        decoration: const BoxDecoration(
-          color: surfaceColor,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surfaceContainerLow,
+          // color: surfaceColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         ),
         clipBehavior: Clip.antiAlias,
-        child: NavigationBar(
-          selectedIndex: _currentIndex,
-          onDestinationSelected: (index) {
-            setState(() => _currentIndex = index);
-          },
-          backgroundColor: Colors.transparent,
-          height: 68,
-          destinations: const [
-            NavigationDestination(
-              icon: Icon(Icons.home_outlined),
-              selectedIcon: Icon(Icons.home),
-              label: 'Inicio',
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+              child: NavigationBar(
+                selectedIndex: _currentIndex,
+                onDestinationSelected: (index) {
+                  setState(() => _currentIndex = index);
+                },
+                backgroundColor: Colors.transparent,
+                height: 68,
+                destinations: const [
+                  NavigationDestination(
+                    icon: Icon(Icons.home_outlined),
+                    selectedIcon: Icon(Icons.home),
+                    label: 'Inicio',
+                  ),
+                  NavigationDestination(
+                    icon: Icon(Icons.playlist_add_check_circle_outlined),
+                    selectedIcon: Icon(Icons.playlist_add_check_circle),
+                    label: 'Multi-items',
+                  ),
+                  NavigationDestination(
+                    icon: Icon(Icons.history),
+                    selectedIcon: Icon(Icons.history_edu_outlined),
+                    label: 'Histórico',
+                  ),
+                ],
+              ),
             ),
-            NavigationDestination(
-              icon: Icon(Icons.playlist_add_check_circle_outlined),
-              selectedIcon: Icon(Icons.playlist_add_check_circle),
-              label: 'Multi-items',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.history),
-              selectedIcon: Icon(Icons.history_edu_outlined),
-              label: 'Histórico',
-            ),
-          ],
+          ),
         ),
       ),
     );

@@ -6,6 +6,7 @@ import 'package:velocambio/models/exchange_types_model.dart';
 import 'package:velocambio/providers/custom_provider.dart';
 import 'package:velocambio/providers/euro_provider.dart';
 import 'package:velocambio/providers/index.dart';
+import 'package:velocambio/providers/theme_provider.dart';
 
 class ExchangeRateContainer extends StatefulWidget {
   final String? imagePath;
@@ -37,7 +38,36 @@ class ExchangeRateContainer extends StatefulWidget {
   State<ExchangeRateContainer> createState() => _ExchangeRateContainerState();
 }
 
-class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
+class _ExchangeRateContainerState extends State<ExchangeRateContainer>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _selectController;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+      value: widget.isSelected ? 1.0 : 0.0,
+    );
+  }
+
+  @override
+  void didUpdateWidget(ExchangeRateContainer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isSelected && !oldWidget.isSelected) {
+      _selectController.forward(from: 0.0);
+    } else if (!widget.isSelected && oldWidget.isSelected) {
+      _selectController.value = 0.0;
+    }
+  }
+
+  @override
+  void dispose() {
+    _selectController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     // final size = MediaQuery.of(context).size;
@@ -46,6 +76,7 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
     final exchangeProvider = context.watch<UsdExchangeRateProvider>();
     final euroProvider = context.watch<EuroProvider>();
     final binanceProvider = context.watch<BinanceProvider>();
+    final themeProvider = context.watch<ThemeProvider>();
 
     return SizedBox(
       height: widget.size / 5.2,
@@ -53,8 +84,9 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
       child: Stack(
         clipBehavior: Clip.hardEdge,
         children: [
-          if (widget.isSelected)
-            Padding(
+          FadeTransition(
+            opacity: _selectController,
+            child: Padding(
               padding: const EdgeInsets.all(14),
               child: Container(
                 decoration: BoxDecoration(
@@ -70,19 +102,34 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
                 ),
               ),
             ),
-          Container(
-            width: widget.size,
-            // padding: EdgeInsets.all(15),
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 1),
-            decoration: BoxDecoration(
-              color: widget.isSelected
-                  ? primaryColor.withValues(alpha: 0.05)
-                  : Theme.of(context).scaffoldBackgroundColor,
-              borderRadius: BorderRadius.circular(15),
-              border: widget.isSelected
-                  ? Border.all(color: primaryColor.withAlpha(50), width: 1)
-                  : Border.all(color: primaryColor.withAlpha(20), width: 1),
-            ),
+          ),
+          AnimatedBuilder(
+            animation: _selectController,
+            builder: (context, child) {
+              final bgColor = Color.lerp(
+                Theme.of(context).scaffoldBackgroundColor,
+                primaryColor.withValues(alpha: 0.05),
+                _selectController.value,
+              );
+              final borderColor = Color.lerp(
+                primaryColor.withAlpha(20),
+                primaryColor.withAlpha(50),
+                _selectController.value,
+              );
+              return Container(
+                width: widget.size,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 15,
+                  vertical: 1,
+                ),
+                decoration: BoxDecoration(
+                  color: bgColor,
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(color: borderColor!, width: 1),
+                ),
+                child: child,
+              );
+            },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -100,9 +147,9 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
                             const Icon(Icons.flag, size: 15),
                       ),
                     ),
-    
+
                     SizedBox(width: 10),
-    
+
                     //* Text
                     Text(
                       widget.nameType,
@@ -115,9 +162,9 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
                     ),
                   ],
                 ),
-    
+
                 SizedBox(height: 10),
-    
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -129,8 +176,12 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
                         Skeletonizer(
                           enabled: exchangeProvider.isLoading,
                           effect: ShimmerEffect(
-                            baseColor: Colors.grey[50]!.withAlpha(50),
-                            highlightColor: Colors.grey[50]!.withAlpha(100),
+                            baseColor: themeProvider.isDark
+                                ? Colors.grey[50]!.withAlpha(50)
+                                : primaryColor.withAlpha(20),
+                            highlightColor: themeProvider.isDark
+                                ? Colors.grey[50]!.withAlpha(100)
+                                : primaryColor.withAlpha(20),
                             duration: Duration(seconds: 1),
                           ),
                           child: Text(
@@ -145,14 +196,18 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
                                 ),
                           ),
                         ),
-    
+
                         if (widget.type != ExchangeType.oficialUsd &&
                             widget.type != ExchangeType.custom)
                           Skeletonizer(
                             enabled: exchangeProvider.isLoading,
                             effect: ShimmerEffect(
-                              baseColor: Colors.grey[50]!.withAlpha(50),
-                              highlightColor: Colors.grey[50]!.withAlpha(100),
+                              baseColor: themeProvider.isDark
+                                  ? Colors.grey[50]!.withAlpha(50)
+                                  : primaryColor.withAlpha(20),
+                              highlightColor: themeProvider.isDark
+                                  ? Colors.grey[50]!.withAlpha(100)
+                                  : primaryColor.withAlpha(20),
                               duration: Duration(seconds: 1),
                             ),
                             child: Text(
@@ -168,13 +223,17 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
                                   ),
                             ),
                           ),
-    
+
                         if (widget.type != ExchangeType.custom)
                           Skeletonizer(
                             enabled: exchangeProvider.isLoading,
                             effect: ShimmerEffect(
-                              baseColor: Colors.grey[50]!.withAlpha(50),
-                              highlightColor: Colors.grey[50]!.withAlpha(100),
+                              baseColor: themeProvider.isDark
+                                  ? Colors.grey[50]!.withAlpha(50)
+                                  : primaryColor.withAlpha(20),
+                              highlightColor: themeProvider.isDark
+                                  ? Colors.grey[50]!.withAlpha(100)
+                                  : primaryColor.withAlpha(20),
                               duration: Duration(seconds: 1),
                             ),
                             child: Text(
@@ -193,7 +252,7 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
                           ),
                       ],
                     ),
-    
+
                     if (widget.type == ExchangeType.custom)
                       IconButton(
                         color: widget.isSelected
@@ -210,19 +269,17 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer> {
                             customProvider.selectedCustomModel!,
                           );
                           customProvider.customAmountController.clear();
-    
+
                           //* Si la tasa personalizada eliminada es la seleccionada, se selecciona la tasa oficial del BCV
-                          coinProvider.setAmount(
-                            exchangeProvider.oficialRate,
-                          );
-    
+                          coinProvider.setAmount(exchangeProvider.oficialRate);
+
                           coinProvider.calculatedAmount(
                             rateUsdBcv: exchangeProvider.oficialRate,
                             rateUsdMarket: exchangeProvider.averageRate,
                             rateEUR: euroProvider.oficialEuroRate,
                             rateP2P: binanceProvider.p2pPrice,
                           );
-    
+
                           coinProvider.changeExchangeType(
                             ExchangeType.oficialUsd,
                           );

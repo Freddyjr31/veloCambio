@@ -1,20 +1,22 @@
 import 'dart:developer';
-import 'dart:ui';
+
+// import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:toastification/toastification.dart';
+// import 'package:toastification/toastification.dart';
 import 'package:velocambio/core/themes/cmm_theme_data.dart';
 import 'package:velocambio/models/adapters/currency_history_adapters.dart'
     as adapters;
-import 'package:velocambio/models/adapters/custom_model_adapter.dart';
+// import 'package:velocambio/models/adapters/custom_model_adapter.dart';
 import 'package:velocambio/models/currency_model.dart';
 import 'package:velocambio/models/exchange_types_model.dart';
 import 'package:velocambio/providers/custom_provider.dart';
 import 'package:velocambio/providers/euro_provider.dart';
 import 'package:velocambio/providers/index.dart';
+import 'package:velocambio/providers/theme_provider.dart';
 import 'package:velocambio/widgets/bcv_dialog.dart';
 import 'package:velocambio/widgets/bottom_baner_ad.dart';
 import 'package:velocambio/widgets/index.dart';
@@ -159,6 +161,7 @@ class _HomeTabState extends State<HomeTab> {
     final customProvider = context.watch<CustomProvider>();
     final binanceProvider = context.watch<BinanceProvider>();
     final statsProvider = context.watch<RatesStatsProvider>();
+    final themeProvider = context.watch<ThemeProvider>();
 
     void selectedTypeRate(ExchangeType type, double rate, String currencyCode) {
       HapticFeedback.selectionClick();
@@ -211,7 +214,12 @@ class _HomeTabState extends State<HomeTab> {
                   Tooltip(
                     message: 'Actualizar tasas',
                     child: IconButton(
-                      icon: const Icon(Icons.refresh, color: Colors.white),
+                      icon: Icon(
+                        Icons.refresh,
+                        color: themeProvider.isDark
+                            ? Colors.white
+                            : Colors.black,
+                      ),
                       onPressed: () => getExchangeRate(
                         coinProvider,
                         exchangeProvider,
@@ -352,165 +360,7 @@ class _HomeTabState extends State<HomeTab> {
                 ),
               ),
             ] else ...[
-              ElevatedButton(
-                onPressed: () {
-                  //* show button sheet para agregar una tasa personalizada
-                  showModalBottomSheet(
-                    barrierColor: Colors.black.withValues(alpha: 0.6),
-                    backgroundColor: Colors.transparent,
-                    context: context,
-                    isScrollControlled: true,
-                    useSafeArea: true,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(20),
-                      ),
-                    ),
-                    builder: (BuildContext context) {
-                      return ClipRRect(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(20),
-                        ),
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).viewInsets.bottom,
-                            ),
-                            child: SingleChildScrollView(
-                              child: Container(
-                                padding: EdgeInsets.all(20),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(
-                                    context,
-                                  ).scaffoldBackgroundColor,
-                                  borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(20),
-                                  ),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Form(
-                                      key: formKey,
-                                      child: TextFormField(
-                                        controller: customProvider
-                                            .customAmountController,
-                                        keyboardType:
-                                            TextInputType.numberWithOptions(
-                                              decimal: true,
-                                            ),
-                                        decoration: InputDecoration(
-                                          prefixIcon: Icon(Icons.attach_money),
-                                          labelText:
-                                              'Agregar tasa personalizada',
-                                          border: OutlineInputBorder(),
-                                        ),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Por favor ingrese una tasa de cambio';
-                                          }
-                                          if (double.tryParse(value) == null) {
-                                            return 'Por favor ingrese un número válido';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                    ),
-
-                                    const SizedBox(height: 10),
-
-                                    SizedBox(
-                                      width: double.infinity,
-                                      child: TextButton(
-                                        onPressed: () {
-                                          if (formKey.currentState!
-                                              .validate()) {
-                                            // Handle form submission
-                                            double customRate = double.parse(
-                                              customProvider
-                                                  .customAmountController
-                                                  .text,
-                                            );
-                                            log(
-                                              'Custom Rate ingresada: $customRate',
-                                              name: 'HomeTab - Custom Rate',
-                                            );
-                                            customProvider.setCustomModel(
-                                              CustomModel(
-                                                name: 'Tasa personalizada',
-                                                value: customRate,
-                                                fechaActualizacion:
-                                                    DateTime.now(),
-                                                createdAt: DateTime.now(),
-                                              ),
-                                            );
-
-                                            toastification.show(
-                                              context: context,
-                                              type: ToastificationType.success,
-                                              autoCloseDuration: Duration(
-                                                seconds: 3,
-                                              ),
-                                              style: ToastificationStyle
-                                                  .fillColored,
-                                              title: const Text(
-                                                'Tasa personalizada agregada',
-                                              ),
-                                            );
-
-                                            Navigator.pop(context);
-                                          }
-                                        },
-                                        style: TextButton.styleFrom(
-                                          minimumSize: Size(
-                                            size.width * 0.9,
-                                            40,
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              12,
-                                            ),
-                                          ),
-                                          backgroundColor: Colors.grey[50]
-                                              ?.withAlpha(10),
-                                          overlayColor: Theme.of(
-                                            context,
-                                          ).colorScheme.primary,
-                                        ),
-                                        child: const Text('Guardar'),
-                                      ),
-                                    ),
-
-                                    const SizedBox(height: 10),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  maximumSize: Size(size.width * 0.9, 57),
-                  minimumSize: Size(size.width * 0.9, 57),
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  padding: EdgeInsets.all(15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  elevation: 0,
-                  side: BorderSide(color: primaryColor.withAlpha(20), width: 1),
-                ),
-                child: Text(
-                  '+ Agregar tasa personalizada',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ),
+              // Botón de agregar tasa personalizada (comentado temporalmente)
             ],
 
             Padding(

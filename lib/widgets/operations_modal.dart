@@ -2,10 +2,12 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
 import 'package:velocambio/core/themes/cmm_theme_data.dart';
 import 'package:velocambio/core/utils/operations.dart';
 import 'package:velocambio/core/utlis/format_coins.dart';
+import 'package:velocambio/providers/theme_provider.dart';
 import 'package:velocambio/widgets/operation_pill_button.dart';
 
 /// Tipos de operación disponibles en el modal.
@@ -248,6 +250,7 @@ class _OperationsModalState extends State<OperationsModal> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final themeProvider = context.watch<ThemeProvider>();
 
     return ClipRRect(
       borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
@@ -300,15 +303,14 @@ class _OperationsModalState extends State<OperationsModal> {
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
                     ),
-                    keyboardAppearance: Brightness.dark,
+                    keyboardAppearance: Theme.of(context).brightness,
                     textAlign: TextAlign.center,
                     onChanged: (_) => setState(() {}),
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: backgroundColor,
                       prefixIcon: Icon(
                         Icons.currency_exchange,
-                        color: Colors.blueGrey[100],
+                        color: Theme.of(context).colorScheme.onSurface,
                         size: 20,
                       ),
                       label: const Text('Monto base'),
@@ -343,15 +345,14 @@ class _OperationsModalState extends State<OperationsModal> {
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
                     ),
-                    keyboardAppearance: Brightness.dark,
+                    keyboardAppearance: Theme.of(context).brightness,
                     textAlign: TextAlign.center,
                     onChanged: (_) => setState(() {}),
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: backgroundColor,
                       prefixIcon: Icon(
                         _operationIcon,
-                        color: Colors.blueGrey[100],
+                        color: Theme.of(context).colorScheme.onSurface,
                         size: 20,
                       ),
                       label: Text(_valueLabel),
@@ -419,10 +420,16 @@ class _OperationsModalState extends State<OperationsModal> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        backgroundColor: Colors.grey[50]?.withAlpha(10),
+                        backgroundColor: themeProvider.isDark ? 
+                          Colors.grey[50]?.withAlpha(10) : Colors.black,
                         overlayColor: Theme.of(context).colorScheme.primary,
                       ),
-                      child: const Text('Cerrar'),
+                      child: Text(
+                        'Cerrar',
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: Colors.white,
+                        ),
+                        ),
                     ),
                   ),
 

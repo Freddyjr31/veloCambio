@@ -106,8 +106,7 @@ class _HistoryTabState extends State<HistoryTab> {
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 Text(
-                  'Tasa oficial USD · más reciente primero'
-                  '${provider.total > 0 ? ' · ${provider.total} registros' : ''}',
+                  'Evolución de la tasa oficial en VES',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),

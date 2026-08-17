@@ -64,7 +64,9 @@ class _InvertCoinButtonState extends State<InvertCoinButton> {
                   minimumSize: WidgetStateProperty.all(Size(30, 30)),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   alignment: Alignment.center,
-                  backgroundColor: WidgetStateProperty.all(Colors.white12),
+                  backgroundColor: WidgetStateProperty.all(
+                    Theme.of(context).colorScheme.onSurface.withAlpha(30),
+                  ),
                 ),
                 onPressed: () {
                   // setState(() {
@@ -128,7 +130,10 @@ class _InvertCoinButtonState extends State<InvertCoinButton> {
                     rateP2P: binanceProvider.p2pPrice,
                   );
                 },
-                icon: const Icon(Icons.swap_horiz, color: Colors.white),
+                icon: Icon(
+                  Icons.swap_horiz,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
               ),
             ),
           ),

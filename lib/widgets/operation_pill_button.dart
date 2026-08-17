@@ -43,7 +43,9 @@ class OperationPillButton extends StatelessWidget {
           height: height,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: selected ? primaryColor.withAlpha(60) : surfaceColor,
+            color: selected
+                ? primaryColor.withAlpha(60)
+                : Theme.of(context).colorScheme.surfaceContainerLow,
             borderRadius: BorderRadius.circular(height / 2),
             border: Border.all(
               color: selected

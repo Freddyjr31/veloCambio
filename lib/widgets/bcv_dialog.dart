@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:velocambio/providers/theme_provider.dart';
 
 class BcvDisclaimerModal {
   static void show(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final themeProvider = context.read<ThemeProvider>();
 
     showDialog(
       context: context,
@@ -19,8 +22,12 @@ class BcvDisclaimerModal {
             mainAxisSize: MainAxisSize.min,
             children: [
               Image.asset(
-                'assets/images/app_icon-removebg_small.PNG',
+                !themeProvider.isDark
+                    ? 'assets/images/app_icon_dark_mode.png'
+                    : 'assets/images/app_icon-removebg_small.PNG',
                 width: size.width * 0.5,
+                height: 50,
+                fit: BoxFit.contain,
               ),
 
               Text('Aviso Importante'),
@@ -56,15 +63,19 @@ class BcvDisclaimerModal {
               width: double.infinity, // Botón de ancho completo
               child: TextButton(
                 style: TextButton.styleFrom(
-                  backgroundColor: Colors.grey[50]?.withAlpha(50),
+                  backgroundColor: themeProvider.isDark
+                      ? Colors.grey[50]?.withAlpha(50)
+                      : Colors.black,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
                 ),
                 onPressed: () => Navigator.of(context).pop(),
                 child: Text(
-                  'ENTENDIDO',
-                  style: Theme.of(context).textTheme.labelLarge,
+                  'Aceptar',
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: Colors.white,
+                        ),
                 ),
               ),
             ),

@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:velocambio/app.dart';
 import 'package:velocambio/core/config/app_config.dart';
 // import 'package:velocambio/core/http/binance_dio.dart';
@@ -14,6 +15,7 @@ import 'package:velocambio/models/adapters/custom_model_adapter.dart';
 import 'package:velocambio/models/adapters/euro_model_adapter.dart';
 import 'package:velocambio/models/adapters/usd_bcv_model_adapter.dart';
 import 'package:velocambio/models/adapters/usd_market_model_adapter.dart';
+import 'package:velocambio/providers/theme_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -84,5 +86,10 @@ Future<void> main() async {
     );
   };
 
-  runApp(const MainApp());
+  final themeProvider = ThemeProvider();
+  await themeProvider.loadTheme();
+
+  runApp(
+    ChangeNotifierProvider.value(value: themeProvider, child: const MainApp()),
+  );
 }

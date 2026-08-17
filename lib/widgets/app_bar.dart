@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:provider/provider.dart';
+import 'package:velocambio/providers/theme_provider.dart';
 
 class MainAppBar extends StatefulWidget implements PreferredSizeWidget {
   const MainAppBar({super.key});
@@ -24,6 +26,7 @@ class _MainAppBarState extends State<MainAppBar> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final themeProvider = context.watch<ThemeProvider>();
 
     return AppBar(
       title: FutureBuilder<PackageInfo>(
@@ -37,19 +40,23 @@ class _MainAppBarState extends State<MainAppBar> {
             final version = snapshot.data?.version ?? '1.0.0';
             final buildNumber = snapshot.data?.buildNumber ?? '000';
             return Row(
-              spacing: 10,
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
+              spacing: 8,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
               children: [
                 Image.asset(
-                  'assets/images/app_icon-removebg_small.PNG',
-                  width: size.width * 0.5,
+                  !themeProvider.isDark
+                      ? 'assets/images/app_icon_dark_mode.png'
+                      : 'assets/images/app_icon-removebg_small.PNG',
+                  width: size.width * 0.4,
                 ),
 
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
-                    color: Colors.white10,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withAlpha(20),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -63,6 +70,17 @@ class _MainAppBarState extends State<MainAppBar> {
         },
       ),
       centerTitle: true,
+      actions: [
+        IconButton(
+          icon: Icon(
+            themeProvider.isDark
+                ? Icons.wb_sunny_outlined
+                : Icons.nightlight_outlined,
+          ),
+          onPressed: () => themeProvider.toggleTheme(),
+          tooltip: themeProvider.isDark ? 'Tema claro' : 'Tema oscuro',
+        ),
+      ],
     );
   }
 }

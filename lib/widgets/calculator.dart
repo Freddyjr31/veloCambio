@@ -256,30 +256,29 @@ class _CalculatorState extends State<Calculator> {
                       });
                     },
                     keyboardType: TextInputType.number,
-                    keyboardAppearance: Brightness.dark,
+                    keyboardAppearance: Theme.of(context).brightness,
                     textAlign: TextAlign.end,
                     onTapOutside: (event) {
                       FocusManager.instance.primaryFocus?.unfocus();
                     },
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: backgroundColor,
                       prefixIcon: Icon(
                         Icons.currency_exchange,
-                        color: Colors.blueGrey[100],
+                        color: Theme.of(context).colorScheme.onSurface,
                         size: 20,
                       ),
                       label: Text(
                         'Monto a cambiar',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.blueGrey[100],
+                          color: Theme.of(context).colorScheme.onSurface,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       prefix: Text(
                         coinProvider.inputCurrencyCoin,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.blueGrey[100],
+                          color: Theme.of(context).colorScheme.onSurface,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -333,12 +332,22 @@ class _CalculatorState extends State<Calculator> {
                   );
                 },
                 style: OutlinedButton.styleFrom(
-                  backgroundColor: Colors.transparent,
                   foregroundColor: primaryColor,
                   padding: const EdgeInsets.all(12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
-                    side: BorderSide(color: primaryColor.withAlpha(80), width: 1),
+                    side: BorderSide(
+                      color: primaryColor.withAlpha(80),
+                      width: 1,
+                    ),
+                  ),
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.surfaceContainerLow,
+                  elevation: 0,
+                  shadowColor: Colors.transparent,
+                  textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.normal,
                   ),
                 ),
                 child: const Row(
