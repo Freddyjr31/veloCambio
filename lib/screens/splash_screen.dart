@@ -41,15 +41,9 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0C0B20),
+      backgroundColor: const Color(0xFF1E2126),
       body: Center(
-        child: ClipOval(
-          child: SizedBox(
-            width: 180,
-            height: 180,
-            child: Image.asset('assets/images/app_icon.png', fit: BoxFit.cover),
-          ),
-        ),
+        child: Image.asset('assets/images/VeloCambio.png', width: 180),
       ),
     );
   }

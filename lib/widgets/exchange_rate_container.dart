@@ -93,8 +93,8 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer>
                   borderRadius: BorderRadius.circular(14.5),
                   boxShadow: [
                     BoxShadow(
-                      color: primaryColor.withAlpha(45),
-                      spreadRadius: 13,
+                      color: primaryColor.withAlpha(20),
+                      spreadRadius: 12,
                       blurRadius: 12,
                       blurStyle: BlurStyle.outer,
                     ),
@@ -112,8 +112,8 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer>
                 _selectController.value,
               );
               final borderColor = Color.lerp(
-                primaryColor.withAlpha(20),
-                primaryColor.withAlpha(50),
+                !themeProvider.isDark ? surfaceColor.withAlpha(20) : primaryColor.withAlpha(20),
+                !themeProvider.isDark ? surfaceColor : primaryColor.withAlpha(50),
                 _selectController.value,
               );
               return Container(
@@ -125,7 +125,7 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer>
                 decoration: BoxDecoration(
                   color: bgColor,
                   borderRadius: BorderRadius.circular(15),
-                  border: Border.all(color: borderColor!, width: 1),
+                  border: Border.all(color: borderColor!, width: 1.2),
                 ),
                 child: child,
               );

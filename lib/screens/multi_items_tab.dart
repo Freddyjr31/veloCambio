@@ -36,8 +36,6 @@ class MultiItemsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final multiProvider = context.watch<MultiItemsProvider>();
     final coinProvider = context.watch<CoinProvider>();
-    final size = MediaQuery.of(context).size;
-
     final themeProvider = context.watch<ThemeProvider>();
 
     //* Tasa global = tasa seleccionada en la calculadora principal.
@@ -195,6 +193,7 @@ class _MultiItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final multiProvider = context.read<MultiItemsProvider>();
+    final themeProvider = context.watch<ThemeProvider>();
 
     //* Tasa efectiva: la global o la cotización propia del item.
     final effectiveRate = item.useGlobalRate
@@ -208,7 +207,9 @@ class _MultiItemCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: primaryColor.withAlpha(20), width: 1),
+        border: Border.all(
+          color: themeProvider.isDark ? primaryColor.withAlpha(20) : surfaceColor.withAlpha(20),
+          width: 1),
       ),
       child: Column(
         children: [

@@ -46,8 +46,8 @@ class _MainAppBarState extends State<MainAppBar> {
               children: [
                 Image.asset(
                   !themeProvider.isDark
-                      ? 'assets/images/app_icon_dark_mode.png'
-                      : 'assets/images/app_icon-removebg_small.PNG',
+                      ? 'assets/images/VeloCambio_dark.png'
+                      : 'assets/images/VeloCambio.png',
                   width: size.width * 0.4,
                 ),
 

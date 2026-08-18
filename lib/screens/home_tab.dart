@@ -368,7 +368,7 @@ class _HomeTabState extends State<HomeTab> {
               child: Divider(
                 height: 0,
                 thickness: 0.5,
-                color: primaryColor.withAlpha(20),
+                color: themeProvider.isDark ? primaryColor.withAlpha(20) : surfaceColor.withAlpha(20),
               ),
             ),
 

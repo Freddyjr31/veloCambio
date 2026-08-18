@@ -50,12 +50,15 @@ class _MainScreenState extends State<MainScreen> {
           clipBehavior: Clip.antiAlias,
           child: ClipRect(
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+              filter: ImageFilter.blur(sigmaX: 22, sigmaY: 22),
               child: NavigationBar(
                 selectedIndex: _currentIndex,
                 onDestinationSelected: (index) {
                   setState(() => _currentIndex = index);
                 },
+                elevation: 5,
+                // indicatorColor: primaryColor.withAlpha(40),
+                // surfaceTintColor: primaryColor.withOpacity(0.9),
                 backgroundColor: Colors.transparent,
                 height: 68,
                 destinations: const [

@@ -10,6 +10,7 @@ import 'package:velocambio/models/currency_model.dart';
 import 'package:velocambio/models/exchange_types_model.dart';
 import 'package:velocambio/providers/euro_provider.dart';
 import 'package:velocambio/providers/index.dart';
+import 'package:velocambio/providers/theme_provider.dart';
 import 'package:velocambio/widgets/invert_coin_button.dart';
 import 'package:velocambio/widgets/operations_modal.dart';
 
@@ -44,6 +45,7 @@ class _CalculatorState extends State<Calculator> {
     final exchangeProvider = context.watch<UsdExchangeRateProvider>();
     final euroProvider = context.watch<EuroProvider>();
     final binanceProvider = context.watch<BinanceProvider>();
+    final themeProvider = context.watch<ThemeProvider>();
 
     Currency originCurrency = coinProvider.originCurrency; //* USD primera vez
     Currency destinationCurrency =
@@ -69,7 +71,7 @@ class _CalculatorState extends State<Calculator> {
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(color: primaryColor.withAlpha(20), width: 1),
+        border: Border.all(color: themeProvider.isDark ? primaryColor.withAlpha(20) : surfaceColor.withAlpha(20), width: 1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
@@ -164,11 +166,6 @@ class _CalculatorState extends State<Calculator> {
                       //* Copiamos el monto
                       Clipboard.setData(
                         ClipboardData(
-                          // text: coinProvider.destinationCurrency == Currency.usd
-                          //       ? coinProvider.currentAmount.toStringAsFixed(3)
-                          //       : coinProvider.destinationCurrency == Currency.ves
-                          //         ? coinProvider.currentAmount.toStringAsFixed(3)
-                          //         : coinProvider.currentAmount.toStringAsFixed(3)
                           text: coinProvider.isDestinationVES()
                               ? formatoBolivar.format(
                                   coinProvider.currentAmount,
@@ -190,11 +187,6 @@ class _CalculatorState extends State<Calculator> {
                       //* Para mostrar mensaje de que se ha copiado el monto
                       toastification.show(
                         style: ToastificationStyle.fillColored,
-                        // title: Text(coinProvider.destinationCurrency == Currency.usd
-                        //         ? "${coinProvider.formatoDolar.format(coinProvider.currentAmount)} USD"
-                        //         : coinProvider.destinationCurrency == Currency.ves
-                        //           ? coinProvider.formatoBolivar.format(coinProvider.currentAmount)
-                        //           : "${coinProvider.formatoEuro.format(coinProvider.currentAmount)} EUR"),
                         title: Text(
                           isVes
                               ? formatoBolivar.format(
@@ -350,12 +342,18 @@ class _CalculatorState extends State<Calculator> {
                     fontWeight: FontWeight.normal,
                   ),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(Icons.percent),
                     SizedBox(width: 5),
-                    Text('Operaciones'),
+                    Text(
+                      'Operaciones',
+                      style: ThemeData().textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.normal,
+                        color: primaryColor
+                      ),
+                    ),
                   ],
                 ),
               ),

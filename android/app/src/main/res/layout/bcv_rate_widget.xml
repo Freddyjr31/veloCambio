@@ -10,13 +10,13 @@
 
     <ImageView
         android:id="@+id/iv_logo"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginBottom="6dp"
         android:contentDescription="VeloCambio"
         android:importantForAccessibility="yes"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_launcher_foreground" />
+        android:src="@drawable/velocambio" />
 
     <TextView
         android:id="@+id/tv_label"
