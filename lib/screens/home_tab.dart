@@ -48,6 +48,14 @@ class _HomeTabState extends State<HomeTab> {
     BinanceProvider binanceProvider,
     RatesStatsProvider statsProvider,
   ) async {
+    // Precargar datos del cache para mostrar inmediatamente
+    exchangeProvider.loadFromCache();
+    euroProvider.loadFromCache();
+    binanceProvider.loadFromCache();
+
+    // Si hay cache, el provider ya tiene rates > 0, así que se muestra ya
+    // Luego fetch en background actualiza con datos frescos
+
     //* Provider de tasas de cambio USD
     await _safeGet(() => exchangeProvider.getUsdExchangeRate(), 'USD oficial');
     await _safeGet(() => euroProvider.getEurosExchangeRate(), 'EUR');
@@ -368,7 +376,9 @@ class _HomeTabState extends State<HomeTab> {
               child: Divider(
                 height: 0,
                 thickness: 0.5,
-                color: themeProvider.isDark ? primaryColor.withAlpha(20) : surfaceColor.withAlpha(20),
+                color: themeProvider.isDark
+                    ? primaryColor.withAlpha(20)
+                    : surfaceColor.withAlpha(20),
               ),
             ),
 

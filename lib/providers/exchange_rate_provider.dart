@@ -3,7 +3,9 @@ import 'dart:developer';
 import 'package:flutter/widgets.dart';
 import 'package:velocambio/core/providers/cmm_general_provider.dart';
 import 'package:velocambio/core/services/home_widget_service.dart';
+import 'package:velocambio/datasource/services/cached_rate_service.dart';
 import 'package:velocambio/datasource/usd_api.dart';
+import 'package:velocambio/models/adapters/cached_rate_adapter.dart';
 import 'package:velocambio/models/rate_api_model.dart';
 
 class UsdExchangeRateProvider extends CmmGeneralProvider {
@@ -64,6 +66,26 @@ class UsdExchangeRateProvider extends CmmGeneralProvider {
 
   // late UsdsExchangeRateApi usdsExchangeRateApi = UsdsExchangeRateApi();
   late UsdRateApi usdsExchangeRateApi = UsdRateApi();
+  final CachedRateService _cache = CachedRateService();
+
+  bool oficialRateFromCache = false;
+  bool averageRateFromCache = false;
+
+  void loadFromCache() {
+    final oficialCached = _cache.get(CachedRateService.usdOficialKey);
+    if (oficialCached != null) {
+      oficialRate = oficialCached.price;
+      oficialRateUpdateDate = oficialCached.fetchedAt;
+      oficialRateFromCache = true;
+    }
+
+    final averageCached = _cache.get(CachedRateService.usdMarketKey);
+    if (averageCached != null) {
+      averageRate = averageCached.price;
+      averageRateUpdateDate = averageCached.fetchedAt;
+      averageRateFromCache = true;
+    }
+  }
 
   Future<RateApiResponseModel> getUsdExchangeRate() async {
     log('Function getUsdExchangeRate');
@@ -78,13 +100,30 @@ class UsdExchangeRateProvider extends CmmGeneralProvider {
 
       oficialRate = resp.price;
       oficialRateUpdateDate = resp.fetched_at;
+      oficialRateFromCache = false;
+
+      await _cache.save(
+        CachedRateService.usdOficialKey,
+        CachedRateModel(
+          price: resp.price,
+          rateTypeCode: resp.rate_type_code,
+          fetchedAt: resp.fetched_at,
+        ),
+      );
 
       if (resp.price > 0) {
         await HomeWidgetService.syncBcvRateToWidget(resp);
       }
     } catch (e) {
-      // Aquí podrías manejar el error de forma global
       log('Error en el provider: $e');
+      if (oficialRate == 0) {
+        final cached = _cache.get(CachedRateService.usdOficialKey);
+        if (cached != null) {
+          oficialRate = cached.price;
+          oficialRateUpdateDate = cached.fetchedAt;
+          oficialRateFromCache = true;
+        }
+      }
     } finally {
       super.setLoadingStatus(false);
       notifyListeners();
@@ -107,9 +146,26 @@ class UsdExchangeRateProvider extends CmmGeneralProvider {
 
       averageRate = resp.price;
       averageRateUpdateDate = resp.fetched_at;
+      averageRateFromCache = false;
+
+      await _cache.save(
+        CachedRateService.usdMarketKey,
+        CachedRateModel(
+          price: resp.price,
+          rateTypeCode: resp.rate_type_code,
+          fetchedAt: resp.fetched_at,
+        ),
+      );
     } catch (e) {
-      // Aquí podrías manejar el error de forma global
       log('Error en el provider: $e');
+      if (averageRate == 0) {
+        final cached = _cache.get(CachedRateService.usdMarketKey);
+        if (cached != null) {
+          averageRate = cached.price;
+          averageRateUpdateDate = cached.fetchedAt;
+          averageRateFromCache = true;
+        }
+      }
     } finally {
       super.setLoadingStatus(false);
       notifyListeners();

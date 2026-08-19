@@ -10,11 +10,9 @@ import 'package:velocambio/app.dart';
 import 'package:velocambio/core/config/app_config.dart';
 // import 'package:velocambio/core/http/binance_dio.dart';
 import 'package:velocambio/core/http/dio_client.dart';
+import 'package:velocambio/models/adapters/cached_rate_adapter.dart';
+import 'package:velocambio/datasource/services/cached_rate_service.dart';
 import 'package:velocambio/models/adapters/currency_history_adapters.dart';
-import 'package:velocambio/models/adapters/custom_model_adapter.dart';
-import 'package:velocambio/models/adapters/euro_model_adapter.dart';
-import 'package:velocambio/models/adapters/usd_bcv_model_adapter.dart';
-import 'package:velocambio/models/adapters/usd_market_model_adapter.dart';
 import 'package:velocambio/providers/theme_provider.dart';
 
 Future<void> main() async {
@@ -34,15 +32,9 @@ Future<void> main() async {
     await Hive.initFlutter(path);
 
     Hive.registerAdapter(CurrencyHistoryModelAdapter());
-    Hive.registerAdapter(UsdBcvModelAdapter());
-    Hive.registerAdapter(UsdMarketModelAdapter());
-    Hive.registerAdapter(EuroModelAdapter());
-    Hive.registerAdapter(CustomModelAdapter());
+    Hive.registerAdapter(CachedRateModelAdapter());
 
-    await Hive.openBox<UsdBcvModel>('bcv_box');
-    await Hive.openBox<UsdMarketModel>('promedio_box');
-    await Hive.openBox<EuroModel>('euro_box');
-    await Hive.openBox<CustomModel>('custom_box');
+    await Hive.openBox<CachedRateModel>(CachedRateService.boxName);
   } on Exception catch (e) {
     log(e.toString(), name: 'MAIN - INITIALIZE');
   }
