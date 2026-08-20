@@ -73,9 +73,9 @@ class BcvDisclaimerModal {
                 onPressed: () => Navigator.of(context).pop(),
                 child: Text(
                   'Aceptar',
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: Colors.white,
-                        ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelLarge?.copyWith(color: Colors.white),
                 ),
               ),
             ),

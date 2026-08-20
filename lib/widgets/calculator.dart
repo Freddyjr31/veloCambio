@@ -71,7 +71,12 @@ class _CalculatorState extends State<Calculator> {
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(color: themeProvider.isDark ? primaryColor.withAlpha(20) : surfaceColor.withAlpha(20), width: 1),
+        border: Border.all(
+          color: themeProvider.isDark
+              ? primaryColor.withAlpha(20)
+              : surfaceColor.withAlpha(20),
+          width: 1,
+        ),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
@@ -351,7 +356,7 @@ class _CalculatorState extends State<Calculator> {
                       'Operaciones',
                       style: ThemeData().textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.normal,
-                        color: primaryColor
+                        color: primaryColor,
                       ),
                     ),
                   ],

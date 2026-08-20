@@ -112,8 +112,12 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer>
                 _selectController.value,
               );
               final borderColor = Color.lerp(
-                !themeProvider.isDark ? surfaceColor.withAlpha(20) : primaryColor.withAlpha(20),
-                !themeProvider.isDark ? surfaceColor : primaryColor.withAlpha(50),
+                !themeProvider.isDark
+                    ? surfaceColor.withAlpha(20)
+                    : primaryColor.withAlpha(20),
+                !themeProvider.isDark
+                    ? surfaceColor
+                    : primaryColor.withAlpha(50),
                 _selectController.value,
               );
               return Container(

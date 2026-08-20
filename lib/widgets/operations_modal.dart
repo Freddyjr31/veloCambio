@@ -420,16 +420,17 @@ class _OperationsModalState extends State<OperationsModal> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        backgroundColor: themeProvider.isDark ? 
-                          Colors.grey[50]?.withAlpha(10) : Colors.black,
+                        backgroundColor: themeProvider.isDark
+                            ? Colors.grey[50]?.withAlpha(10)
+                            : Colors.black,
                         overlayColor: Theme.of(context).colorScheme.primary,
                       ),
                       child: Text(
                         'Cerrar',
-                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: Colors.white,
-                        ),
-                        ),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.labelLarge?.copyWith(color: Colors.white),
+                      ),
                     ),
                   ),
 

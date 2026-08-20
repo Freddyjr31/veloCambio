@@ -1,5 +1,7 @@
 # VeloCambio
 
+© 2026 Freddy Bernal. Licenciado bajo GPL-3.0.
+
 App de calculadora de cambio de monedas para Venezuela, desarrollada en Flutter. Consulta tasas de cambio en tiempo real para USD (tasa oficial BCV + tasa de mercado), EUR y USDT (P2P Binance) a traves de un backend propio de cacheo, y convierte entre monedas o usa una tasa personalizada.
 
 ## Caracteristicas
@@ -289,7 +291,13 @@ flutter build windows --flavor prod
 
 ## Licencia
 
-Este proyecto es privado. Todos los derechos reservados.
+Este proyecto esta licenciado bajo la [GNU General Public License v3.0](LICENSE).
+
+- **Puedes** usar, modificar y distribuir este codigo.
+- **Debes** liberar el codigo fuente de cualquier version modificada bajo GPL-3.0.
+- **No puedes** usar este codigo en software propietario sin liberar el fuente.
+
+Ver [LICENSE](LICENSE) para el texto completo.
 
 ## Contacto
 

@@ -208,8 +208,11 @@ class _MultiItemCard extends StatelessWidget {
         color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(15),
         border: Border.all(
-          color: themeProvider.isDark ? primaryColor.withAlpha(20) : surfaceColor.withAlpha(20),
-          width: 1),
+          color: themeProvider.isDark
+              ? primaryColor.withAlpha(20)
+              : surfaceColor.withAlpha(20),
+          width: 1,
+        ),
       ),
       child: Column(
         children: [
