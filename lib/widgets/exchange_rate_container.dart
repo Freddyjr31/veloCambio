@@ -107,8 +107,13 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer>
             animation: _selectController,
             builder: (context, child) {
               final bgColor = Color.lerp(
-                Theme.of(context).scaffoldBackgroundColor,
-                primaryColor.withValues(alpha: 0.05),
+                themeProvider.isDark
+                    ? Theme.of(context).scaffoldBackgroundColor
+                    : Theme.of(context).scaffoldBackgroundColor,
+                themeProvider.isDark
+                    // ? primaryColor.withValues(alpha: 0.05)
+                    ? Colors.black.withAlpha(50)
+                    : Theme.of(context).colorScheme.onSurface,
                 _selectController.value,
               );
               final borderColor = Color.lerp(
@@ -129,7 +134,7 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer>
                 decoration: BoxDecoration(
                   color: bgColor,
                   borderRadius: BorderRadius.circular(15),
-                  border: Border.all(color: borderColor!, width: 1.2),
+                  border: Border.all(color: borderColor!, width: 0),
                 ),
                 child: child,
               );
@@ -158,9 +163,14 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer>
                     Text(
                       widget.nameType,
                       style: TextStyle(
-                        color: widget.isSelected
-                            ? Theme.of(context).textTheme.bodyLarge!.color
-                            : Colors.grey[600],
+                        // color: widget.isSelected
+                        //     ? Theme.of(context).textTheme.bodyLarge!.color
+                        //     : Colors.grey[600],
+                        color: widget.isSelected ?
+                          themeProvider.isDark
+                              ? Colors.white
+                              : Colors.white
+                          : Colors.grey[600],
                         fontWeight: FontWeight.w900,
                       ),
                     ),
@@ -222,8 +232,10 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer>
                                   ?.copyWith(
                                     fontSize: widget.size / 36,
                                     color: !widget.isSelected
-                                        ? Colors.grey[600]
-                                        : null,
+                                        ? themeProvider.isDark
+                                            ? Colors.grey[50]!.withAlpha(100)
+                                            : Colors.grey[600]
+                                        : Colors.grey[100],
                                   ),
                             ),
                           ),
@@ -249,8 +261,10 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer>
                                   ?.copyWith(
                                     fontSize: widget.size / 36,
                                     color: !widget.isSelected
-                                        ? Colors.grey[600]
-                                        : null,
+                                        ? themeProvider.isDark
+                                            ? Colors.grey[50]!.withAlpha(100)
+                                            : Colors.grey[800]
+                                        : Colors.grey[50],
                                   ),
                             ),
                           ),

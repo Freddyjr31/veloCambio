@@ -10,14 +10,17 @@ import 'package:velocambio/app.dart';
 import 'package:velocambio/core/config/app_config.dart';
 // import 'package:velocambio/core/http/binance_dio.dart';
 import 'package:velocambio/core/http/dio_client.dart';
-import 'package:velocambio/models/adapters/cached_rate_adapter.dart';
 import 'package:velocambio/datasource/services/cached_rate_service.dart';
+import 'package:velocambio/models/adapters/cached_rate_adapter.dart';
 import 'package:velocambio/models/adapters/currency_history_adapters.dart';
 import 'package:velocambio/providers/theme_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   GoogleFonts.config.allowRuntimeFetching = false;
+
+  // Inicializa el formato de fechas para español
+  // await initializeDateFormatting('es', '');
 
   await AppConfig.loadEnv();
   dio.options.baseUrl = AppConfig.baseUrl;

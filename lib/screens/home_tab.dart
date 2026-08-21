@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-// import 'package:toastification/toastification.dart';
 import 'package:velocambio/core/themes/cmm_theme_data.dart';
 import 'package:velocambio/models/adapters/currency_history_adapters.dart'
     as adapters;
@@ -198,51 +197,91 @@ class _HomeTabState extends State<HomeTab> {
     }
 
     return SafeArea(
+      bottom: false,
       child: SingleChildScrollView(
+        padding: const EdgeInsets.only(bottom: 84, top: 0),
         child: Column(
-          spacing: 16,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          spacing: 14,
           children: [
+
             const BottomBannerAd(),
 
             //* Titulo, Boton de actualizar y fecha (siempre centrado)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
               child: Wrap(
-                spacing: 10,
+                spacing: 5,
                 runSpacing: 4,
                 alignment: WrapAlignment.center,
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                  Text(
-                    'Tasas disponibles',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
 
-                  Tooltip(
-                    message: 'Actualizar tasas',
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.refresh,
-                        color: themeProvider.isDark
-                            ? Colors.white
-                            : Colors.black,
-                      ),
-                      onPressed: () => getExchangeRate(
-                        coinProvider,
-                        exchangeProvider,
-                        euroProvider,
-                        binanceProvider,
-                        statsProvider,
-                      ),
+                  Text(
+                    DateFormat.yMMMMd('es').format(DateTime.now()),
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
 
-                  Text(
-                    DateFormat('dd/MM/yyyy').format(DateTime.now()),
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.titleLarge,
+                  const Text('|', style: TextStyle(color: Colors.grey)),
+
+                  Tooltip(
+                    message: 'Refrescar tasas de cambio',
+                    child: Container(
+                      width: size.width * 0.4,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 2,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surfaceContainer,
+                        borderRadius: BorderRadius.circular(8),
+                        // border: Border.all(
+                        //   color: primaryColor.withAlpha(60),
+                        //   width: 1,
+                        // ),
+                      ),
+                      child: InkWell(
+                        splashColor: primaryColor.withAlpha(40),
+                        highlightColor: primaryColor.withAlpha(20),
+                        borderRadius: BorderRadius.circular(8),
+                        onTap: () => getExchangeRate(
+                          coinProvider,
+                          exchangeProvider,
+                          euroProvider,
+                          binanceProvider,
+                          statsProvider,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.refresh,
+                              color: themeProvider.isDark
+                                  ? Colors.white
+                                  : Colors.black,
+                              size: 16
+                            ),
+                            Text(
+                              'Refrescar tasas',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
+                  
                 ],
               ),
             ),
@@ -371,23 +410,37 @@ class _HomeTabState extends State<HomeTab> {
               // Botón de agregar tasa personalizada (comentado temporalmente)
             ],
 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Divider(
-                height: 0,
-                thickness: 0.5,
-                color: themeProvider.isDark
-                    ? primaryColor.withAlpha(20)
-                    : surfaceColor.withAlpha(20),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 20),
+            //   child: Divider(
+            //     height: 0,
+            //     thickness: 0.5,
+            //     color: themeProvider.isDark
+            //         ? primaryColor.withAlpha(20)
+            //         : surfaceColor.withAlpha(20),
+            //   ),
+            // ),
+
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainer,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+              ),
+              child: Column(
+                children:[
+                  //* Calculadora
+                  const Calculator(),
+              
+                  const SizedBox(height: 2),
+              
+                  const BottomBannerAd(),
+                ]
               ),
             ),
 
-            //* Calculadora
-            const Calculator(),
-
-            const SizedBox(height: 2),
-
-            const BottomBannerAd(),
+            
           ],
         ),
       ),

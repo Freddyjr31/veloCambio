@@ -43,6 +43,7 @@ class MultiItemsTab extends StatelessWidget {
     final baseCurrency = _baseCurrencyFor(coinProvider.exchangeType);
 
     return SafeArea(
+      bottom: false,
       child: Column(
         children: [
           //* Banner de ads
@@ -140,6 +141,8 @@ class MultiItemsTab extends StatelessWidget {
 
           //* Total
           _TotalCard(total: multiProvider.totalFor(globalRate)),
+
+          const SizedBox(height: 84),
         ],
       ),
     );

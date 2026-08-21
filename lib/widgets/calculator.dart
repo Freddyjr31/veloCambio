@@ -68,15 +68,16 @@ class _CalculatorState extends State<Calculator> {
 
     return Container(
       width: size.width * 0.9,
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
       decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(
-          color: themeProvider.isDark
-              ? primaryColor.withAlpha(20)
-              : surfaceColor.withAlpha(20),
-          width: 1,
-        ),
+        color: Theme.of(context).colorScheme.surfaceContainer,
+        // color: Theme.of(context).scaffoldBackgroundColor,
+        // border: Border.all(
+        //   color: themeProvider.isDark
+        //       ? primaryColor.withAlpha(20)
+        //       : surfaceColor.withAlpha(20),
+        //   width: 1,
+        // ),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
@@ -313,8 +314,6 @@ class _CalculatorState extends State<Calculator> {
             ],
           ),
 
-          SizedBox(height: 1),
-
           //*  boton para abrir el modal de operaciones (%, sumar/restar)
           Tooltip(
             message: 'Operaciones sobre el resultado',
@@ -335,15 +334,15 @@ class _CalculatorState extends State<Calculator> {
                     borderRadius: BorderRadius.circular(10),
                     side: BorderSide(
                       color: primaryColor.withAlpha(80),
-                      width: 1,
+                      width: 1.5,
                     ),
                   ),
                   backgroundColor: Theme.of(
                     context,
-                  ).colorScheme.surfaceContainerLow,
+                  ).colorScheme.surfaceContainer,
                   elevation: 0,
                   shadowColor: Colors.transparent,
-                  textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  textStyle: Theme.of(context).textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.normal,
                   ),
                 ),
