@@ -327,19 +327,19 @@ class _CalculatorState extends State<Calculator> {
                     currencyCode: coinProvider.outputCurrencyCoin,
                   );
                 },
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: primaryColor,
+                style: 
+                // OutlinedButton.styleFrom(
+                ElevatedButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.onSurface,
                   padding: const EdgeInsets.all(12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
-                    side: BorderSide(
-                      color: primaryColor.withAlpha(80),
-                      width: 1.5,
-                    ),
+                    // side: BorderSide(
+                    //   color: primaryColor.withAlpha(80),
+                    //   width: 1.5,
+                    // ),
                   ),
-                  backgroundColor: Theme.of(
-                    context,
-                  ).colorScheme.surfaceContainer,
+                  backgroundColor: primaryColor,
                   elevation: 0,
                   shadowColor: Colors.transparent,
                   textStyle: Theme.of(context).textTheme.titleSmall?.copyWith(
@@ -349,13 +349,13 @@ class _CalculatorState extends State<Calculator> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.percent),
+                    Icon(Icons.percent, color: surfaceColor),
                     SizedBox(width: 5),
                     Text(
                       'Operaciones',
                       style: ThemeData().textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.normal,
-                        color: primaryColor,
+                        // color: primaryColor,
                       ),
                     ),
                   ],

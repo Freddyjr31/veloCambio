@@ -1,12 +1,15 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:velocambio/core/themes/cmm_theme_data.dart';
 import 'package:velocambio/models/currency_model.dart';
 import 'package:velocambio/models/exchange_types_model.dart';
 import 'package:velocambio/providers/binance_provider.dart';
 import 'package:velocambio/providers/coin_provider.dart';
 import 'package:velocambio/providers/euro_provider.dart';
 import 'package:velocambio/providers/exchange_rate_provider.dart';
+import 'package:velocambio/providers/theme_provider.dart';
 
 // ignore: must_be_immutable
 class InvertCoinButton extends StatefulWidget {
@@ -34,6 +37,7 @@ class InvertCoinButton extends StatefulWidget {
 class _InvertCoinButtonState extends State<InvertCoinButton> {
   @override
   Widget build(BuildContext context) {
+
     var coinProvider = widget.coinProvider;
     var exchangeProvider = widget.exchangeRateProvider;
     var euroProvider = widget.euroProvider;
@@ -41,15 +45,37 @@ class _InvertCoinButtonState extends State<InvertCoinButton> {
     var destinationCurrency = widget.destinationCurrency;
     var originCurrency = widget.originCurrency;
 
+    final themeProvider = context.watch<ThemeProvider>();
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
       child: Row(
         spacing: 5,
         children: [
+
           //* Icono de la moneda de origen
-          Text(
-            coinProvider.inputCurrencyCoin,
-            style: Theme.of(context).textTheme.bodyLarge,
+          // Text(
+          //   'De: ${coinProvider.inputCurrencyCoin}',
+          //   style: Theme.of(context).textTheme.bodyLarge,
+          // ),
+          RichText(
+            text: TextSpan(
+              text: 'De: ',
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: Colors.grey[600],
+              ),
+              children: [
+                TextSpan(
+                  text: coinProvider.inputCurrencyCoin,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: themeProvider.isDark
+                        ? Colors.white
+                        : Colors.black,
+                    fontWeight: FontWeight.bold,
+                    ),
+                ),
+              ]
+            ),
           ),
 
           Tooltip(
@@ -65,7 +91,7 @@ class _InvertCoinButtonState extends State<InvertCoinButton> {
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   alignment: Alignment.center,
                   backgroundColor: WidgetStateProperty.all(
-                    Theme.of(context).colorScheme.onSurface.withAlpha(30),
+                    themeProvider.isDark ? Colors.white : Colors.black,
                   ),
                 ),
                 onPressed: () {
@@ -132,16 +158,32 @@ class _InvertCoinButtonState extends State<InvertCoinButton> {
                 },
                 icon: Icon(
                   Icons.swap_horiz,
-                  color: Theme.of(context).colorScheme.onSurface,
+                  color: themeProvider.isDark ? Colors.black : Colors.white,
                 ),
               ),
             ),
           ),
 
           //* Icono de la moneda de destino
-          Text(
-            coinProvider.outputCurrencyCoin,
-            style: Theme.of(context).textTheme.bodyLarge,
+          // Text(
+          //   'A: ${coinProvider.outputCurrencyCoin}',
+          //   style: Theme.of(context).textTheme.bodyLarge,
+          // ),
+          RichText(
+            text: TextSpan(
+              text: 'A: ',
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: Colors.grey[600],
+              ),
+              children: [
+                TextSpan(
+                  text: coinProvider.outputCurrencyCoin,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: primaryColor,
+                    fontWeight: FontWeight.bold),
+                ),
+              ]
+            ),
           ),
         ],
       ),

@@ -91,14 +91,14 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer>
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(14.5),
-                  boxShadow: [
-                    BoxShadow(
-                      color: primaryColor.withAlpha(20),
-                      spreadRadius: 12,
-                      blurRadius: 12,
-                      blurStyle: BlurStyle.outer,
-                    ),
-                  ],
+                  // boxShadow: [
+                  //   BoxShadow(
+                  //     // color: primaryColor.withAlpha(20),
+                  //     spreadRadius: 12,
+                  //     blurRadius: 12,
+                  //     offset: const Offset(2, 5),
+                  //   ),
+                  // ],
                 ),
               ),
             ),
@@ -108,23 +108,22 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer>
             builder: (context, child) {
               final bgColor = Color.lerp(
                 themeProvider.isDark
-                    ? Theme.of(context).scaffoldBackgroundColor
-                    : Theme.of(context).scaffoldBackgroundColor,
+                    ? surfaceColor
+                    : Theme.of(context).colorScheme.surfaceContainer,
                 themeProvider.isDark
-                    // ? primaryColor.withValues(alpha: 0.05)
                     ? Colors.black.withAlpha(50)
                     : Theme.of(context).colorScheme.onSurface,
                 _selectController.value,
               );
-              final borderColor = Color.lerp(
-                !themeProvider.isDark
-                    ? surfaceColor.withAlpha(20)
-                    : primaryColor.withAlpha(20),
-                !themeProvider.isDark
-                    ? surfaceColor
-                    : primaryColor.withAlpha(50),
-                _selectController.value,
-              );
+              // final borderColor = Color.lerp(
+              //   !themeProvider.isDark
+              //       ? surfaceColor.withAlpha(20)
+              //       : primaryColor.withAlpha(20),
+              //   !themeProvider.isDark
+              //       ? surfaceColor
+              //       : primaryColor.withAlpha(50),
+              //   _selectController.value,
+              // );
               return Container(
                 width: widget.size,
                 padding: const EdgeInsets.symmetric(
@@ -134,7 +133,7 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer>
                 decoration: BoxDecoration(
                   color: bgColor,
                   borderRadius: BorderRadius.circular(15),
-                  border: Border.all(color: borderColor!, width: 0),
+                  //border: Border.all(color: borderColor!, width: 0),
                 ),
                 child: child,
               );

@@ -183,6 +183,20 @@ class _OperationsModalState extends State<OperationsModal> {
     }
   }
 
+  /// Texto informativo de la moneda con la que se está trabajando.
+  String get _currencyLabel {
+    switch (widget.currencyCode) {
+      case 'USD':
+        return 'Estás trabajando con montos en USD';
+      case 'USDT':
+        return 'Estás trabajando con montos en USDT';
+      case 'EUR':
+        return 'Estás trabajando con montos en EUR';
+      default:
+        return 'Estás trabajando con montos en VES';
+    }
+  }
+
   /// Define los chips de selección de operación.
   List<({OperationType type, String label, String tooltip})> get _operations {
     return const [
@@ -295,6 +309,46 @@ class _OperationsModalState extends State<OperationsModal> {
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
 
+                  const SizedBox(height: 12),
+
+                  //* Aviso de la moneda con la que se trabaja
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: primaryColor.withAlpha(10),
+                      borderRadius: BorderRadius.circular(8),
+                      // border: Border.all(
+                      //   color: primaryColor.withAlpha(40),
+                      //   width: 1,
+                      // ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.info_outline,
+                          size: 14,
+                          color: primaryColor,
+                        ),
+                        const SizedBox(width: 6),
+                        Flexible(
+                          child: Text(
+                            _currencyLabel,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: primaryColor,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
                   const SizedBox(height: 16),
 
                   //* Monto base
@@ -369,12 +423,12 @@ class _OperationsModalState extends State<OperationsModal> {
                       vertical: 12,
                     ),
                     decoration: BoxDecoration(
-                      color: primaryColor.withValues(alpha: 0.05),
+                      color: primaryColor.withValues(alpha: 0.09),
                       borderRadius: BorderRadius.circular(15),
-                      border: Border.all(
-                        color: primaryColor.withAlpha(50),
-                        width: 1,
-                      ),
+                      // border: Border.all(
+                      //   color: primaryColor.withAlpha(50),
+                      //   width: 1,
+                      // ),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
