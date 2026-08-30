@@ -111,8 +111,14 @@ class _CalculatorState extends State<Calculator> {
 
           //* Monto Total
           Container(
-            margin: const EdgeInsets.only(top: 10),
+            margin: const EdgeInsets.only(top: 10, bottom: 0),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+            decoration: BoxDecoration(
+              color: themeProvider.isDark ? 
+                primaryColor.withAlpha(20) :
+                  Theme.of(context).colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(15),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -120,7 +126,7 @@ class _CalculatorState extends State<Calculator> {
                 Expanded(
                   child: Container(
                     width: size.width * 0.65,
-                    margin: const EdgeInsets.only(top: 0),
+                    margin: const EdgeInsets.all(0),
                     padding: const EdgeInsets.symmetric(horizontal: 0),
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
@@ -226,11 +232,11 @@ class _CalculatorState extends State<Calculator> {
             children: [
               Expanded(
                 child: Container(
-                  margin: const EdgeInsets.only(top: 10),
+                  margin: const EdgeInsets.only(top: 5),
                   padding: const EdgeInsets.symmetric(horizontal: 0),
                   decoration: BoxDecoration(
                     // color: Theme.of(context).scaffoldBackgroundColor,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(15),
                     // boxShadow: [
                     //   BoxShadow(
                     //     color: Colors.black45,
@@ -333,7 +339,7 @@ class _CalculatorState extends State<Calculator> {
                   foregroundColor: Theme.of(context).colorScheme.onSurface,
                   padding: const EdgeInsets.all(12),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(15),
                     // side: BorderSide(
                     //   color: primaryColor.withAlpha(80),
                     //   width: 1.5,

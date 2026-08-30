@@ -123,17 +123,17 @@ class AppTheme {
       focusColor: const Color(0xFFF2F2F2),
       hoverColor: const Color(0xFFF2F2F2),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(15),
         gapPadding: 2,
         borderSide: BorderSide(color: Colors.grey[400]!, width: 1),
       ),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(15),
         gapPadding: 2,
         borderSide: BorderSide(color: Colors.grey[400]!, width: 1),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(15),
         gapPadding: 2,
         borderSide: const BorderSide(color: primaryColor, width: 1),
       ),
@@ -259,21 +259,18 @@ class AppTheme {
     ),
     inputDecorationTheme: InputDecorationTheme(
       fillColor: backgroundColor,
-
-      // focusColor: surfaceColor,
-      // hoverColor: surfaceColor,
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(15),
         gapPadding: 2,
         borderSide: const BorderSide(color: Colors.white, width: 1),
       ),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(15),
         gapPadding: 2,
         borderSide: const BorderSide(color: Colors.white, width: 1),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(15),
         gapPadding: 2,
         borderSide: const BorderSide(color: Colors.white, width: 1),
       ),
