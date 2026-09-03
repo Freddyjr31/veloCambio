@@ -3,8 +3,10 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:velocambio/core/themes/cmm_theme_data.dart';
+import 'package:velocambio/core/utils/truncate.dart';
 import 'package:velocambio/models/bcv_history_model.dart';
 import 'package:velocambio/providers/bcv_history_provider.dart';
+import 'package:velocambio/providers/theme_provider.dart';
 import 'package:velocambio/widgets/bottom_baner_ad.dart';
 
 /// Pestaña del histórico de tasas BCV.
@@ -266,17 +268,20 @@ class _HistoryRow extends StatelessWidget {
 
   /// Formatea un valor de tasa (o "—" si es nulo).
   String _formatRate(double? value) =>
-      value != null ? value.toStringAsFixed(3) : '—';
+      value != null ? truncateTo(value, 3).toStringAsFixed(3) : '—';
 
   @override
   Widget build(BuildContext context) {
+
+    final themeProvider = context.watch<ThemeProvider>();
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 3),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: primaryColor.withAlpha(20), width: 1),
+        border: Border.all(color: themeProvider.isDark ? primaryColor.withAlpha(20) : Theme.of(context).colorScheme.onSurface.withAlpha(20), width: 1),
       ),
       child: Row(
         children: [

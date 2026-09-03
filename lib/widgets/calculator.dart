@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
 import 'package:velocambio/core/themes/cmm_theme_data.dart';
 import 'package:velocambio/core/utlis/format_coins.dart';
+import 'package:velocambio/core/utils/truncate.dart';
 import 'package:velocambio/models/currency_model.dart';
 import 'package:velocambio/models/exchange_types_model.dart';
 import 'package:velocambio/providers/euro_provider.dart';
@@ -138,25 +139,25 @@ class _CalculatorState extends State<Calculator> {
                           children: [
                             TextSpan(
                               text: coinProvider.isDestinationVES()
-                                  ? formatoBolivar.format(
+                                  ? formatBolivarTrunc(
                                       coinProvider.currentAmount,
                                     )
                                   : ExchangeType.oficialUsd ==
                                         coinProvider.exchangeType
-                                  ? "${formatoDolar.format(coinProvider.currentAmount)} USD"
+                                  ? "${formatDolarTrunc(coinProvider.currentAmount)} USD"
                                   : ExchangeType.oficialEur ==
                                         coinProvider.exchangeType
-                                  ? "${formatoEuro.format(coinProvider.currentAmount)} EUR"
+                                  ? "${formatEuroTrunc(coinProvider.currentAmount)} EUR"
                                   : ExchangeType.p2pUsdt ==
                                         coinProvider.exchangeType
-                                  ? "${formatoDolar.format(coinProvider.currentAmount)} USDT"
+                                  ? "${formatDolarTrunc(coinProvider.currentAmount)} USDT"
                                   : destinationCurrency == Currency.usd
-                                  ? "${formatoDolar.format(coinProvider.currentAmount)} USD"
+                                  ? "${formatDolarTrunc(coinProvider.currentAmount)} USD"
                                   : destinationCurrency == Currency.ves
-                                  ? formatoBolivar.format(
+                                  ? formatBolivarTrunc(
                                       coinProvider.currentAmount,
                                     )
-                                  : "${formatoEuro.format(coinProvider.currentAmount)} EUR",
+                                  : "${formatEuroTrunc(coinProvider.currentAmount)} EUR",
                               style: Theme.of(context).textTheme.bodyLarge,
                             ),
                           ],
@@ -179,20 +180,20 @@ class _CalculatorState extends State<Calculator> {
                       Clipboard.setData(
                         ClipboardData(
                           text: coinProvider.isDestinationVES()
-                              ? formatoBolivar.format(
+                              ? formatBolivarTrunc(
                                   coinProvider.currentAmount,
                                 )
                               : ExchangeType.oficialUsd ==
                                     coinProvider.exchangeType
-                              ? coinProvider.currentAmount.toStringAsFixed(3)
+                              ? '${truncateTo(coinProvider.currentAmount, 3).toStringAsFixed(3)} USD'
                               : ExchangeType.oficialEur ==
                                     coinProvider.exchangeType
-                              ? coinProvider.currentAmount.toStringAsFixed(3)
+                              ? '${truncateTo(coinProvider.currentAmount, 3).toStringAsFixed(3)} EUR'
                               : coinProvider.destinationCurrency == Currency.usd
-                              ? coinProvider.currentAmount.toStringAsFixed(3)
+                              ? '${truncateTo(coinProvider.currentAmount, 3).toStringAsFixed(3)} USD'
                               : coinProvider.destinationCurrency == Currency.ves
-                              ? coinProvider.currentAmount.toStringAsFixed(3)
-                              : coinProvider.currentAmount.toStringAsFixed(3),
+                              ? '${truncateTo(coinProvider.currentAmount, 3).toStringAsFixed(3)} VES'
+                              : '${truncateTo(coinProvider.currentAmount, 3).toStringAsFixed(3)} EUR',
                         ),
                       );
 
@@ -201,20 +202,20 @@ class _CalculatorState extends State<Calculator> {
                         style: ToastificationStyle.fillColored,
                         title: Text(
                           isVes
-                              ? formatoBolivar.format(
+                              ? formatBolivarTrunc(
                                   coinProvider.currentAmount,
                                 )
                               : ExchangeType.oficialUsd ==
                                     coinProvider.exchangeType
-                              ? "${formatoDolar.format(coinProvider.currentAmount)} USD"
+                              ? "${formatDolarTrunc(coinProvider.currentAmount)} USD"
                               : ExchangeType.oficialEur ==
                                     coinProvider.exchangeType
-                              ? "${formatoEuro.format(coinProvider.currentAmount)} EUR"
+                              ? "${formatEuroTrunc(coinProvider.currentAmount)} EUR"
                               : coinProvider.destinationCurrency == Currency.usd
-                              ? "${formatoDolar.format(coinProvider.currentAmount)} USD"
+                              ? "${formatDolarTrunc(coinProvider.currentAmount)} USD"
                               : coinProvider.destinationCurrency == Currency.ves
-                              ? "${formatoBolivar.format(coinProvider.currentAmount)} VES"
-                              : "${formatoEuro.format(coinProvider.currentAmount)} EUR",
+                              ? "${formatBolivarTrunc(coinProvider.currentAmount)} VES"
+                              : "${formatEuroTrunc(coinProvider.currentAmount)} EUR",
                         ),
                         description: Text('Monto copiado al portapapeles!'),
                         type: ToastificationType.success,

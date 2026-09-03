@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:velocambio/core/themes/cmm_theme_data.dart';
+import 'package:velocambio/core/utils/truncate.dart';
 import 'package:velocambio/models/exchange_types_model.dart';
 import 'package:velocambio/providers/custom_provider.dart';
 import 'package:velocambio/providers/euro_provider.dart';
@@ -198,7 +199,7 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer>
                             duration: Duration(seconds: 1),
                           ),
                           child: Text(
-                            '${widget.value?.toStringAsFixed(3)} VES',
+                            '${truncateTo(widget.value ?? 0, 3).toStringAsFixed(3)} VES',
                             style: Theme.of(context).textTheme.titleMedium
                                 ?.copyWith(
                                   fontWeight: FontWeight.w800,

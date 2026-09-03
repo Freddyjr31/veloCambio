@@ -1,5 +1,6 @@
 import 'package:home_widget/home_widget.dart';
 import 'package:velocambio/core/http/dio_client.dart';
+import 'package:velocambio/core/utils/truncate.dart';
 import 'package:velocambio/models/rate_api_model.dart';
 
 class HomeWidgetService {
@@ -14,7 +15,7 @@ class HomeWidgetService {
     try {
       await HomeWidget.saveWidgetData<String>(
         _bcvRateKey,
-        model.price.toStringAsFixed(3),
+        truncateTo(model.price, 3).toStringAsFixed(3),
       );
       await HomeWidget.saveWidgetData<String>(
         _bcvDateKey,

@@ -225,6 +225,7 @@ class _HomeTabState extends State<HomeTab> {
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).colorScheme.onSurface,
+                      fontSize: size.width * 0.035,
                     ),
                   ),
 
@@ -241,10 +242,6 @@ class _HomeTabState extends State<HomeTab> {
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.surfaceContainer,
                         borderRadius: BorderRadius.circular(8),
-                        // border: Border.all(
-                        //   color: primaryColor.withAlpha(60),
-                        //   width: 1,
-                        // ),
                       ),
                       child: InkWell(
                         splashColor: primaryColor.withAlpha(40),
@@ -266,7 +263,7 @@ class _HomeTabState extends State<HomeTab> {
                               color: themeProvider.isDark
                                   ? Colors.white
                                   : Colors.black,
-                              size: 16
+                              size: size.width * 0.04,
                             ),
                             Text(
                               'Refrescar tasas',
@@ -274,6 +271,7 @@ class _HomeTabState extends State<HomeTab> {
                               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: Theme.of(context).colorScheme.onSurface,
+                                  fontSize: size.width * 0.035,
                                 ),
                             ),
                           ],

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
 import 'package:velocambio/core/themes/cmm_theme_data.dart';
 import 'package:velocambio/core/utils/operations.dart';
+import 'package:velocambio/core/utils/truncate.dart';
 import 'package:velocambio/core/utlis/format_coins.dart';
 import 'package:velocambio/providers/theme_provider.dart';
 import 'package:velocambio/widgets/operation_pill_button.dart';
@@ -74,7 +75,7 @@ class _OperationsModalState extends State<OperationsModal> {
 
     //* Se prellena el monto base con el resultado de la calculadora.
     _baseController = TextEditingController(
-      text: widget.baseAmount.toStringAsFixed(3),
+      text: truncateTo(widget.baseAmount, 3).toStringAsFixed(3),
     );
     _valueController = TextEditingController();
   }
@@ -91,11 +92,11 @@ class _OperationsModalState extends State<OperationsModal> {
     switch (widget.currencyCode) {
       case 'USD':
       case 'USDT':
-        return formatoDolar.format(value);
+        return formatDolarTrunc(value);
       case 'EUR':
-        return formatoEuro.format(value);
+        return formatEuroTrunc(value);
       default:
-        return formatoBolivar.format(value);
+        return formatBolivarTrunc(value);
     }
   }
 

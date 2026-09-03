@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:velocambio/core/themes/cmm_theme_data.dart';
+import 'package:velocambio/core/utils/truncate.dart';
 import 'package:velocambio/core/utlis/format_coins.dart';
 import 'package:velocambio/models/currency_model.dart';
 import 'package:velocambio/models/exchange_types_model.dart';
@@ -291,7 +292,7 @@ class _MultiItemCard extends StatelessWidget {
                             children: [
                               Flexible(
                                 child: Text(
-                                  '${effectiveRate.toStringAsFixed(3)} VES',
+                                  '${truncateTo(effectiveRate, 3).toStringAsFixed(3)} VES',
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: Theme.of(context).textTheme.bodyMedium
@@ -364,7 +365,7 @@ class _MultiItemCard extends StatelessWidget {
               Text('Resultado', style: Theme.of(context).textTheme.bodySmall),
               Flexible(
                 child: Text(
-                  formatoBolivar.format(result),
+                  formatBolivarTrunc(result),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.end,
@@ -404,7 +405,7 @@ class _TotalCard extends StatelessWidget {
           Text('Total', style: Theme.of(context).textTheme.titleMedium),
           Flexible(
             child: Text(
-              formatoBolivar.format(total),
+              formatBolivarTrunc(total),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.end,
