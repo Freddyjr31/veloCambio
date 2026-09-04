@@ -143,167 +143,200 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer>
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Row(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(3),
-                      child: Image.asset(
-                        widget.imagePath!,
-                        width: 23,
-                        height: 15,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) =>
-                            const Icon(Icons.flag, size: 15),
+                Flexible(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(3),
+                        child: Image.asset(
+                          widget.imagePath!,
+                          width: 23,
+                          height: 15,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              const Icon(Icons.flag, size: 15),
+                        ),
                       ),
-                    ),
 
-                    SizedBox(width: 10),
+                      SizedBox(width: 10),
 
-                    //* Text
-                    Text(
-                      widget.nameType,
-                      style: TextStyle(
-                        // color: widget.isSelected
-                        //     ? Theme.of(context).textTheme.bodyLarge!.color
-                        //     : Colors.grey[600],
-                        color: widget.isSelected ?
-                          themeProvider.isDark
-                              ? Colors.white
-                              : Colors.white
-                          : Colors.grey[600],
-                        fontWeight: FontWeight.w900,
+                      //* Text
+                      Flexible(
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            widget.nameType,
+                            style: TextStyle(
+                              // color: widget.isSelected
+                              //     ? Theme.of(context).textTheme.bodyLarge!.color
+                              //     : Colors.grey[600],
+                              color: widget.isSelected
+                                  ? themeProvider.isDark
+                                        ? Colors.white
+                                        : Colors.white
+                                  : Colors.grey[600],
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
 
                 SizedBox(height: 10),
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Skeletonizer(
-                          enabled: exchangeProvider.isLoading,
-                          effect: ShimmerEffect(
-                            baseColor: themeProvider.isDark
-                                ? Colors.grey[50]!.withAlpha(50)
-                                : primaryColor.withAlpha(20),
-                            highlightColor: themeProvider.isDark
-                                ? Colors.grey[50]!.withAlpha(100)
-                                : primaryColor.withAlpha(20),
-                            duration: Duration(seconds: 1),
-                          ),
-                          child: Text(
-                            '${truncateTo(widget.value ?? 0, 3).toStringAsFixed(3)} VES',
-                            style: Theme.of(context).textTheme.titleMedium
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: widget.size / 24,
-                                  color: widget.isSelected
-                                      ? primaryColor
-                                      : Colors.grey[600],
+                Flexible(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerRight,
+                              child: Skeletonizer(
+                                enabled: exchangeProvider.isLoading,
+                                effect: ShimmerEffect(
+                                  baseColor: themeProvider.isDark
+                                      ? Colors.grey[50]!.withAlpha(50)
+                                      : primaryColor.withAlpha(20),
+                                  highlightColor: themeProvider.isDark
+                                      ? Colors.grey[50]!.withAlpha(100)
+                                      : primaryColor.withAlpha(20),
+                                  duration: Duration(seconds: 1),
                                 ),
-                          ),
-                        ),
-
-                        if (widget.type != ExchangeType.oficialUsd &&
-                            widget.type != ExchangeType.custom)
-                          Skeletonizer(
-                            enabled: exchangeProvider.isLoading,
-                            effect: ShimmerEffect(
-                              baseColor: themeProvider.isDark
-                                  ? Colors.grey[50]!.withAlpha(50)
-                                  : primaryColor.withAlpha(20),
-                              highlightColor: themeProvider.isDark
-                                  ? Colors.grey[50]!.withAlpha(100)
-                                  : primaryColor.withAlpha(20),
-                              duration: Duration(seconds: 1),
+                                child: Text(
+                                  '${truncateTo(widget.value ?? 0, 3).toStringAsFixed(3)} VES',
+                                  style: Theme.of(context).textTheme.titleMedium
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.w800,
+                                        fontSize: widget.size / 24,
+                                        color: widget.isSelected
+                                            ? primaryColor
+                                            : Colors.grey[600],
+                                      ),
+                                ),
+                              ),
                             ),
-                            child: Text(
-                              widget.brecha != null && widget.brecha != 0
-                                  ? 'Brecha: ${widget.brecha?.toStringAsFixed(2)}%'
-                                  : '',
-                              style: Theme.of(context).textTheme.labelSmall
-                                  ?.copyWith(
-                                    fontSize: widget.size / 36,
-                                    color: !widget.isSelected
-                                        ? themeProvider.isDark
-                                            ? Colors.grey[50]!.withAlpha(100)
-                                            : Colors.grey[600]
-                                        : Colors.grey[100],
+
+                            if (widget.type != ExchangeType.oficialUsd &&
+                                widget.type != ExchangeType.custom)
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.centerRight,
+                                child: Skeletonizer(
+                                  enabled: exchangeProvider.isLoading,
+                                  effect: ShimmerEffect(
+                                    baseColor: themeProvider.isDark
+                                        ? Colors.grey[50]!.withAlpha(50)
+                                        : primaryColor.withAlpha(20),
+                                    highlightColor: themeProvider.isDark
+                                        ? Colors.grey[50]!.withAlpha(100)
+                                        : primaryColor.withAlpha(20),
+                                    duration: Duration(seconds: 1),
                                   ),
-                            ),
-                          ),
-
-                        if (widget.type != ExchangeType.custom)
-                          Skeletonizer(
-                            enabled: exchangeProvider.isLoading,
-                            effect: ShimmerEffect(
-                              baseColor: themeProvider.isDark
-                                  ? Colors.grey[50]!.withAlpha(50)
-                                  : primaryColor.withAlpha(20),
-                              highlightColor: themeProvider.isDark
-                                  ? Colors.grey[50]!.withAlpha(100)
-                                  : primaryColor.withAlpha(20),
-                              duration: Duration(seconds: 1),
-                            ),
-                            child: Text(
-                              (widget.variacion24h != null ||
-                                      widget.variacion7d != null)
-                                  ? '24 hr: ${widget.variacion24h?.toStringAsFixed(2)}% | 7d: ${widget.variacion7d?.toStringAsFixed(2)}%'
-                                  : '',
-                              style: Theme.of(context).textTheme.labelSmall
-                                  ?.copyWith(
-                                    fontSize: widget.size / 36,
-                                    color: !widget.isSelected
-                                        ? themeProvider.isDark
-                                            ? Colors.grey[50]!.withAlpha(100)
-                                            : Colors.grey[800]
-                                        : Colors.grey[50],
+                                  child: Text(
+                                    widget.brecha != null && widget.brecha != 0
+                                        ? 'Brecha: ${widget.brecha?.toStringAsFixed(2)}%'
+                                        : '',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelSmall
+                                        ?.copyWith(
+                                          fontSize: widget.size / 36,
+                                          color: !widget.isSelected
+                                              ? themeProvider.isDark
+                                                    ? Colors.grey[50]!
+                                                          .withAlpha(100)
+                                                    : Colors.grey[600]
+                                              : Colors.grey[100],
+                                        ),
                                   ),
-                            ),
-                          ),
-                      ],
-                    ),
+                                ),
+                              ),
 
-                    if (widget.type == ExchangeType.custom)
-                      IconButton(
-                        color: widget.isSelected
-                            ? Colors.white
-                            : Colors.grey[600],
-                        padding: EdgeInsets.zero,
-                        icon: Icon(
-                          widget.isSelected
-                              ? Icons.delete
-                              : Icons.delete_outline,
+                            if (widget.type != ExchangeType.custom)
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.centerRight,
+                                child: Skeletonizer(
+                                  enabled: exchangeProvider.isLoading,
+                                  effect: ShimmerEffect(
+                                    baseColor: themeProvider.isDark
+                                        ? Colors.grey[50]!.withAlpha(50)
+                                        : primaryColor.withAlpha(20),
+                                    highlightColor: themeProvider.isDark
+                                        ? Colors.grey[50]!.withAlpha(100)
+                                        : primaryColor.withAlpha(20),
+                                    duration: Duration(seconds: 1),
+                                  ),
+                                  child: Text(
+                                    (widget.variacion24h != null ||
+                                            widget.variacion7d != null)
+                                        ? '24 hr: ${widget.variacion24h?.toStringAsFixed(2)}% | 7d: ${widget.variacion7d?.toStringAsFixed(2)}%'
+                                        : '',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelSmall
+                                        ?.copyWith(
+                                          fontSize: widget.size / 36,
+                                          color: !widget.isSelected
+                                              ? themeProvider.isDark
+                                                    ? Colors.grey[50]!
+                                                          .withAlpha(100)
+                                                    : Colors.grey[800]
+                                              : Colors.grey[50],
+                                        ),
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
-                        onPressed: () {
-                          customProvider.removeCustomModel(
-                            customProvider.selectedCustomModel!,
-                          );
-                          customProvider.customAmountController.clear();
-
-                          //* Si la tasa personalizada eliminada es la seleccionada, se selecciona la tasa oficial del BCV
-                          coinProvider.setAmount(exchangeProvider.oficialRate);
-
-                          coinProvider.calculatedAmount(
-                            rateUsdBcv: exchangeProvider.oficialRate,
-                            rateUsdMarket: exchangeProvider.averageRate,
-                            rateEUR: euroProvider.oficialEuroRate,
-                            rateP2P: binanceProvider.p2pPrice,
-                          );
-
-                          coinProvider.changeExchangeType(
-                            ExchangeType.oficialUsd,
-                          );
-                        },
                       ),
-                  ],
+
+                      if (widget.type == ExchangeType.custom)
+                        IconButton(
+                          color: widget.isSelected
+                              ? Colors.white
+                              : Colors.grey[600],
+                          padding: EdgeInsets.zero,
+                          icon: Icon(
+                            widget.isSelected
+                                ? Icons.delete
+                                : Icons.delete_outline,
+                          ),
+                          onPressed: () {
+                            customProvider.removeCustomModel(
+                              customProvider.selectedCustomModel!,
+                            );
+                            customProvider.customAmountController.clear();
+
+                            //* Si la tasa personalizada eliminada es la seleccionada, se selecciona la tasa oficial del BCV
+                            coinProvider.setAmount(
+                              exchangeProvider.oficialRate,
+                            );
+
+                            coinProvider.calculatedAmount(
+                              rateUsdBcv: exchangeProvider.oficialRate,
+                              rateUsdMarket: exchangeProvider.averageRate,
+                              rateEUR: euroProvider.oficialEuroRate,
+                              rateP2P: binanceProvider.p2pPrice,
+                            );
+
+                            coinProvider.changeExchangeType(
+                              ExchangeType.oficialUsd,
+                            );
+                          },
+                        ),
+                    ],
+                  ),
                 ),
               ],
             ),

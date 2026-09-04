@@ -206,7 +206,6 @@ class _HomeTabState extends State<HomeTab> {
           mainAxisAlignment: MainAxisAlignment.start,
           spacing: 14,
           children: [
-
             const BottomBannerAd(),
 
             //* Titulo, Boton de actualizar y fecha (siempre centrado)
@@ -218,7 +217,6 @@ class _HomeTabState extends State<HomeTab> {
                 alignment: WrapAlignment.center,
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-
                   Text(
                     DateFormat.yMMMMd('es').format(DateTime.now()),
                     textAlign: TextAlign.center,
@@ -254,32 +252,37 @@ class _HomeTabState extends State<HomeTab> {
                           binanceProvider,
                           statsProvider,
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.refresh,
-                              color: themeProvider.isDark
-                                  ? Colors.white
-                                  : Colors.black,
-                              size: size.width * 0.04,
-                            ),
-                            Text(
-                              'Refrescar tasas',
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).colorScheme.onSurface,
-                                  fontSize: size.width * 0.035,
-                                ),
-                            ),
-                          ],
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.refresh,
+                                color: themeProvider.isDark
+                                    ? Colors.white
+                                    : Colors.black,
+                                size: size.width * 0.04,
+                              ),
+                              Text(
+                                'Refrescar tasas',
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme.titleSmall
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurface,
+                                      fontSize: size.width * 0.035,
+                                    ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                  
                 ],
               ),
             ),
@@ -418,27 +421,26 @@ class _HomeTabState extends State<HomeTab> {
             //         : surfaceColor.withAlpha(20),
             //   ),
             // ),
-
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surfaceContainer,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(30),
+                ),
               ),
               child: Column(
-                children:[
+                children: [
                   //* Calculadora
                   const Calculator(),
-              
+
                   const SizedBox(height: 2),
-              
+
                   const BottomBannerAd(),
-                ]
+                ],
               ),
             ),
-
-            
           ],
         ),
       ),

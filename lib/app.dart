@@ -8,7 +8,6 @@ import 'package:velocambio/providers/theme_provider.dart';
 import 'core/providers/app_providers.dart';
 import 'screens/index.dart';
 
-
 class MainApp extends StatefulWidget {
   const MainApp({super.key});
 
@@ -35,11 +34,12 @@ class _MainAppState extends State<MainApp> {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          supportedLocales: const [
-            Locale('es'),
-            Locale('en'),
-          ],
+          supportedLocales: const [Locale('es'), Locale('en')],
           locale: const Locale('es'),
+          builder: (context, child) => MediaQuery.withClampedTextScaling(
+            maxScaleFactor: 1.2,
+            child: child!,
+          ),
         ),
       ),
     );

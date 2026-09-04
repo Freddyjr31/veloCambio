@@ -87,25 +87,39 @@ class _CalculatorState extends State<Calculator> {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            spacing: 10,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5),
-                child: Text(
-                  'Conversión ',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-              ),
+              Flexible(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: 10,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: 5,
+                          top: 5,
+                          bottom: 5,
+                        ),
+                        child: Text(
+                          'Conversión ',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                      ),
 
-              //*  boton para cambiar las monedas
-              InvertCoinButton(
-                coinProvider: coinProvider,
-                exchangeRateProvider: exchangeProvider,
-                euroProvider: euroProvider,
-                usdtProvider: binanceProvider,
-                originCurrency: originCurrency,
-                destinationCurrency: destinationCurrency,
+                      //*  boton para cambiar las monedas
+                      InvertCoinButton(
+                        coinProvider: coinProvider,
+                        exchangeRateProvider: exchangeProvider,
+                        euroProvider: euroProvider,
+                        usdtProvider: binanceProvider,
+                        originCurrency: originCurrency,
+                        destinationCurrency: destinationCurrency,
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
@@ -115,9 +129,9 @@ class _CalculatorState extends State<Calculator> {
             margin: const EdgeInsets.only(top: 10, bottom: 0),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
             decoration: BoxDecoration(
-              color: themeProvider.isDark ? 
-                primaryColor.withAlpha(20) :
-                  Theme.of(context).colorScheme.surfaceContainerHighest,
+              color: themeProvider.isDark
+                  ? primaryColor.withAlpha(20)
+                  : Theme.of(context).colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(15),
             ),
             child: Row(
@@ -180,9 +194,7 @@ class _CalculatorState extends State<Calculator> {
                       Clipboard.setData(
                         ClipboardData(
                           text: coinProvider.isDestinationVES()
-                              ? formatBolivarTrunc(
-                                  coinProvider.currentAmount,
-                                )
+                              ? formatBolivarTrunc(coinProvider.currentAmount)
                               : ExchangeType.oficialUsd ==
                                     coinProvider.exchangeType
                               ? '${truncateTo(coinProvider.currentAmount, 3).toStringAsFixed(3)} USD'
@@ -202,9 +214,7 @@ class _CalculatorState extends State<Calculator> {
                         style: ToastificationStyle.fillColored,
                         title: Text(
                           isVes
-                              ? formatBolivarTrunc(
-                                  coinProvider.currentAmount,
-                                )
+                              ? formatBolivarTrunc(coinProvider.currentAmount)
                               : ExchangeType.oficialUsd ==
                                     coinProvider.exchangeType
                               ? "${formatDolarTrunc(coinProvider.currentAmount)} USD"
@@ -334,25 +344,24 @@ class _CalculatorState extends State<Calculator> {
                     currencyCode: coinProvider.outputCurrencyCoin,
                   );
                 },
-                style: 
-                // OutlinedButton.styleFrom(
-                ElevatedButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.onSurface,
-                  padding: const EdgeInsets.all(12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    // side: BorderSide(
-                    //   color: primaryColor.withAlpha(80),
-                    //   width: 1.5,
-                    // ),
-                  ),
-                  backgroundColor: primaryColor,
-                  elevation: 0,
-                  shadowColor: Colors.transparent,
-                  textStyle: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
+                style:
+                    // OutlinedButton.styleFrom(
+                    ElevatedButton.styleFrom(
+                      foregroundColor: Theme.of(context).colorScheme.onSurface,
+                      padding: const EdgeInsets.all(12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        // side: BorderSide(
+                        //   color: primaryColor.withAlpha(80),
+                        //   width: 1.5,
+                        // ),
+                      ),
+                      backgroundColor: primaryColor,
+                      elevation: 0,
+                      shadowColor: Colors.transparent,
+                      textStyle: Theme.of(context).textTheme.titleSmall
+                          ?.copyWith(fontWeight: FontWeight.normal),
+                    ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
