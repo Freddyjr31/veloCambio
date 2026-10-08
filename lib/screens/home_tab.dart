@@ -199,18 +199,19 @@ class _HomeTabState extends State<HomeTab> {
     return SafeArea(
       bottom: false,
       child: SingleChildScrollView(
-        padding: const EdgeInsets.only(bottom: 84, top: 0),
+        padding: const EdgeInsets.only(bottom: 84, top: 0, left: 0, right: 0),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
           spacing: 14,
           children: [
+
             const BottomBannerAd(),
 
             //* Titulo, Boton de actualizar y fecha (siempre centrado)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
               child: Wrap(
                 spacing: 5,
                 runSpacing: 4,
@@ -315,7 +316,7 @@ class _HomeTabState extends State<HomeTab> {
                     ),
                   ),
                 ),
-
+            
                 GestureDetector(
                   onTap: () => selectedTypeRate(
                     ExchangeType.averageUsd,
@@ -339,7 +340,7 @@ class _HomeTabState extends State<HomeTab> {
                     ),
                   ),
                 ),
-
+            
                 GestureDetector(
                   onTap: () => selectedTypeRate(
                     ExchangeType.oficialEur,
@@ -363,7 +364,7 @@ class _HomeTabState extends State<HomeTab> {
                     ),
                   ),
                 ),
-
+            
                 GestureDetector(
                   onTap: () => selectedTypeRate(
                     ExchangeType.p2pUsdt,
@@ -387,6 +388,8 @@ class _HomeTabState extends State<HomeTab> {
                     ),
                   ),
                 ),
+            
+                const SmartlinkCard(),
               ],
             ),
 

@@ -4,3 +4,7 @@ export 'package:velocambio/widgets/exchange_rate_container.dart';
 export 'package:velocambio/widgets/invert_coin_button.dart';
 export 'package:velocambio/widgets/operation_pill_button.dart';
 export 'package:velocambio/widgets/operations_modal.dart';
+export 'package:velocambio/widgets/smartlink_card.dart';
+export 'package:velocambio/widgets/smartlink_webview.dart';
+export 'package:velocambio/widgets/cuotas_calculator.dart';
+export 'package:velocambio/widgets/sueldo_calculator.dart';

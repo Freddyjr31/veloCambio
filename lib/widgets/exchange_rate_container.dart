@@ -116,25 +116,17 @@ class _ExchangeRateContainerState extends State<ExchangeRateContainer>
                     : Theme.of(context).colorScheme.onSurface,
                 _selectController.value,
               );
-              // final borderColor = Color.lerp(
-              //   !themeProvider.isDark
-              //       ? surfaceColor.withAlpha(20)
-              //       : primaryColor.withAlpha(20),
-              //   !themeProvider.isDark
-              //       ? surfaceColor
-              //       : primaryColor.withAlpha(50),
-              //   _selectController.value,
-              // );
+            
               return Container(
                 width: widget.size,
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 15,
+                  horizontal: 10,
                   vertical: 1,
                 ),
                 decoration: BoxDecoration(
                   color: bgColor,
                   borderRadius: BorderRadius.circular(15),
-                  //border: Border.all(color: borderColor!, width: 0),
+                  border: Border.all(color: Colors.transparent, width: 0),
                 ),
                 child: child,
               );

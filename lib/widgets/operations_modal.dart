@@ -294,7 +294,9 @@ class _OperationsModalState extends State<OperationsModal> {
                     children: [
                       Text(
                         'Operaciones',
-                        style: Theme.of(context).textTheme.titleLarge,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
                       ),
                       IconButton(
                         icon: const Icon(Icons.close),
@@ -306,8 +308,10 @@ class _OperationsModalState extends State<OperationsModal> {
                   //* Descripcion
                   Text(
                     'Calcula porcentajes, obtén el % de un monto o suma/resta valores',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    textAlign: TextAlign.start,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                   ),
 
                   const SizedBox(height: 12),
@@ -340,15 +344,18 @@ class _OperationsModalState extends State<OperationsModal> {
                           child: Text(
                             _currencyLabel,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: primaryColor,
-                              fontWeight: FontWeight.normal,
-                            ),
+                            )
                           ),
                         ),
                       ],
                     ),
                   ),
+
+                  const SizedBox(height: 16),
+
+                  const Divider(height: 1, thickness: 1),
 
                   const SizedBox(height: 16),
 
@@ -439,7 +446,7 @@ class _OperationsModalState extends State<OperationsModal> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Resultado',
+                                'Total',
                                 style: Theme.of(context).textTheme.bodySmall,
                               ),
                               SingleChildScrollView(
@@ -484,12 +491,12 @@ class _OperationsModalState extends State<OperationsModal> {
                         'Cerrar',
                         style: Theme.of(
                           context,
-                        ).textTheme.labelLarge?.copyWith(color: Colors.white),
+                        ).textTheme.labelMedium?.copyWith(color: Colors.white),
                       ),
                     ),
                   ),
 
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),

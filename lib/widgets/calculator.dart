@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
 import 'package:velocambio/core/themes/cmm_theme_data.dart';
-import 'package:velocambio/core/utlis/format_coins.dart';
 import 'package:velocambio/core/utils/truncate.dart';
+import 'package:velocambio/core/utlis/format_coins.dart';
 import 'package:velocambio/models/currency_model.dart';
 import 'package:velocambio/models/exchange_types_model.dart';
 import 'package:velocambio/providers/euro_provider.dart';
@@ -104,7 +104,9 @@ class _CalculatorState extends State<Calculator> {
                         child: Text(
                           'Conversión ',
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleLarge,
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
                         ),
                       ),
 
@@ -148,7 +150,7 @@ class _CalculatorState extends State<Calculator> {
                       child: Text.rich(
                         TextSpan(
                           text: 'Total: ',
-                          style: Theme.of(context).textTheme.bodyLarge
+                          style: Theme.of(context).textTheme.bodyMedium
                               ?.copyWith(fontWeight: FontWeight.bold),
                           children: [
                             TextSpan(
@@ -172,7 +174,7 @@ class _CalculatorState extends State<Calculator> {
                                       coinProvider.currentAmount,
                                     )
                                   : "${formatEuroTrunc(coinProvider.currentAmount)} EUR",
-                              style: Theme.of(context).textTheme.bodyLarge,
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ],
                         ),

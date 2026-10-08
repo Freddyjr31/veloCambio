@@ -11,6 +11,9 @@ const String _defaultBaseUrl = 'http://127.0.0.1:9000/';
 class AppConfig {
   static String get baseUrl => dotenv.env['BASE_URL'] ?? _defaultBaseUrl;
 
+  static String get adsterraSmartlinkUrl =>
+      (dotenv.env['ADSTERRA_SMARTLINK_URL'] ?? '').trim();
+
   static Future<void> loadEnv() async {
     await dotenv.load(
       fileName: 'assets/env/.env.$appEnvironment',

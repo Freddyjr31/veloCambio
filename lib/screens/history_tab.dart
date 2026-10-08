@@ -106,7 +106,7 @@ class _HistoryTabState extends State<HistoryTab> {
               children: [
                 Text(
                   'Histórico BCV',
-                  style: Theme.of(context).textTheme.titleLarge,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 Text(
                   'Evolución de la tasa oficial en VES',

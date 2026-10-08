@@ -1,7 +1,7 @@
 name: velocambio
-description: "App para cambio de monedas"
+description: "Velocambio es una app para calcular la conversión de divisas a bolivares y visceversa, además de calcular el monto a pagar en bolívares según la tasa de cambio y el monto en divisas."
 publish_to: 'none'
-version: 1.2.2+006
+version: 1.2.2+007
 
 environment:
   sdk: ^3.8.1
@@ -28,6 +28,8 @@ dependencies:
   pretty_dio_logger: ^1.4.0
   home_widget: ^0.9.3
   flutter_dotenv: ^6.0.1
+  webview_flutter: ^4.14.1
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:

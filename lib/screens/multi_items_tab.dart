@@ -54,44 +54,27 @@ class MultiItemsTab extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             child: Column(
-              spacing: 4,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              spacing: 2,
               children: [
                 Text(
                   'Multi-items',
-                  style: Theme.of(context).textTheme.titleLarge,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 Text(
                   'Evalúa varios montos a la vez con la tasa '
                   '$baseCurrency seleccionada',
-                  textAlign: TextAlign.center,
+                  textAlign: TextAlign.start,
+                  maxLines: 2,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
             ),
           ),
 
-          //* Lista de items (o estado vacio)
-          Expanded(
-            child: multiProvider.items.isEmpty
-                ? _EmptyItemsState(baseCurrency: baseCurrency)
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 8,
-                    ),
-                    itemCount: multiProvider.items.length,
-                    itemBuilder: (context, index) {
-                      final item = multiProvider.items[index];
-                      return _MultiItemCard(
-                        key: ValueKey(item.id),
-                        item: item,
-                        index: index,
-                        globalRate: globalRate,
-                        baseCurrency: baseCurrency,
-                      );
-                    },
-                  ),
-          ),
+          //* Total
+          _TotalCard(total: multiProvider.totalFor(globalRate)),
 
           //* Boton agregar item (compacto, a la derecha)
           Padding(
@@ -99,6 +82,7 @@ class MultiItemsTab extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+
                 ElevatedButton.icon(
                   onPressed: () {
                     //* Nuevo item hereda la tasa global de la calculadora.
@@ -113,11 +97,12 @@ class MultiItemsTab extends StatelessWidget {
                   ),
                   label: Text(
                     'Agregar item',
-                    style: TextStyle(
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: themeProvider.isDark ? Colors.white : Colors.black,
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(120, 40),
                     backgroundColor: primaryColor.withAlpha(60),
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
@@ -140,10 +125,34 @@ class MultiItemsTab extends StatelessWidget {
             ),
           ),
 
-          //* Total
-          _TotalCard(total: multiProvider.totalFor(globalRate)),
+          // const Divider(height: 1, thickness: 1),
 
-          const SizedBox(height: 84),
+          //* Lista de items (o estado vacio)
+          Expanded(
+            child: multiProvider.items.isEmpty
+                ? _EmptyItemsState(baseCurrency: baseCurrency)
+                : Container(
+                  padding: const EdgeInsets.only(top: 8),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
+                  ),
+                  child: ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(20, 8, 20, 84),
+                      itemCount: multiProvider.items.length,
+                      itemBuilder: (context, index) {
+                        final item = multiProvider.items[index];
+                        return _MultiItemCard(
+                          key: ValueKey(item.id),
+                          item: item,
+                          index: index,
+                          globalRate: globalRate,
+                          baseCurrency: baseCurrency,
+                        );
+                      },
+                    ),
+                ),
+          ),
         ],
       ),
     );
@@ -158,9 +167,18 @@ class _EmptyItemsState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+      padding: const EdgeInsets.all(0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(15),
+        
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         spacing: 8,
         children: [
           Icon(Icons.playlist_add, size: 56, color: Colors.grey[600]),
@@ -173,6 +191,7 @@ class _EmptyItemsState extends StatelessWidget {
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodySmall,
           ),
+          const SizedBox(height: 40),
         ],
       ),
     );
@@ -209,12 +228,12 @@ class _MultiItemCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
+        color: themeProvider.isDark ? Colors.black.withAlpha(50) : Theme.of(context).colorScheme.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(15),
         border: Border.all(
           color: themeProvider.isDark
-              ? primaryColor.withAlpha(20)
-              : surfaceColor.withAlpha(20),
+              ? Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.4)
+              : surfaceColor.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -223,6 +242,7 @@ class _MultiItemCard extends StatelessWidget {
           //* Monto base + boton eliminar
           Row(
             children: [
+
               Expanded(
                 child: TextField(
                   keyboardType: const TextInputType.numberWithOptions(
@@ -240,12 +260,15 @@ class _MultiItemCard extends StatelessWidget {
                     filled: true,
                     prefix: Text(
                       '$baseCurrency ',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.surfaceContainerHigh,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    label: const Text('Monto'),
+                    label: Text(
+                      'Monto',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
                   ),
                 ),
               ),
@@ -253,8 +276,26 @@ class _MultiItemCard extends StatelessWidget {
               const SizedBox(width: 8),
 
               IconButton(
+                splashRadius: 20,
+                style: IconButton.styleFrom(
+                  backgroundColor: themeProvider.isDark
+                      ? Colors.white.withAlpha(20)
+                      : Colors.black.withAlpha(20),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  padding: const EdgeInsets.all(5),
+                  elevation: 1,
+                  shadowColor: Colors.transparent,
+                ),
                 tooltip: 'Eliminar item',
-                icon: const Icon(Icons.delete_outline, color: Colors.red),
+                icon:Icon(
+                  Icons.delete_outline, 
+                  color: themeProvider.isDark
+                      ? Colors.white.withAlpha(80)
+                      : Colors.black.withAlpha(80),
+                      size: 14
+                  ),
                 onPressed: () => multiProvider.removeItem(index),
               ),
             ],
@@ -295,16 +336,16 @@ class _MultiItemCard extends StatelessWidget {
                                   '${truncateTo(effectiveRate, 3).toStringAsFixed(3)} VES',
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context).textTheme.bodyMedium
+                                  style: Theme.of(context).textTheme.bodySmall
                                       ?.copyWith(color: primaryColor),
                                 ),
                               ),
                               Row(
                                 spacing: 4,
                                 children: [
-                                  const Icon(Icons.link, size: 14),
+                                  const Icon(Icons.edit_outlined, size: 14),
                                   Text(
-                                    'Toca para editar',
+                                    'Editar',
                                     style: Theme.of(
                                       context,
                                     ).textTheme.labelSmall,
@@ -349,8 +390,24 @@ class _MultiItemCard extends StatelessWidget {
 
               //* Restaurar tasa global del item
               IconButton(
+                splashRadius: 20,
+                style: IconButton.styleFrom(
+                  backgroundColor: themeProvider.isDark
+                      ? Colors.white.withAlpha(20)
+                      : Colors.black.withAlpha(20),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  padding: const EdgeInsets.all(5),
+                  elevation: 1,
+                  shadowColor: Colors.transparent,
+                ),
                 tooltip: 'Usar tasa global',
-                icon: const Icon(Icons.sync),
+                icon: Icon(Icons.sync, 
+                color: themeProvider.isDark
+                      ? Colors.white.withAlpha(80)
+                      : Colors.black.withAlpha(80),
+                      size: 14),
                 onPressed: () => multiProvider.restoreGlobalRate(index),
               ),
             ],
@@ -358,20 +415,30 @@ class _MultiItemCard extends StatelessWidget {
 
           const SizedBox(height: 8),
 
+          const Divider(height: 12, thickness: 1),
+
           //* Resultado del item
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            spacing: 2,
             children: [
-              Text('Resultado', style: Theme.of(context).textTheme.bodySmall),
+              Text('Total', style: Theme.of(context).textTheme.bodySmall),
               Flexible(
-                child: Text(
-                  formatBolivarTrunc(result),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.end,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleMedium?.copyWith(color: primaryColor),
+                child: ScrollConfiguration(
+                  behavior: ScrollConfiguration.of(context).copyWith(
+                    scrollbars: false,
+                  ),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(
+                      formatBolivarTrunc(result),
+                      maxLines: 1,
+                      textAlign: TextAlign.end,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleSmall?.copyWith(color: primaryColor),
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -392,26 +459,36 @@ class _TotalCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.fromLTRB(20, 0, 20, 12),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+      // margin: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
       decoration: BoxDecoration(
-        color: primaryColor.withValues(alpha: 0.05),
+        // color: primaryColor.withValues(alpha: 0.05),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: primaryColor.withAlpha(50), width: 1),
+        // border: Border.all(color: primaryColor.withAlpha(50), width: 1),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        spacing: 2,
         children: [
-          Text('Total', style: Theme.of(context).textTheme.titleMedium),
+          Text('Costo total', style: Theme.of(context).textTheme.titleSmall),
           Flexible(
-            child: Text(
-              formatBolivarTrunc(total),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.end,
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(color: primaryColor),
+            child: ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(
+                scrollbars: false,
+              ),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Text(
+                  formatBolivarTrunc(total),
+                  maxLines: 1,
+                  textAlign: TextAlign.end,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleSmall?.copyWith(color: primaryColor),
+                ),
+              ),
             ),
           ),
         ],

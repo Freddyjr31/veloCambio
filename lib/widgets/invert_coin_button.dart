@@ -61,13 +61,13 @@ class _InvertCoinButtonState extends State<InvertCoinButton> {
           RichText(
             text: TextSpan(
               text: 'De: ',
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Colors.grey[600],
               ),
               children: [
                 TextSpan(
                   text: coinProvider.inputCurrencyCoin,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: themeProvider.isDark
                         ? Colors.white
                         : Colors.black,
@@ -172,13 +172,13 @@ class _InvertCoinButtonState extends State<InvertCoinButton> {
           RichText(
             text: TextSpan(
               text: 'A: ',
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Colors.grey[600],
               ),
               children: [
                 TextSpan(
                   text: coinProvider.outputCurrencyCoin,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: primaryColor,
                     fontWeight: FontWeight.bold),
                 ),
